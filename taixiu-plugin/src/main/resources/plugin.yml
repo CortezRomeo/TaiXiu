@@ -1,0 +1,17 @@
+name: TaiXiu
+author: Cortez_Romeo
+version: '${project.version}'
+main: com.cortezromeo.taixiu.TaiXiu
+api-version: 1.13
+depend:
+  - Vault
+commands:
+  taixiu:
+    description: TaiXiu member commands
+    aliases:
+      - choitaixiu
+      - playtaixiu
+  taixiuadmin:
+    description: TaiXiu admin commands
+    aliases:
+      - taixiuad

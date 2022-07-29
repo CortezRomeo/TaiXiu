@@ -1,0 +1,44 @@
+#
+#    ▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █
+#      █    █▄▄█  █      █    █   █  █
+#      █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀
+#
+#  Author: Cortez_Romeo
+#  Download plugin này miễn phí tại: https://minecraftvn.net
+
+# Dành cho việc fix lỗi
+# Đừng bật nếu bạn không cần đến
+debug: false
+
+# Tự động lưu dữ liệu các phiên
+# Đề phòng trường hợp bị crash
+auto-save-database:
+  enable: true
+  # Set càng ít thì dữ liệu càng dễ được bảm đảm nhưng có thể gây lag nếu dữ liệu quá nhiều
+  # Lấy theo giây(s)
+  time: 600
+
+task:
+  taiXiuTask:
+    # Thời gian đếm ngược lấy kết quả của mỗi phiên
+    # Lấy theo giây(s)
+    time-per-session: 120
+
+# Tùy chỉnh về đặt cược
+bet-settings:
+  # Số tiền tối đa có thể cược
+  max-bet: 1000000
+  # Số tiền tối thiểu có thể cược
+  min-bet: 500
+  # Đóng đặt cược khi thời gian bé hơn:
+  díable-while-remaining: 15
+  # Một số trường hợp cả 3 xúc xắc đều ra 1 nút hoặc 6 nút
+  # Khi đó sẽ rơi vào trường hợp tổng 3 nút là 3 hoặc 18
+  # Theo luật thì cái sẽ ăn hết, người đặt tài và xỉu đều thua
+  # Nếu bạn chỉnh thành 'true' cái này thì sẽ không còn rơi vào 2 trường hợp nên nữa
+  disable-special: false
+
+# Phần thông báo từ bossbar và message
+toggle-settings:
+  # Tự động bật thông báo khi người chơi vào game
+  auto-toggle: true
