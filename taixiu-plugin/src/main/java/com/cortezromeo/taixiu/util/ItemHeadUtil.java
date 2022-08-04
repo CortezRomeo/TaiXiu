@@ -1,10 +1,10 @@
 package com.cortezromeo.taixiu.util;
 
+import com.cortezromeo.taixiu.TaiXiu;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class ItemHeadUtil {
 
     public static ItemStack getCustomHead(String customHead) {
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
+        ItemStack item = TaiXiu.nms.getHeadItem();
         SkullMeta itemmeta = (SkullMeta) item.getItemMeta();
 
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);

@@ -1,5 +1,6 @@
 package com.cortezromeo.taixiu;
 
+import com.cortezromeo.taixiu.api.server.VersionSupport;
 import com.cortezromeo.taixiu.command.TaiXiuAdminCommand;
 import com.cortezromeo.taixiu.command.TaiXiuCommand;
 import com.cortezromeo.taixiu.file.HeadDatabaseFile;
@@ -15,10 +16,12 @@ import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.AutoSaveTask;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.setDebug;
 import static com.cortezromeo.taixiu.util.MessageUtil.log;
@@ -28,11 +31,42 @@ public final class TaiXiu extends JavaPlugin {
     private AutoSaveTask autoSaveTask = null;
     public static TaiXiu plugin;
     private static TaiXiuManager manager;
+    private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
+    public static VersionSupport nms;
+    private boolean serverSoftwareSupport = true;
+
+    @Override
+    public void onLoad() {
+
+        plugin = this;
+
+        Class supp;
+
+        try {
+            supp = Class.forName("com.cortezromeo.taixiu.support.version." + version + "." + version);
+        } catch (ClassNotFoundException e) {
+            serverSoftwareSupport = false;
+            this.getLogger().severe("Plugin không thể chạy trên phiên bản: " + version);
+            return;
+        }
+
+        try {
+            nms = (VersionSupport) supp.getConstructor(Class.forName("org.bukkit.plugin.Plugin"), String.class).newInstance(this, version);
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+            serverSoftwareSupport = false;
+            this.getLogger().severe("Plugin không thể hỗ trợ phiên bản: " + version);
+            return;
+        }
+    }
 
     @Override
     public void onEnable() {
 
-        plugin = this;
+        if (!serverSoftwareSupport) {
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
 
         log("&f--------------------------------");
         log("&a▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █");
@@ -41,6 +75,7 @@ public final class TaiXiu extends JavaPlugin {
         log("");
         log("&fVersion: &b" + getDescription().getVersion());
         log("&fAuthor: &bCortez_Romeo");
+        log("&eKhởi chạy plugin trên phiên bản: " + version);
         log("&f--------------------------------");
 
         initFile();
@@ -55,6 +90,13 @@ public final class TaiXiu extends JavaPlugin {
         getManager().startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
         AutoSaveManager.startAutoSave(getConfig().getInt("auto-save-database.time"));
 
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (getConfig().getBoolean("toggle-settings.auto-toggle")) {
+                if (!DatabaseManager.togglePlayers.contains(p.getName())) {
+                    DatabaseManager.togglePlayers.add(p.getName());
+                }
+            }
+        }
     }
 
     private void initFile() {
@@ -70,11 +112,12 @@ public final class TaiXiu extends JavaPlugin {
         reloadConfig();
 
         // message.yml
+        String messageFileName = getForCurrentVersion("message.yml", "messagev13.yml");
         MessageFile.setup();
         MessageFile.saveDefault();
         File messageFile = new File(getDataFolder(), "message.yml");
         try {
-            ConfigUpdater.update(this, "message.yml", messageFile);
+            ConfigUpdater.update(this, messageFileName, messageFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,6 +166,22 @@ public final class TaiXiu extends JavaPlugin {
 
     public TaiXiuManager getManager() {
         return manager;
+    }
+
+    public static String getServerVersion() {
+        return version;
+    }
+
+    public static String getForCurrentVersion(String v12, String v13) {
+        switch (getServerVersion()) {
+            case "v1_9_R1":
+            case "v1_9_R2":
+            case "v1_10_R1":
+            case "v1_11_R1":
+            case "v1_12_R1":
+                return v12;
+        }
+        return v13;
     }
 
     @Override

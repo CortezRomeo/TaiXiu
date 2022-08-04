@@ -1,7 +1,6 @@
 package com.cortezromeo.taixiu.task;
 
 import com.cortezromeo.taixiu.TaiXiu;
-import com.cortezromeo.taixiu.api.task.AutoSaveTaskAPI;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;

@@ -79,6 +79,7 @@ public class InventoryFile {
         get().addDefault(defaultitems + "nextPage.slot", 8);
         get().addDefault(defaultitems + "nextPage.type", "customhead");
         get().addDefault(defaultitems + "nextPage.value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDYzNjgyZjE5ZGU0OTZjYjNjMzE0ZDYyOWQzZmMxZjQyNWU2NjAyNTI4MmQyY2U4YTFmMGUyMjQ3NmMwMWMwNCJ9fX0=");
+        get().addDefault(defaultitems + "nextPage.data", 0);
         get().addDefault(defaultitems + "nextPage.lore", new String[]{
                 "&7Sang trang %nextPage%"
         });
@@ -86,6 +87,7 @@ public class InventoryFile {
         get().addDefault(defaultitems + "prevPage.slot", 2);
         get().addDefault(defaultitems + "prevPage.type", "customhead");
         get().addDefault(defaultitems + "prevPage.value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWMwNjQ2YTI4YjQ1MWRhNzQzOTRlNjk4YjA0ZmFjOTM1YmExOTc1ZjQyODI5MDY3YTBmYmZlZDE4MWEzNjU5NCJ9fX0=");
+        get().addDefault(defaultitems + "prevPage.data", 0);
         get().addDefault(defaultitems + "prevPage.lore", new String[]{
                 "&7Về trang %prevPage%"
         });
@@ -95,6 +97,7 @@ public class InventoryFile {
         get().addDefault(txinfo + "rows", 6);
         get().addDefault(txinfo + "items.bet-player.name", "&b%playerName%");
         get().addDefault(txinfo + "items.bet-player.type", "playerhead");
+        get().addDefault(txinfo + "items.bet-player.data", 0);
         get().addDefault(txinfo + "items.bet-player.lore", new String[]{
                 "",
                 "&fCược vào:&r %bet%",
@@ -105,12 +108,13 @@ public class InventoryFile {
         get().addDefault(txinfo + "items.bet-info.slot", 5);
         get().addDefault(txinfo + "items.bet-info.type", "material");
         get().addDefault(txinfo + "items.bet-info.value", "BOOK");
+        get().addDefault(txinfo + "items.bet-info.data", 0);
         get().addDefault(txinfo + "items.bet-info.lore", new String[]{
                 "&fCó kết quả sau: &d%time% giây",
                 "",
                 "&fPhiên số: &b%session%",
-                "&fSố người chọn &#1fc433Xỉu&f: &e%xiuPlayerNumber% &6(%xiuTotalBet%$)",
-                "&fSố người chọn &#c42d1fTài&f: &e%taiPlayerNumber% &6(%taiTotalBet%$)",
+                "&fSố người chọn " + TaiXiu.getForCurrentVersion("&2Xỉu", "&#1fc433Xỉu") + "&f: &e%xiuPlayerNumber% &6(%xiuTotalBet%$)",
+                "&fSố người chọn " + TaiXiu.getForCurrentVersion("&4Tài", "&#c42d1fTài") + "&f: &e%taiPlayerNumber% &6(%taiTotalBet%$)",
                 "&fTổng tiền cược phiên này: &6%totalBet%$",
                 "&fXúc xắc 1: &e%dice1%",
                 "&fXúc xắc 2: &e%dice2%",

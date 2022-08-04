@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.cortezromeo.taixiu.util.ColorUtil.addColor;
 import static com.cortezromeo.taixiu.util.ItemHeadUtil.getCustomHead;
 import static com.cortezromeo.taixiu.util.MessageUtil.getFormatName;
 
@@ -179,14 +178,15 @@ public class PagedPane implements InventoryHolder {
         // create separator
         fillRow(
                 inventory.getSize() / 9 - 2,
-                new ItemStack(Material.GRAY_STAINED_GLASS_PANE),
-                inventory
+                new ItemStack(TaiXiu.nms.createItemStack(TaiXiu.getForCurrentVersion("STAINED_GLASS_PANE", "BLACK_STAINED_GLASS_PANE"), 1 , (short) 15))
+                , inventory
         );
 
         if (getCurrentPage() > 1) {
             ItemStack itemStack = getItem(
                     invF.getString("inventory.default-items.prevPage.type"),
                     invF.getString("inventory.default-items.prevPage.value"),
+                    (short) invF.getInt("inventory.default-items.prevPage.data"),
                     invF.getString("inventory.default-items.prevPage.name"),
                     invF.getStringList("inventory.default-items.prevPage.lore"));
             controlBack = new Button(itemStack, event -> selectPage(currentIndex - 1));
@@ -197,6 +197,7 @@ public class PagedPane implements InventoryHolder {
             ItemStack itemStack = getItem(
                     invF.getString("inventory.default-items.nextPage.type"),
                     invF.getString("inventory.default-items.nextPage.value"),
+                    (short) invF.getInt("inventory.default-items.nextPage.data"),
                     invF.getString("inventory.default-items.nextPage.name"),
                     invF.getStringList("inventory.default-items.nextPage.lore"));
             controlNext = new Button(itemStack, event -> selectPage(getCurrentPage()));
@@ -206,6 +207,7 @@ public class PagedPane implements InventoryHolder {
         ItemStack itemStack = getItem(
                 invF.getString("inventory.taiXiuInfo.items.bet-info.type"),
                 invF.getString("inventory.taiXiuInfo.items.bet-info.value"),
+                (short) invF.getInt("inventory.taiXiuInfo.items.bet-info.data"),
                 invF.getString("inventory.taiXiuInfo.items.bet-info.name"),
                 invF.getStringList("inventory.taiXiuInfo.items.bet-info.lore"));
         inventory.setItem((inventory.getSize() - 10) + invF.getInt("inventory.taiXiuInfo.items.bet-info.slot"), itemStack);
@@ -220,17 +222,17 @@ public class PagedPane implements InventoryHolder {
         }
     }
 
-    protected ItemStack getItem(String type, String value, String name, List<String> lore) {
+    protected ItemStack getItem(String type, String value, short itemData, String name, List<String> lore) {
         AtomicReference<ItemStack> material = new AtomicReference<>(new ItemStack(Material.BEDROCK));
 
         if (type.equalsIgnoreCase("customhead"))
             material.set(getCustomHead(value));
 
         if (type.equalsIgnoreCase("material"))
-            material.set(new ItemStack(Material.valueOf(value)));
+            material.set(TaiXiu.nms.createItemStack(value, 1, itemData));
 
         if (type.equalsIgnoreCase("playerhead")) {
-            material.set(new ItemStack(Material.PLAYER_HEAD));
+            material.set(TaiXiu.nms.getHeadItem());
         }
 
         ItemMeta materialMeta = material.get().getItemMeta();
@@ -238,13 +240,13 @@ public class PagedPane implements InventoryHolder {
 
         if (name != "") {
             name = getString(data, name);
-            materialMeta.setDisplayName(addColor(name));
+            materialMeta.setDisplayName(TaiXiu.nms.addColor(name));
         }
 
         List<String> newList = new ArrayList<String>();
         for (String string : lore) {
             string = getString(data, string);
-            newList.add(addColor(string));
+            newList.add(TaiXiu.nms.addColor(string));
         }
 
         materialMeta.setLore(newList);
@@ -312,11 +314,9 @@ public class PagedPane implements InventoryHolder {
         }
 
         void handleClick(InventoryClickEvent event) {
-            // user clicked in his own inventory. Silently drop it
             if (event.getRawSlot() > event.getInventory().getSize()) {
                 return;
             }
-            // user clicked outside of the inventory
             if (event.getSlotType() == InventoryType.SlotType.OUTSIDE) {
                 return;
             }
