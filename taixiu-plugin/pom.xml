@@ -108,6 +108,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.cortezromeo.taixiu</groupId>
+            <artifactId>versionsupport_1_18_R1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.tchristofferson</groupId>
             <artifactId>ConfigUpdater</artifactId>
             <version>2.0-SNAPSHOT</version>
