@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>versionsupport_1_18_R1</artifactId>
+    <artifactId>versionsupport_1_18_R2</artifactId>
     <version>${project.parent.version}</version>
 
     <parent>
         <artifactId>TaiXiu</artifactId>
         <groupId>com.cortezromeo.taixiu</groupId>
-        <version>1.05-HOTFIX</version>
+        <version>1.06</version>
     </parent>
 
     <dependencies>
@@ -18,8 +18,6 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>1.18.1-R0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.cortezromeo.taixiu</groupId>

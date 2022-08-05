@@ -1,4 +1,4 @@
-package com.cortezromeo.taixiu.support.version.v1_18_R1;
+package com.cortezromeo.taixiu.support.version.v1_18_R2;
 
 import com.cortezromeo.taixiu.api.server.VersionSupport;
 import net.md_5.bungee.api.ChatColor;
@@ -12,8 +12,8 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class v1_18_R1 extends VersionSupport {
-    public v1_18_R1(Plugin plugin, String versionName) {
+public class v1_18_R2 extends VersionSupport {
+    public v1_18_R2(Plugin plugin, String versionName) {
         super(plugin, versionName);
     }
 
@@ -28,7 +28,11 @@ public class v1_18_R1 extends VersionSupport {
         try {
             i = new org.bukkit.inventory.ItemStack(org.bukkit.Material.valueOf(material), amount);
         } catch (Exception ex) {
-            getPlugin().getLogger().log(Level.WARNING, material + " is not a valid " + getName() + " material!");
+            getPlugin().getLogger().severe("----------------------------------------------------");
+            getPlugin().getLogger().severe("MATERIAL " + material + " KHÔNG HỢP LỆ!");
+            getPlugin().getLogger().severe(">> Link Materials cho 1.18 <<");
+            getPlugin().getLogger().severe("https://helpch.at/docs/1.18/org/bukkit/Material.html");
+            getPlugin().getLogger().severe("----------------------------------------------------");
             i = new org.bukkit.inventory.ItemStack(org.bukkit.Material.BEDROCK);
         }
         return i;

@@ -7,18 +7,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="versionsupport_1_16_R3" />
-        <module name="versionsupport_v1_18_R1" />
-        <module name="versionsupport_1_17_R1" />
-        <module name="versionsupport_1_12_R1" />
         <module name="taixiu-api" />
         <module name="versionsupport_v1_17_R1" />
         <module name="versionsupport_v1_16_R3" />
         <module name="versionsupport_v1_12_R1" />
+        <module name="versionsupport_v1_18_R2" />
         <module name="versionsupport_1_18_R1" />
         <module name="taixiu-plugin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="test" target="1.8" />
       <module name="versionsupport_1_8_R3" target="1.5" />
     </bytecodeTargetLevel>
   </component>
