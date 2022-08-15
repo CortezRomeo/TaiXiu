@@ -41,5 +41,10 @@
       <option name="name" value="minecraft-repo" />
       <option name="url" value="https://libraries.minecraft.net/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="CodeMC" />
+      <option name="name" value="CodeMC" />
+      <option name="url" value="https://repo.codemc.org/repository/maven-public/" />
+    </remote-repository>
   </component>
 </project>

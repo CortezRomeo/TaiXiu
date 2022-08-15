@@ -13,6 +13,7 @@ import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import com.cortezromeo.taixiu.support.VaultSupport;
+import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
 import com.cortezromeo.taixiu.task.AutoSaveTask;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -40,24 +41,7 @@ public final class TaiXiu extends JavaPlugin {
 
         plugin = this;
 
-        Class supp;
-
-        try {
-            supp = Class.forName("com.cortezromeo.taixiu.support.version." + version + "." + version);
-        } catch (ClassNotFoundException e) {
-            serverSoftwareSupport = false;
-            this.getLogger().severe("Plugin không thể chạy trên phiên bản: " + version);
-            return;
-        }
-
-        try {
-            nms = (VersionSupport) supp.getConstructor(Class.forName("org.bukkit.plugin.Plugin"), String.class).newInstance(this, version);
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-            serverSoftwareSupport = false;
-            this.getLogger().severe("Plugin không thể hỗ trợ phiên bản: " + version);
-            return;
-        }
+        nms = new CrossVersionSupport(plugin);
     }
 
     @Override

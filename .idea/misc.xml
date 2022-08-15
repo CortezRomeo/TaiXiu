@@ -15,13 +15,22 @@
         <option value="$PROJECT_DIR$/versionsupport_1_8_R3/pom.xml" />
         <option value="$PROJECT_DIR$/v12/pom.xml" />
         <option value="$PROJECT_DIR$/versionsupport_1_12_R1/pom.xml" />
-        <option value="$PROJECT_DIR$/versionsupport_v1_16_R3/pom.xml" />
         <option value="$PROJECT_DIR$/versionsupport_v_17_R1/pom.xml" />
-        <option value="$PROJECT_DIR$/versionsupport_v1_18_R2/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/versionsupport_v1_12_R1/pom.xml" />
+        <option value="$PROJECT_DIR$/versionsupport_v1_16_R3/pom.xml" />
+        <option value="$PROJECT_DIR$/versionsupport_v1_17_R1/pom.xml" />
+        <option value="$PROJECT_DIR$/versionsupport_v1_18_R2/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_18" project-jdk-name="corretto-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
   </component>
 </project>

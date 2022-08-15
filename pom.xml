@@ -12,10 +12,7 @@
     <modules>
         <module>taixiu-plugin</module>
         <module>taixiu-api</module>
-        <module>versionsupport_v1_12_R1</module>
-        <module>versionsupport_v1_16_R3</module>
-        <module>versionsupport_v1_17_R1</module>
-        <module>versionsupport_v1_18_R2</module>
+        <module>taixiu-implement</module>
     </modules>
 
     <properties>
@@ -24,12 +21,14 @@
     </properties>
 
     <repositories>
-        <!-- VAULT -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-        <!---->
+        <repository>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <build>

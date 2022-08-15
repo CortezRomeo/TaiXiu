@@ -4,21 +4,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public abstract class VersionSupport {
+    private final Plugin plugin;
 
-    private static String name;
-
-    private Plugin plugin;
-
-    public VersionSupport(Plugin plugin, String versionName) {
-        name = versionName;
+    public VersionSupport(Plugin plugin) {
         this.plugin = plugin;
     }
-
-    public static String getName() {
-        return name;
-    }
-
-    public abstract int getVersion();
 
     public Plugin getPlugin() {
         return plugin;

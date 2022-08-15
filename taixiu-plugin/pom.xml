@@ -49,6 +49,17 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.cryptomorin.xseries</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.xseries</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.github.bananapuncher714.nbteditor</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.nbteditor</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -93,26 +104,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.cortezromeo.taixiu</groupId>
-            <artifactId>versionsupport_1_12_R1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cortezromeo.taixiu</groupId>
-            <artifactId>versionsupport_1_16_R3</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cortezromeo.taixiu</groupId>
-            <artifactId>versionsupport_1_17_R1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cortezromeo.taixiu</groupId>
-            <artifactId>versionsupport_1_18_R2</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.tchristofferson</groupId>
             <artifactId>ConfigUpdater</artifactId>
             <version>2.0-SNAPSHOT</version>
@@ -128,6 +119,11 @@
             <artifactId>taixiu-api</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cortezromeo.taixiu</groupId>
+            <artifactId>taixiu-implement</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
