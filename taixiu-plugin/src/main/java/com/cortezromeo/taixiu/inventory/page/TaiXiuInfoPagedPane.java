@@ -63,11 +63,14 @@ public class TaiXiuInfoPagedPane {
         TaiXiuManager manager = TaiXiu.plugin.getManager();
         AtomicReference<ItemStack> material = new AtomicReference<>(new ItemStack(Material.BEDROCK));
 
-        if (type.equalsIgnoreCase("customhead") || type.equalsIgnoreCase("playerhead"))
+        if (type.equalsIgnoreCase("customhead"))
             material.set(TaiXiu.nms.getHeadItem(value));
 
         if (type.equalsIgnoreCase("material"))
             material.set(TaiXiu.nms.createItemStack(value, 1, data));
+
+        if (type.equalsIgnoreCase("playerhead"))
+            material.set(TaiXiu.nms.getHeadItem(playerName));
 
         ItemMeta materialMeta = material.get().getItemMeta();
 
