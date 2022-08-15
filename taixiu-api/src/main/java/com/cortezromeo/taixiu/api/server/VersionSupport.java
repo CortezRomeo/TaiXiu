@@ -16,7 +16,7 @@ public abstract class VersionSupport {
 
     public abstract ItemStack createItemStack(String material, int amount, short data);
 
-    public abstract ItemStack getHeadItem();
+    public abstract ItemStack getHeadItem(String headValue);
 
     public abstract ItemStack addCustomData(ItemStack i, String data);
 

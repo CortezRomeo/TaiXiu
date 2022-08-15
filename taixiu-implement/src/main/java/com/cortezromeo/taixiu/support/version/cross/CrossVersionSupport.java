@@ -1,6 +1,7 @@
 package com.cortezromeo.taixiu.support.version.cross;
 
 import com.cortezromeo.taixiu.api.server.VersionSupport;
+import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.ChatColor;
@@ -42,8 +43,11 @@ public class CrossVersionSupport extends VersionSupport {
     }
 
     @Override
-    public ItemStack getHeadItem() {
-        return XMaterial.PLAYER_HEAD.parseItem();
+    public ItemStack getHeadItem(String headValue) {
+        ItemStack item = XMaterial.PLAYER_HEAD.parseItem();
+        assert item != null;
+        item.setItemMeta(SkullUtils.applySkin(item.getItemMeta(), headValue));
+        return item;
     }
 
     @Override

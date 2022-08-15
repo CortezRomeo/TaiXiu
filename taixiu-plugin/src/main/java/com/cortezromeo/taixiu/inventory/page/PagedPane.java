@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.cortezromeo.taixiu.util.ItemHeadUtil.getCustomHead;
 import static com.cortezromeo.taixiu.util.MessageUtil.getFormatName;
 
 /**
@@ -35,11 +34,11 @@ public class PagedPane implements InventoryHolder {
     protected Button controlBack;
     @SuppressWarnings("WeakerAccess")
     protected Button controlNext;
-    private Inventory inventory;
-    private SortedMap<Integer, Page> pages = new TreeMap<>();
+    private final Inventory inventory;
+    private final SortedMap<Integer, Page> pages = new TreeMap<>();
     private int currentIndex;
-    private int pageSize;
-    private long session;
+    private final int pageSize;
+    private final long session;
 
     public PagedPane(int pageSize, int rows, String title, long session) {
         Objects.requireNonNull(title, "TITLE KHÔNG ĐƯỢC ĐỂ TRỐNG");
@@ -225,25 +224,21 @@ public class PagedPane implements InventoryHolder {
     protected ItemStack getItem(String type, String value, short itemData, String name, List<String> lore) {
         AtomicReference<ItemStack> material = new AtomicReference<>(new ItemStack(Material.BEDROCK));
 
-        if (type.equalsIgnoreCase("customhead"))
-            material.set(getCustomHead(value));
+        if (type.equalsIgnoreCase("customhead") || type.equalsIgnoreCase("playerhead"))
+            material.set(TaiXiu.nms.getHeadItem(value));
 
         if (type.equalsIgnoreCase("material"))
             material.set(TaiXiu.nms.createItemStack(value, 1, itemData));
 
-        if (type.equalsIgnoreCase("playerhead")) {
-            material.set(TaiXiu.nms.getHeadItem());
-        }
-
         ItemMeta materialMeta = material.get().getItemMeta();
-        ISession data = TaiXiu.plugin.getManager().getSessionData(this.session);
+        ISession data = TaiXiuManager.getSessionData(this.session);
 
-        if (name != "") {
+        if (!Objects.equals(name, "")) {
             name = getString(data, name);
             materialMeta.setDisplayName(TaiXiu.nms.addColor(name));
         }
 
-        List<String> newList = new ArrayList<String>();
+        List<String> newList = new ArrayList<>();
         for (String string : lore) {
             string = getString(data, string);
             newList.add(TaiXiu.nms.addColor(string));
@@ -278,19 +273,19 @@ public class PagedPane implements InventoryHolder {
         }
 
         string = string
-                .replaceAll("%nextPage%", String.valueOf(getCurrentPage() + 1))
-                .replaceAll("%prevPage%", String.valueOf(getCurrentPage() - 1))
-                .replaceAll("%time%", (manager.getSessionData().getSession() == this.session ? String.valueOf(TaiXiu.plugin.getManager().getTime()) : "0"))
-                .replaceAll("%session%", String.valueOf(this.session))
-                .replaceAll("%xiuPlayerNumber%", String.valueOf(xiuPlayerNumber))
-                .replaceAll("%taiPlayerNumber%", String.valueOf(taiPlayerNumber))
-                .replaceAll("%xiuTotalBet%", String.valueOf(xiuTotalBet))
-                .replaceAll("%taiTotalBet%", String.valueOf(taiTotalBet))
-                .replaceAll("%totalBet%", String.valueOf(xiuTotalBet + taiTotalBet))
-                .replaceAll("%dice1%", String.valueOf(data.getDice1()))
-                .replaceAll("%dice2%", String.valueOf(data.getDice2()))
-                .replaceAll("%dice3%", String.valueOf(data.getDice3()))
-                .replaceAll("%result%", getFormatName(data.getResult()));
+                .replace("%nextPage%", String.valueOf(getCurrentPage() + 1))
+                .replace("%prevPage%", String.valueOf(getCurrentPage() - 1))
+                .replace("%time%", (manager.getSessionData().getSession() == this.session ? String.valueOf(TaiXiu.plugin.getManager().getTime()) : "0"))
+                .replace("%session%", String.valueOf(this.session))
+                .replace("%xiuPlayerNumber%", String.valueOf(xiuPlayerNumber))
+                .replace("%taiPlayerNumber%", String.valueOf(taiPlayerNumber))
+                .replace("%xiuTotalBet%", String.valueOf(xiuTotalBet))
+                .replace("%taiTotalBet%", String.valueOf(taiTotalBet))
+                .replace("%totalBet%", String.valueOf(xiuTotalBet + taiTotalBet))
+                .replace("%dice1%", String.valueOf(data.getDice1()))
+                .replace("%dice2%", String.valueOf(data.getDice2()))
+                .replace("%dice3%", String.valueOf(data.getDice3()))
+                .replace("%result%", getFormatName(data.getResult()));
         return string;
     }
 
