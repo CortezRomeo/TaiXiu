@@ -3,7 +3,6 @@ package com.cortezromeo.taixiu;
 import com.cortezromeo.taixiu.api.server.VersionSupport;
 import com.cortezromeo.taixiu.command.TaiXiuAdminCommand;
 import com.cortezromeo.taixiu.command.TaiXiuCommand;
-import com.cortezromeo.taixiu.file.HeadDatabaseFile;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.listener.JoinListener;
@@ -22,7 +21,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.setDebug;
 import static com.cortezromeo.taixiu.util.MessageUtil.log;
@@ -114,14 +112,6 @@ public final class TaiXiu extends JavaPlugin {
         } else
             InventoryFile.fileExists();
         InventoryFile.reload();
-
-        // headdatabase.yml
-        if (!new File(getDataFolder() + "/headdatabase.yml").exists()) {
-            HeadDatabaseFile.setup();
-        } else
-            HeadDatabaseFile.fileExists();
-        HeadDatabaseFile.reload();
-
     }
 
     private void initCommand() {
