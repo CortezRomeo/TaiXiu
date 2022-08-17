@@ -31,7 +31,7 @@ bet-settings:
   # Số tiền tối thiểu có thể cược
   min-bet: 500
   # Đóng đặt cược khi thời gian bé hơn:
-  díable-while-remaining: 15
+  disable-while-remaining: 15
   # Một số trường hợp cả 3 xúc xắc đều ra 1 nút hoặc 6 nút
   # Khi đó sẽ rơi vào trường hợp tổng 3 nút là 3 hoặc 18
   # Theo luật thì cái sẽ ăn hết, người đặt tài và xỉu đều thua

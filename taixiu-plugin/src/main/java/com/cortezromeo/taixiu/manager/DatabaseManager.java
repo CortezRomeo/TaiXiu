@@ -3,17 +3,13 @@ package com.cortezromeo.taixiu.manager;
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.storage.ISession;
-import com.cortezromeo.taixiu.file.HeadDatabaseFile;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import org.apache.commons.io.FilenameUtils;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.util.*;
 
 public class DatabaseManager {
-
-    public static Map<String, String> HeadData = new HashMap<>();
     public static List<String> togglePlayers = new ArrayList<>();
     public static Map<Long, ISession> taiXiuData = new TreeMap<>();
     public static long lastSession;
@@ -68,12 +64,6 @@ public class DatabaseManager {
 
             }
         }
-
-        FileConfiguration headDataF = HeadDatabaseFile.get();
-        if (headDataF.contains("headData"))
-            for (String player : headDataF.getConfigurationSection("headData").getKeys(false))
-                HeadData.put(player, headDataF.getString("headData." + player));
-
     }
 
     public static void saveAllDatabase() {
@@ -81,13 +71,6 @@ public class DatabaseManager {
         Set<Long> sessionData = taiXiuData.keySet();
         for (long session : sessionData)
             saveSessionData(session);
-
-        Set<String> playerHead = HeadData.keySet();
-        for (String player : playerHead) {
-            HeadDatabaseFile.get().set("headData." + player, HeadData.get(player));
-        }
-        HeadDatabaseFile.save();
-
     }
 
 }

@@ -6,7 +6,7 @@
     <parent>
         <artifactId>TaiXiu</artifactId>
         <groupId>com.cortezromeo.taixiu</groupId>
-        <version>1.0</version>
+        <version>1.06</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>taixiu-plugin</artifactId>
@@ -49,6 +49,17 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.cryptomorin.xseries</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.xseries</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.github.bananapuncher714.nbteditor</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.nbteditor</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -67,10 +78,6 @@
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-        <repository>
-            <id>minecraft-repo</id>
-            <url>https://libraries.minecraft.net/</url>
-        </repository>
         <!-- Config Updater -->
         <repository>
             <id>maven-central</id>
@@ -83,13 +90,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>1.5.25</version>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -106,8 +107,13 @@
         <dependency>
             <groupId>com.cortezromeo.taixiu</groupId>
             <artifactId>taixiu-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cortezromeo.taixiu</groupId>
+            <artifactId>taixiu-implement</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

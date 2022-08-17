@@ -7,7 +7,6 @@ import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.manager.AutoSaveManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
-import com.cortezromeo.taixiu.util.ColorUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -153,7 +152,7 @@ public class TaiXiuAdminCommand implements CommandExecutor {
     }
 
     public void sendMessage(CommandSender sender, String message) {
-        sender.sendMessage(ColorUtil.addColor(message.replace("%prefix%", MessageFile.get().getString("admin-prefix"))));
+        sender.sendMessage(TaiXiu.nms.addColor(message.replace("%prefix%", MessageFile.get().getString("admin-prefix"))));
     }
 
 }

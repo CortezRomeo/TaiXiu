@@ -1,6 +1,6 @@
 ![](https://i.imgur.com/o9Mucfz.png)
 # YÊU CẦU
-Java 8 hoặc trở lên
+Java 11 hoặc trở lên
 
 Plugin Vault
 

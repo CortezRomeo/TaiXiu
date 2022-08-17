@@ -1,6 +1,6 @@
 package com.cortezromeo.taixiu.manager;
 
-import com.cortezromeo.taixiu.util.ColorUtil;
+import com.cortezromeo.taixiu.TaiXiu;
 import org.bukkit.Bukkit;
 
 public class DebugManager {
@@ -20,7 +20,7 @@ public class DebugManager {
         if (!debug)
             return;
 
-        Bukkit.getConsoleSender().sendMessage(ColorUtil.addColor("&f[TAIXIU-DEBUG] &e" + message));
+        Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor("&f[TAIXIU-DEBUG] &e" + message));
     }
 
 }

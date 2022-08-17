@@ -4,7 +4,6 @@ import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.inventory.Button;
-import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,17 +14,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.cortezromeo.taixiu.manager.DebugManager.debug;
-import static com.cortezromeo.taixiu.util.ColorUtil.addColor;
-import static com.cortezromeo.taixiu.util.ItemHeadUtil.*;
 import static com.cortezromeo.taixiu.util.MessageUtil.getFormatName;
 
 public class TaiXiuInfoPagedPane {
-
-    private static boolean serverFullData;
 
     public static void openInventory(Player p, long session) {
         FileConfiguration invF = InventoryFile.get();
@@ -36,13 +29,13 @@ public class TaiXiuInfoPagedPane {
 
         pagedPane.open(p);
 
-        serverFullData = false;
         Bukkit.getScheduler().runTaskAsynchronously(TaiXiu.plugin, () -> {
             for (String player : txm.getSessionData(session).getXiuPlayers().keySet()) {
                 try {
                     pagedPane.addButton(new Button(getItem(
                             invF.getString("inventory.taiXiuInfo.items.bet-player.type"),
                             invF.getString("inventory.taiXiuInfo.items.bet-player.value"),
+                            (short) invF.getInt("inventory.taiXiuInfo.items.bet-player.data"),
                             invF.getString("inventory.taiXiuInfo.items.bet-player.name"),
                             invF.getStringList("inventory.taiXiuInfo.items.bet-player.lore"),
                             player, TaiXiuResult.XIU, session)));
@@ -55,6 +48,7 @@ public class TaiXiuInfoPagedPane {
                     pagedPane.addButton(new Button(getItem(
                             invF.getString("inventory.taiXiuInfo.items.bet-player.type"),
                             invF.getString("inventory.taiXiuInfo.items.bet-player.value"),
+                            (short) invF.getInt("inventory.taiXiuInfo.items.bet-player.data"),
                             invF.getString("inventory.taiXiuInfo.items.bet-player.name"),
                             invF.getStringList("inventory.taiXiuInfo.items.bet-player.lore"),
                             player, TaiXiuResult.TAI, session)));
@@ -65,44 +59,18 @@ public class TaiXiuInfoPagedPane {
         });
     }
 
-    private static ItemStack getItem(String type, String value, String name, List<String> lore, String playerName, TaiXiuResult bet, Long session) {
+    private static ItemStack getItem(String type, String value, short data, String name, List<String> lore, String playerName, TaiXiuResult bet, Long session) {
         TaiXiuManager manager = TaiXiu.plugin.getManager();
         AtomicReference<ItemStack> material = new AtomicReference<>(new ItemStack(Material.BEDROCK));
 
         if (type.equalsIgnoreCase("customhead"))
-            material.set(getCustomHead(value));
+            material.set(TaiXiu.nms.getHeadItem(value));
 
         if (type.equalsIgnoreCase("material"))
-            material.set(new ItemStack(Material.valueOf(value)));
+            material.set(TaiXiu.nms.createItemStack(value, 1, data));
 
-        if (type.equalsIgnoreCase("playerhead")) {
-            Map<String, String> headData = DatabaseManager.HeadData;
-            ItemStack defaulthead = new ItemStack(Material.PLAYER_HEAD);
-            if (headData.containsKey(playerName))
-                if (headData.get(playerName).equals("none"))
-                    material.set(defaulthead);
-                else
-                    material.set(getCustomHead(headData.get(playerName)));
-            else {
-                if (!serverFullData) {
-                    if (getURLContent("https://api.mojang.com/users/profiles/minecraft/Cortez_Romeo").equals("TooManyRequestsException")) {
-                        serverFullData = true;
-                        material.set(defaulthead);
-                        debug("&cERROR &eDữ liệu lấy từ API của Mojang đã bị quá tải, toàn bộ playerhead sẽ được set về default" +
-                                ". Lỗi này sẽ được fix trong 5 phút hoặc hơn");
-                    } else {
-                        String headvalue = getHeadValue(playerName);
-                        if (headvalue != null) {
-                            headData.put(playerName, headvalue);
-                            material.set(getCustomHead(headvalue));
-                        } else {
-                            headData.put(playerName, "none");
-                            material.set(defaulthead);
-                        }
-                    }
-                } else material.set(defaulthead);
-            }
-        }
+        if (type.equalsIgnoreCase("playerhead"))
+            material.set(TaiXiu.nms.getHeadItem(playerName));
 
         ItemMeta materialMeta = material.get().getItemMeta();
 
@@ -116,7 +84,7 @@ public class TaiXiuInfoPagedPane {
                                     : String.valueOf(manager.getSessionData(session).getTaiPlayers().get(playerName))));
 
 
-            materialMeta.setDisplayName(addColor(name));
+            materialMeta.setDisplayName(TaiXiu.nms.addColor(name));
         }
 
         List<String> newList = new ArrayList<String>();
@@ -129,7 +97,7 @@ public class TaiXiuInfoPagedPane {
                                     ? String.valueOf(manager.getSessionData(session).getXiuPlayers().get(playerName))
                                     : String.valueOf(manager.getSessionData(session).getTaiPlayers().get(playerName))));
 
-            newList.add(addColor(string));
+            newList.add(TaiXiu.nms.addColor(string));
         }
 
         materialMeta.setLore(newList);

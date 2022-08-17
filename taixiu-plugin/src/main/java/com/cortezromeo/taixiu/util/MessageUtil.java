@@ -1,5 +1,6 @@
 package com.cortezromeo.taixiu.util;
 
+import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
@@ -41,7 +42,7 @@ public class MessageUtil {
     }
 
     public static void log(String message) {
-        Bukkit.getConsoleSender().sendMessage(ColorUtil.addColor(message));
+        Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor(message));
     }
 
     public static void sendMessage(Player player, String message) {
@@ -49,6 +50,6 @@ public class MessageUtil {
         if (player == null | message.equals(""))
             return;
 
-        player.sendMessage(ColorUtil.addColor(message.replace("%prefix%", MessageFile.get().getString("prefix"))));
+        player.sendMessage(TaiXiu.nms.addColor(message.replace("%prefix%", MessageFile.get().getString("prefix"))));
     }
 }

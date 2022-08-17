@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>TaiXiu</artifactId>
+        <groupId>com.cortezromeo.taixiu</groupId>
+        <version>1.06</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>taixiu-implement</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cortezromeo.taixiu</groupId>
+            <artifactId>taixiu-api</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bananapuncher714</groupId>
+            <artifactId>nbteditor</artifactId>
+            <version>7.18.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

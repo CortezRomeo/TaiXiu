@@ -125,7 +125,7 @@ public class TaiXiuCommand implements CommandExecutor {
                         return false;
                     }
 
-                    int configDisableTime = cfg.getInt("bet-settings.díable-while-remaining");
+                    int configDisableTime = cfg.getInt("bet-settings.disable-while-remaining");
                     if (manager.getTime() < configDisableTime) {
                         sendMessage(p, messageF.getString("late-bet")
                                 .replaceAll("%time%", String.valueOf(manager.getTime()))
