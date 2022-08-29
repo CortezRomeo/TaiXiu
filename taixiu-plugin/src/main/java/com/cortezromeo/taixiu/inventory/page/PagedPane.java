@@ -1,10 +1,12 @@
 package com.cortezromeo.taixiu.inventory.page;
 
 import com.cortezromeo.taixiu.TaiXiu;
+import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.inventory.Button;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
+import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -177,7 +179,12 @@ public class PagedPane implements InventoryHolder {
         // create separator
         fillRow(
                 inventory.getSize() / 9 - 2,
-                new ItemStack(TaiXiu.nms.createItemStack(TaiXiu.getForCurrentVersion("STAINED_GLASS_PANE", "BLACK_STAINED_GLASS_PANE"), 1 , (short) 15))
+                getItem(
+                        invF.getString("inventory.default-items.borderItem.type"),
+                        invF.getString("inventory.default-items.borderItem.value"),
+                        (short) invF.getInt("inventory.default-items.borderItem.data"),
+                        invF.getString("inventory.default-items.borderItem.name"),
+                        invF.getStringList("inventory.default-items.borderItem.lore"))
                 , inventory
         );
 
@@ -208,7 +215,7 @@ public class PagedPane implements InventoryHolder {
                 invF.getString("inventory.taiXiuInfo.items.bet-info.value"),
                 (short) invF.getInt("inventory.taiXiuInfo.items.bet-info.data"),
                 invF.getString("inventory.taiXiuInfo.items.bet-info.name"),
-                invF.getStringList("inventory.taiXiuInfo.items.bet-info.lore"));
+                (TaiXiuManager.getSessionData(session).getResult() != TaiXiuResult.NONE ? invF.getStringList("inventory.taiXiuInfo.items.bet-info.loreEnded") : invF.getStringList("inventory.taiXiuInfo.items.bet-info.lorePlaying")));
         inventory.setItem((inventory.getSize() - 10) + invF.getInt("inventory.taiXiuInfo.items.bet-info.slot"), itemStack);
 
     }
@@ -253,7 +260,6 @@ public class PagedPane implements InventoryHolder {
 
     @NotNull
     private String getString(ISession data, String string) {
-        TaiXiuManager manager = TaiXiu.plugin.getManager();
 
         int xiuPlayerNumber = data.getXiuPlayers().size();
         int taiPlayerNumber = data.getTaiPlayers().size();
@@ -275,13 +281,14 @@ public class PagedPane implements InventoryHolder {
         string = string
                 .replace("%nextPage%", String.valueOf(getCurrentPage() + 1))
                 .replace("%prevPage%", String.valueOf(getCurrentPage() - 1))
-                .replace("%time%", (manager.getSessionData().getSession() == this.session ? String.valueOf(TaiXiu.plugin.getManager().getTime()) : "0"))
+                .replace("%time%", (TaiXiuManager.getSessionData(session).getResult() != TaiXiuResult.NONE ? "0" : String.valueOf(TaiXiuManager.getTime())))
                 .replace("%session%", String.valueOf(this.session))
                 .replace("%xiuPlayerNumber%", String.valueOf(xiuPlayerNumber))
                 .replace("%taiPlayerNumber%", String.valueOf(taiPlayerNumber))
-                .replace("%xiuTotalBet%", String.valueOf(xiuTotalBet))
-                .replace("%taiTotalBet%", String.valueOf(taiTotalBet))
-                .replace("%totalBet%", String.valueOf(xiuTotalBet + taiTotalBet))
+                .replace("%xiuTotalBet%", MessageUtil.formatMoney(xiuTotalBet))
+                .replace("%taiTotalBet%", MessageUtil.formatMoney(taiTotalBet))
+                .replace("%totalBet%", MessageUtil.formatMoney(xiuTotalBet + taiTotalBet))
+                .replace("%bestWinners%", TaiXiuManager.getBestWinner(TaiXiuManager.getSessionData(session)))
                 .replace("%dice1%", String.valueOf(data.getDice1()))
                 .replace("%dice2%", String.valueOf(data.getDice2()))
                 .replace("%dice3%", String.valueOf(data.getDice3()))

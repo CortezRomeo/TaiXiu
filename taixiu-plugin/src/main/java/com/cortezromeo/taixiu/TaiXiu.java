@@ -11,6 +11,7 @@ import com.cortezromeo.taixiu.manager.AutoSaveManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
+import com.cortezromeo.taixiu.support.PAPISupport;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
 import com.cortezromeo.taixiu.task.AutoSaveTask;
@@ -29,17 +30,17 @@ public final class TaiXiu extends JavaPlugin {
 
     private AutoSaveTask autoSaveTask = null;
     public static TaiXiu plugin;
-    private static TaiXiuManager manager;
     private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     public static VersionSupport nms;
     private boolean serverSoftwareSupport = true;
+    private static boolean papiSupport = false;
 
     @Override
     public void onLoad() {
 
         plugin = this;
-
         nms = new CrossVersionSupport(plugin);
+
     }
 
     @Override
@@ -68,8 +69,7 @@ public final class TaiXiu extends JavaPlugin {
         initListener();
         initSupport();
 
-        manager = new TaiXiuManager();
-        getManager().startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
+        TaiXiuManager.startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
         AutoSaveManager.startAutoSave(getConfig().getInt("auto-save-database.time"));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -130,6 +130,14 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     private void initSupport() {
+
+        // papi
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PAPISupport().register();
+            papiSupport = true;
+        }
+
+        // vault
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             log("&cPlugin &bTài Xỉu &ccần thêm plugin &6Vault&c và plugin về &6Economy&c để hoạt động");
             Bukkit.getPluginManager().disablePlugin(this);
@@ -138,8 +146,8 @@ public final class TaiXiu extends JavaPlugin {
         }
     }
 
-    public TaiXiuManager getManager() {
-        return manager;
+    public static boolean PAPISupport() {
+        return papiSupport;
     }
 
     public static String getServerVersion() {

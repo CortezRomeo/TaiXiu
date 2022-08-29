@@ -4,12 +4,20 @@ import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 public class MessageUtil {
+
+    public static String formatMoney(long money) {
+        DecimalFormat formatter = new DecimalFormat(TaiXiu.plugin.getConfig().getString("format-money"));
+        return formatter.format(money);
+    }
 
     public static String getFormatName(@NotNull TaiXiuResult result) {
 
@@ -50,6 +58,11 @@ public class MessageUtil {
         if (player == null | message.equals(""))
             return;
 
-        player.sendMessage(TaiXiu.nms.addColor(message.replace("%prefix%", MessageFile.get().getString("prefix"))));
+        message = message.replace("%prefix%" , MessageFile.get().getString("prefix"));
+
+        if (!TaiXiu.PAPISupport())
+            player.sendMessage(TaiXiu.nms.addColor(message));
+        else
+            player.sendMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(player, message)));
     }
 }

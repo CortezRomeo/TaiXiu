@@ -14,7 +14,6 @@ import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 
 public class TaiXiuTask implements Runnable {
     private BukkitTask task;
-
     private int time;
     private TaiXiuState state;
     private ISession data;
@@ -24,6 +23,8 @@ public class TaiXiuTask implements Runnable {
         data = DatabaseManager.getSessionData(DatabaseManager.getLastSession());
         this.time = time;
         this.state = TaiXiuState.PLAYING;
+
+        debug("TAIXIU TASK >>> RUNNING TASK ID: " + getTaskID() + " | SESSION NUMBER: " + data.getSession());
     }
 
     public BukkitTask getBukkitTask() {
@@ -63,13 +64,12 @@ public class TaiXiuTask implements Runnable {
         if (state == TaiXiuState.PLAYING) {
             time--;
 
-            TaiXiuManager manager = TaiXiu.plugin.getManager();
             if (getSession().getResult() != TaiXiuResult.NONE)
                 time = 0;
 
             if (time == 0) {
 
-                manager.resultSeason(getSession(), 0, 0, 0);
+                TaiXiuManager.resultSeason(getSession(), 0, 0, 0);
 
                 long newSession = DatabaseManager.getLastSession();
                 debug("SESSION SWAPPED " + ">>> old_session: " + getSession().getSession() + " " +

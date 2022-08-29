@@ -36,20 +36,18 @@ public class TaiXiuAdminCommand implements CommandExecutor {
             }
         }
 
-        TaiXiuManager manager = TaiXiu.plugin.getManager();
-
         if (args.length == 1) {
             switch (args[0]) {
                 case "changestate":
-                    if (manager.getState() == TaiXiuState.PLAYING) {
-                        manager.setState(TaiXiuState.PAUSING);
+                    if (TaiXiuManager.getState() == TaiXiuState.PLAYING) {
+                        TaiXiuManager.setState(TaiXiuState.PAUSING);
                     } else {
-                        manager.setState(TaiXiuState.PLAYING);
+                        TaiXiuManager.setState(TaiXiuState.PLAYING);
                     }
-                    sendMessage(sender, messageF.getString("admin-changestate").replace("%state%", manager.getState().toString()));
+                    sendMessage(sender, messageF.getString("admin-changestate").replace("%state%", TaiXiuManager.getState().toString()));
                     sendBoardCast(messageF.getString("admin-changestate-boardcast")
                             .replaceAll("%playerName%", sender.getName())
-                            .replaceAll("%state%", manager.getState().toString()));
+                            .replaceAll("%state%", TaiXiuManager.getState().toString()));
                     return false;
                 case "reload":
 
@@ -85,7 +83,7 @@ public class TaiXiuAdminCommand implements CommandExecutor {
                             return false;
                         }
 
-                        manager.setTime(time);
+                        TaiXiuManager.setTime(time);
                         sendMessage(sender, messageF.getString("admin-settime").replace("%time%", String.valueOf(time)));
                         sendBoardCast(messageF.getString("admin-settime-boardcast")
                                 .replaceAll("%playerName%", sender.getName())
@@ -105,7 +103,7 @@ public class TaiXiuAdminCommand implements CommandExecutor {
             switch (args[0]) {
                 case "setresult":
 
-                    if (manager.getSessionData().getResult() != TaiXiuResult.NONE) {
+                    if (TaiXiuManager.getSessionData().getResult() != TaiXiuResult.NONE) {
                         sendMessage(sender, "%prefix%&eVui lòng đợi vài giây và xài lại lệnh này!");
                         return false;
                     }
@@ -120,7 +118,7 @@ public class TaiXiuAdminCommand implements CommandExecutor {
                             return false;
                         }
 
-                        manager.resultSeason(manager.getSessionData(), dice1, dice2, dice3);
+                        TaiXiuManager.resultSeason(TaiXiuManager.getSessionData(), dice1, dice2, dice3);
 
                         sendMessage(sender, messageF.getString("admin-setresult")
                                 .replaceAll("%dice1%", String.valueOf(dice1))

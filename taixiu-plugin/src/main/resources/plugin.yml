@@ -3,6 +3,8 @@ author: Cortez_Romeo
 version: '${project.version}'
 main: com.cortezromeo.taixiu.TaiXiu
 api-version: 1.13
+softdepend:
+  - PlaceholderAPI
 depend:
   - Vault
 commands:

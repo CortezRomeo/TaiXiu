@@ -29,7 +29,7 @@ public class TaiXiuManager {
         return taiXiuTask;
     }
 
-    public void startTask(int time) {
+    public static void startTask(int time) {
         taiXiuTask = new TaiXiuTask(time);
     }
 
@@ -37,15 +37,15 @@ public class TaiXiuManager {
         return getTaiXiuTask().getState();
     }
 
-    public void setState(TaiXiuState state) {
+    public static void setState(TaiXiuState state) {
         getTaiXiuTask().setState(state);
     }
 
-    public int getTime() {
+    public static int getTime() {
         return getTaiXiuTask().getTime();
     }
 
-    public void setTime(int time) {
+    public static void setTime(int time) {
         getTaiXiuTask().setTime(time);
     }
 
@@ -93,37 +93,15 @@ public class TaiXiuManager {
             session.setDice3(dice3);
         }
 
-        FileConfiguration messageF = MessageFile.get();
-        String bestWinners = messageF.getString("bestWinners-format.invalid");
-
         if (total >= 4 && total <= 10) {
             session.setResult(TaiXiuResult.XIU);
-            if (session.getXiuPlayers().size() > 0)
-                bestWinners = getBestWinner(session.getXiuPlayers());
         } else if (total >= 11 && total <= 17) {
             session.setResult(TaiXiuResult.TAI);
-            if (session.getTaiPlayers().size() > 0)
-                bestWinners = getBestWinner(session.getTaiPlayers());
         } else {
             session.setResult(TaiXiuResult.SPECIAL);
-            bestWinners = messageF.getString("bestWinners-format.valid-special");
-
-            Long sum1 = 0L;
-            if (session.getXiuPlayers() != null) {
-                for (Long value : session.getXiuPlayers().values()) {
-                    sum1 += value;
-                }
-            }
-
-            Long sum2 = 0L;
-            if (session.getTaiPlayers() != null) {
-                for (Long value : session.getTaiPlayers().values()) {
-                    sum2 += value;
-                }
-            }
-
-            bestWinners = bestWinners.replace("%allBet%", String.valueOf(sum1 + sum2));
         }
+
+        FileConfiguration messageF = MessageFile.get();
 
         for (String string : messageF.getStringList("session-result")) {
             string = string.replace("%session%", String.valueOf(session.getSession()));
@@ -132,7 +110,7 @@ public class TaiXiuManager {
             string = string.replace("%dice3%", String.valueOf(session.getDice3()));
             string = string.replace("%total%", String.valueOf(total));
             string = string.replace("%result%", MessageUtil.getFormatName(session.getResult()));
-            string = string.replace("%bestWinners%", bestWinners);
+            string = string.replace("%bestWinners%", getBestWinner(session));
 
             sendBoardCast(string);
         }
@@ -142,14 +120,14 @@ public class TaiXiuManager {
                 econ.depositPlayer(player, session.getXiuPlayers().get(player) * 2);
                 sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
                         .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                        .replaceAll("%money%", String.valueOf(session.getXiuPlayers().get(player) * 2)));
+                        .replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(player) * 2)));
             }
         } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
             for (String player : session.getTaiPlayers().keySet()) {
                 econ.depositPlayer(player, session.getTaiPlayers().get(player) * 2);
                 sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
                         .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                        .replaceAll("%money%", String.valueOf(session.getTaiPlayers().get(player) * 2)));
+                        .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(player) * 2)));
             }
         } else
             sendBoardCast(messageF.getString("session-special-win"));
@@ -165,25 +143,61 @@ public class TaiXiuManager {
 
     }
 
-    private static String getBestWinner(HashMap<String, Long> hashmap) {
-        FileConfiguration messageF = MessageFile.get();
-        Long bestWinnersBet = Collections.max(hashmap.values());
+    public static Long getTotalBet(@NotNull ISession session) {
 
-        List<String> players = new ArrayList<>();
-        for (Map.Entry<String, Long> entry : hashmap.entrySet()) {
-            if (entry.getValue() >= bestWinnersBet) {
-                players.add(entry.getKey());
+        long sum1 = 0L;
+        if (session.getXiuPlayers() != null) {
+            for (long value : session.getXiuPlayers().values()) {
+                sum1 += value;
             }
         }
 
-        String delim = messageF.getString("bestWinners-format.playerName-delim");
-        String bestWinnersName = String.join(delim, players);
+        long sum2 = 0L;
+        if (session.getTaiPlayers() != null) {
+            for (long value : session.getTaiPlayers().values()) {
+                sum2 += value;
+            }
+        }
 
-        return messageF.getString("bestWinners-format.valid")
-                .replaceAll("%playerName%", bestWinnersName)
-                .replaceAll("%bet%", String.valueOf(bestWinnersBet * 2));
+        long total = sum1 + sum2;
+
+        return total;
     }
 
+    public static String getBestWinner(@NotNull ISession session) {
+
+        TaiXiuResult result = session.getResult();
+        FileConfiguration messageF = MessageFile.get();
+
+        try {
+            if (result == TaiXiuResult.NONE) {
+                return messageF.getString("bestWinners-format.invalid");
+            }
+
+            if (result == TaiXiuResult.SPECIAL) {
+                return messageF.getString("bestWinners-format.valid-special").replace("%allBet%", MessageUtil.formatMoney(getTotalBet(session)));
+            }
+
+            HashMap<String, Long> bestWinners = (result == TaiXiuResult.XIU ? (session.getXiuPlayers() == null ? null : session.getXiuPlayers()) : (session.getTaiPlayers() == null ? null : session.getTaiPlayers()));
+            Long bestWinnersBet = Collections.max(bestWinners.values());
+
+            List<String> players = new ArrayList<>();
+            for (Map.Entry<String, Long> entry : bestWinners.entrySet()) {
+                if (entry.getValue() == bestWinnersBet) {
+                    players.add(entry.getKey());
+                }
+            }
+
+            String delim = messageF.getString("bestWinners-format.playerName-delim");
+            String bestWinnersName = String.join(delim, players);
+
+            return messageF.getString("bestWinners-format.valid")
+                    .replace("%playerName%", bestWinnersName)
+                    .replace("%bet%", MessageUtil.formatMoney(bestWinnersBet * 2));
+        } catch (Exception e) {
+            return messageF.getString("bestWinners-format.invalid");
+        }
+    }
 
     public void stopTask() {
         getTaiXiuTask().cancel();

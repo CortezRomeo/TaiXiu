@@ -62,6 +62,10 @@ public class InventoryFile {
                         " * Có hỗ trợ hex color\n" +
                         " * Có 3 type chính, đó là:\n" +
                         "   + material: value chỉnh thành MATERIAL của block\n" +
+                        "     > Theo các phiên bản bé hơn 1.13, bạn có thể điền số trong phần 'value:' và 'data:' của item đó" +
+                        "         Ví dụ: (value: 95 | data: 1) [https://minecraft-ids.grahamedgecombe.com/]" +
+                        "     > Theo các phiên bản lớn hơn 1.12.2, bạn có thể điền thẳng tên item đó (Phần 'data:' sẽ không còn cần thiết)" +
+                        "         Ví dụ: (value: BOOK) [https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html]" +
                         "   + playerhead: dành cho item \"bet-player:\" để hiện thị đầu người hơi\n" +
                         "   + customhead: Đọc phần ở dưới\n" +
                         "     + Cách sử dụng custom-head:\n" +
@@ -91,6 +95,13 @@ public class InventoryFile {
         get().addDefault(defaultitems + "prevPage.lore", new String[]{
                 "&7Về trang %prevPage%"
         });
+        get().addDefault(defaultitems + "borderItem.name", "");
+        get().addDefault(defaultitems + "borderItem.type", "material");
+        get().addDefault(defaultitems + "borderItem.value", "BLACK_STAINED_GLASS_PANE");
+        get().addDefault(defaultitems + "borderItem.data", 0);
+        get().addDefault(defaultitems + "borderItem.lore", new String[]{
+                ""
+        });
 
         String txinfo = "inventory.taiXiuInfo.";
         get().addDefault(txinfo + "title", "&0Thông tin phiên số &b#%session%");
@@ -109,19 +120,30 @@ public class InventoryFile {
         get().addDefault(txinfo + "items.bet-info.type", "material");
         get().addDefault(txinfo + "items.bet-info.value", "BOOK");
         get().addDefault(txinfo + "items.bet-info.data", 0);
-        get().addDefault(txinfo + "items.bet-info.lore", new String[]{
+        get().addDefault(txinfo + "items.bet-info.lorePlaying", new String[]{
                 "&fCó kết quả sau: &d%time% giây",
                 "",
                 "&fPhiên số: &b%session%",
                 "&fSố người chọn " + TaiXiu.getForCurrentVersion("&2Xỉu", "&#1fc433Xỉu") + "&f: &e%xiuPlayerNumber% &6(%xiuTotalBet%$)",
                 "&fSố người chọn " + TaiXiu.getForCurrentVersion("&4Tài", "&#c42d1fTài") + "&f: &e%taiPlayerNumber% &6(%taiTotalBet%$)",
                 "&fTổng tiền cược phiên này: &6%totalBet%$",
+                "",
+                "&eNhấn để tải lại thông tin"
+        });
+        get().addDefault(txinfo + "items.bet-info.loreEnded", new String[]{
+                "&bPhiên này đã có kết quả!",
+                "",
+                "&fPhiên số: &b%session%",
+                "&fSố người chọn " + TaiXiu.getForCurrentVersion("&2Xỉu", "&#1fc433Xỉu") + "&f: &e%xiuPlayerNumber% &6(%xiuTotalBet%$)",
+                "&fSố người chọn " + TaiXiu.getForCurrentVersion("&4Tài", "&#c42d1fTài") + "&f: &e%taiPlayerNumber% &6(%taiTotalBet%$)",
+                "&fTổng tiền cược phiên này: &6%totalBet%$",
+                "&fĂn nhiều nhất: %bestWinners%",
+                "",
                 "&fXúc xắc 1: &e%dice1%",
                 "&fXúc xắc 2: &e%dice2%",
                 "&fXúc xắc 3: &e%dice3%",
                 "&fKết quả:&r %result%",
-                "",
-                "&eNhấn để tải lại thông tin"
+                ""
         });
 
         get().options().copyDefaults(true);

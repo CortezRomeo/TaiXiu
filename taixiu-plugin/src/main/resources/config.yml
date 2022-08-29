@@ -24,6 +24,13 @@ task:
     # Lấy theo giây(s)
     time-per-session: 120
 
+
+# Số tiền sẽ được hiển thị theo cách dễ nhìn hơn
+# Ví dụ: Bạn đặt '#,###' tại 'format-money', số tiền là 500000 -> Số tiền hiền thị: 500,000
+# Chi tiết tại: https://www.baeldung.com/java-decimalformat
+format-money: '#,###'
+
+
 # Tùy chỉnh về đặt cược
 bet-settings:
   # Số tiền tối đa có thể cược

@@ -49,8 +49,7 @@ public class TaiXiuCommand implements CommandExecutor {
         Player p = (Player) sender;
         String pName = p.getName();
         Economy econ = VaultSupport.econ;
-        TaiXiuManager manager = TaiXiu.plugin.getManager();
-        ISession data = manager.getSessionData();
+        ISession data = TaiXiuManager.getSessionData();
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
 
         if (args.length == 1) {
@@ -58,14 +57,14 @@ public class TaiXiuCommand implements CommandExecutor {
                 case "luatchoi":
                     for (String string : messageF.getStringList("luatchoi")) {
 
-                        string = string.replace("%minBet%", String.valueOf(cfg.getLong("bet-settings.min-bet")));
-                        string = string.replace("%maxBet%", String.valueOf(cfg.getLong("bet-settings.max-bet")));
+                        string = string.replace("%minBet%", MessageUtil.formatMoney(cfg.getLong("bet-settings.min-bet")));
+                        string = string.replace("%maxBet%", MessageUtil.formatMoney(cfg.getLong("bet-settings.max-bet")));
 
                         sendMessage(p, string);
                     }
                     return false;
                 case "thongtin":
-                    TaiXiuInfoPagedPane.openInventory(p, manager.getSessionData().getSession());
+                    TaiXiuInfoPagedPane.openInventory(p, TaiXiuManager.getSessionData().getSession());
                     return false;
                 case "toggle":
 
@@ -116,19 +115,19 @@ public class TaiXiuCommand implements CommandExecutor {
                 case "cuoc":
                     if (data.getXiuPlayers().containsKey(pName) || data.getTaiPlayers().containsKey(pName)) {
                         sendMessage(p, messageF.getString("have-bet-before")
-                                .replaceAll("%bet%", MessageUtil.getFormatName((data.getXiuPlayers().containsKey(pName)
+                                .replace("%bet%", MessageUtil.getFormatName((data.getXiuPlayers().containsKey(pName)
                                         ? TaiXiuResult.XIU
                                         : TaiXiuResult.TAI)))
-                                .replaceAll("%money%", (data.getXiuPlayers().containsKey(pName)
-                                        ? String.valueOf(data.getXiuPlayers().get(pName))
-                                        : String.valueOf(data.getTaiPlayers().get(pName)))));
+                                .replace("%money%", (data.getXiuPlayers().containsKey(pName)
+                                        ? MessageUtil.formatMoney(data.getXiuPlayers().get(pName))
+                                        : MessageUtil.formatMoney(data.getTaiPlayers().get(pName)))));
                         return false;
                     }
 
                     int configDisableTime = cfg.getInt("bet-settings.disable-while-remaining");
-                    if (manager.getTime() < configDisableTime) {
+                    if (TaiXiuManager.getTime() < configDisableTime) {
                         sendMessage(p, messageF.getString("late-bet")
-                                .replaceAll("%time%", String.valueOf(manager.getTime()))
+                                .replaceAll("%time%", String.valueOf(TaiXiuManager.getTime()))
                                 .replaceAll("%configDisableTime%", String.valueOf(configDisableTime)));
                         return false;
                     }
@@ -160,13 +159,13 @@ public class TaiXiuCommand implements CommandExecutor {
 
                     long minBet = cfg.getLong("bet-settings.min-bet");
                     if (money < minBet) {
-                        sendMessage(p, messageF.getString("min-bet").replace("%minBet%", String.valueOf(minBet)));
+                        sendMessage(p, messageF.getString("min-bet").replace("%minBet%", MessageUtil.formatMoney(minBet)));
                         return false;
                     }
 
                     long maxBet = cfg.getLong("bet-settings.max-bet");
                     if (money > maxBet) {
-                        sendMessage(p, messageF.getString("max-bet").replace("%maxBet%", String.valueOf(maxBet)));
+                        sendMessage(p, messageF.getString("max-bet").replace("%maxBet%", MessageUtil.formatMoney(maxBet)));
                         return false;
                     }
 
@@ -179,10 +178,16 @@ public class TaiXiuCommand implements CommandExecutor {
                         data.addTaiPlayer(pName, money);
 
                     sendMessage(p, messageF.getString("player-bet")
-                            .replaceAll("%bet%", MessageUtil.getFormatName(result))
-                            .replaceAll("%money%", String.valueOf(money))
-                            .replaceAll("%session%", String.valueOf(data.getSession()))
-                            .replaceAll("%time%", String.valueOf(manager.getTime())));
+                            .replace("%bet%", MessageUtil.getFormatName(result))
+                            .replace("%money%", MessageUtil.formatMoney(money))
+                            .replace("%session%", String.valueOf(data.getSession()))
+                            .replace("%time%", String.valueOf(TaiXiuManager.getTime())));
+
+                    Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageF.getString("broadcast-player-bet")
+                            .replace("%prefix%", messageF.getString("prefix"))
+                            .replace("%player%", p.getName())
+                            .replace("%bet%", MessageUtil.getFormatName(result))
+                            .replace("%money%", MessageUtil.formatMoney(money))));
 
                     PlayerBetEvent event = new PlayerBetEvent(p, result, money);
                     Bukkit.getServer().getPluginManager().callEvent(event);

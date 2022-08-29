@@ -5,6 +5,7 @@ import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.inventory.Button;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
+import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,12 +26,11 @@ public class TaiXiuInfoPagedPane {
         PagedPane pagedPane = new PagedPane(invF.getInt("inventory.taiXiuInfo.rows") - 2,
                 invF.getInt("inventory.taiXiuInfo.rows"),
                 invF.getString("inventory.taiXiuInfo.title").replace("%session%", String.valueOf(session)), session);
-        TaiXiuManager txm = TaiXiu.plugin.getManager();
 
         pagedPane.open(p);
 
         Bukkit.getScheduler().runTaskAsynchronously(TaiXiu.plugin, () -> {
-            for (String player : txm.getSessionData(session).getXiuPlayers().keySet()) {
+            for (String player : TaiXiuManager.getSessionData(session).getXiuPlayers().keySet()) {
                 try {
                     pagedPane.addButton(new Button(getItem(
                             invF.getString("inventory.taiXiuInfo.items.bet-player.type"),
@@ -43,7 +43,7 @@ public class TaiXiuInfoPagedPane {
                     e.printStackTrace();
                 }
             }
-            for (String player : txm.getSessionData(session).getTaiPlayers().keySet()) {
+            for (String player : TaiXiuManager.getSessionData(session).getTaiPlayers().keySet()) {
                 try {
                     pagedPane.addButton(new Button(getItem(
                             invF.getString("inventory.taiXiuInfo.items.bet-player.type"),
@@ -60,7 +60,6 @@ public class TaiXiuInfoPagedPane {
     }
 
     private static ItemStack getItem(String type, String value, short data, String name, List<String> lore, String playerName, TaiXiuResult bet, Long session) {
-        TaiXiuManager manager = TaiXiu.plugin.getManager();
         AtomicReference<ItemStack> material = new AtomicReference<>(new ItemStack(Material.BEDROCK));
 
         if (type.equalsIgnoreCase("customhead"))
@@ -80,8 +79,8 @@ public class TaiXiuInfoPagedPane {
                     .replaceAll("%bet%", getFormatName(bet))
                     .replaceAll("%money%",
                             (bet == TaiXiuResult.XIU
-                                    ? String.valueOf(manager.getSessionData(session).getXiuPlayers().get(playerName))
-                                    : String.valueOf(manager.getSessionData(session).getTaiPlayers().get(playerName))));
+                                    ? MessageUtil.formatMoney(TaiXiuManager.getSessionData(session).getXiuPlayers().get(playerName))
+                                    : MessageUtil.formatMoney(TaiXiuManager.getSessionData(session).getTaiPlayers().get(playerName))));
 
 
             materialMeta.setDisplayName(TaiXiu.nms.addColor(name));
@@ -94,8 +93,8 @@ public class TaiXiuInfoPagedPane {
                     .replaceAll("%bet%", getFormatName(bet))
                     .replaceAll("%money%",
                             (bet == TaiXiuResult.XIU
-                                    ? String.valueOf(manager.getSessionData(session).getXiuPlayers().get(playerName))
-                                    : String.valueOf(manager.getSessionData(session).getTaiPlayers().get(playerName))));
+                                    ? MessageUtil.formatMoney(TaiXiuManager.getSessionData(session).getXiuPlayers().get(playerName))
+                                    : MessageUtil.formatMoney(TaiXiuManager.getSessionData(session).getTaiPlayers().get(playerName))));
 
             newList.add(TaiXiu.nms.addColor(string));
         }
