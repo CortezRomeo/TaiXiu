@@ -14,7 +14,7 @@ Hỗ trợ GUI (Hỗ trợ customhead)
 
 Hộ trợ Hex Color
 
-Hỗ trợ PlaceholderAPI
+Hỗ trợ PlaceholderAPI (Update vào bản 1.1)
 
 Hỗ trợ BossBar (Update vào bản 1.1)
 

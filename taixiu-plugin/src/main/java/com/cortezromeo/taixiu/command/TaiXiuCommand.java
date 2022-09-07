@@ -10,6 +10,7 @@ import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.util.MessageUtil;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -183,11 +184,16 @@ public class TaiXiuCommand implements CommandExecutor {
                             .replace("%session%", String.valueOf(data.getSession()))
                             .replace("%time%", String.valueOf(TaiXiuManager.getTime())));
 
-                    Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageF.getString("broadcast-player-bet")
+                    String messageBoardcastPlayerBet = messageF.getString("broadcast-player-bet")
                             .replace("%prefix%", messageF.getString("prefix"))
                             .replace("%player%", p.getName())
                             .replace("%bet%", MessageUtil.getFormatName(result))
-                            .replace("%money%", MessageUtil.formatMoney(money))));
+                            .replace("%money%", MessageUtil.formatMoney(money));
+
+                    if (!TaiXiu.PAPISupport())
+                        Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageBoardcastPlayerBet));
+                    else
+                        Bukkit.broadcastMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(p, messageBoardcastPlayerBet)));
 
                     PlayerBetEvent event = new PlayerBetEvent(p, result, money);
                     Bukkit.getServer().getPluginManager().callEvent(event);

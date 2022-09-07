@@ -62,27 +62,33 @@ public class TaiXiuTask implements Runnable {
     @Override
     public void run() {
         if (state == TaiXiuState.PLAYING) {
-            time--;
+            try {
+                time--;
 
-            if (getSession().getResult() != TaiXiuResult.NONE)
-                time = 0;
+                if (getSession().getResult() != TaiXiuResult.NONE)
+                    time = 0;
 
-            if (time == 0) {
+                if (time == 0) {
 
-                TaiXiuManager.resultSeason(getSession(), 0, 0, 0);
+                    TaiXiuManager.resultSeason(getSession(), 0, 0, 0);
 
-                long newSession = DatabaseManager.getLastSession();
-                debug("SESSION SWAPPED " + ">>> old_session: " + getSession().getSession() + " " +
-                        "| new_session: " + newSession);
+                    long newSession = DatabaseManager.getLastSession();
+                    debug("SESSION SWAPPED " + ">>> old_session: " + getSession().getSession() + " " +
+                            "| new_session: " + newSession);
 
-                ISession oldSessionData = getSession();
-                setSession(newSession);
-                ISession newSessionData = getSession();
+                    ISession oldSessionData = getSession();
+                    setSession(newSession);
+                    ISession newSessionData = getSession();
 
-                time = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
+                    time = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
 
-                SessionSwapEvent event = new SessionSwapEvent(oldSessionData, newSessionData);
-                TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
+                    SessionSwapEvent event = new SessionSwapEvent(oldSessionData, newSessionData);
+                    TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
+                }
+            } catch (Exception e) {
+                TaiXiuManager.startTask(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
+                Bukkit.getLogger().severe("TAIXIU TASK JUST GOT TROUBLED (TASK ID: " + getTaskID() + ") -> RUN A NEW TASK!");
+                cancel();
             }
         }
     }

@@ -6,7 +6,7 @@
     <parent>
         <artifactId>TaiXiu</artifactId>
         <groupId>com.cortezromeo.taixiu</groupId>
-        <version>1.07</version>
+        <version>1.08</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>taixiu-plugin</artifactId>
