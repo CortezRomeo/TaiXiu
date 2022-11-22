@@ -261,33 +261,16 @@ public class PagedPane implements InventoryHolder {
     @NotNull
     private String getString(ISession data, String string) {
 
-        int xiuPlayerNumber = data.getXiuPlayers().size();
-        int taiPlayerNumber = data.getTaiPlayers().size();
-        Long xiuTotalBet = 0L;
-        Long taiTotalBet = 0L;
-
-        if (xiuPlayerNumber > 0) {
-            for (Long value : data.getXiuPlayers().values()) {
-                xiuTotalBet += value;
-            }
-        }
-
-        if (taiPlayerNumber > 0) {
-            for (Long value : data.getTaiPlayers().values()) {
-                taiTotalBet += value;
-            }
-        }
-
         string = string
                 .replace("%nextPage%", String.valueOf(getCurrentPage() + 1))
                 .replace("%prevPage%", String.valueOf(getCurrentPage() - 1))
                 .replace("%time%", (TaiXiuManager.getSessionData(session).getResult() != TaiXiuResult.NONE ? "0" : String.valueOf(TaiXiuManager.getTime())))
                 .replace("%session%", String.valueOf(this.session))
-                .replace("%xiuPlayerNumber%", String.valueOf(xiuPlayerNumber))
-                .replace("%taiPlayerNumber%", String.valueOf(taiPlayerNumber))
-                .replace("%xiuTotalBet%", MessageUtil.formatMoney(xiuTotalBet))
-                .replace("%taiTotalBet%", MessageUtil.formatMoney(taiTotalBet))
-                .replace("%totalBet%", MessageUtil.formatMoney(xiuTotalBet + taiTotalBet))
+                .replace("%xiuPlayerNumber%", String.valueOf(data.getXiuPlayers().size()))
+                .replace("%taiPlayerNumber%", String.valueOf(data.getTaiPlayers().size()))
+                .replace("%xiuTotalBet%", MessageUtil.formatMoney(TaiXiuManager.getXiuBet(data)))
+                .replace("%taiTotalBet%", MessageUtil.formatMoney(TaiXiuManager.getTaiBet(data)))
+                .replace("%totalBet%", MessageUtil.formatMoney(TaiXiuManager.getTotalBet(data)))
                 .replace("%bestWinners%", TaiXiuManager.getBestWinner(TaiXiuManager.getSessionData(session)))
                 .replace("%dice1%", String.valueOf(data.getDice1()))
                 .replace("%dice2%", String.valueOf(data.getDice2()))

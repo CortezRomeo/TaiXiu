@@ -10,13 +10,35 @@
 # Đừng bật nếu bạn không cần đến
 debug: false
 
-# Tự động lưu dữ liệu các phiên
-# Đề phòng trường hợp bị crash
-auto-save-database:
-  enable: true
-  # Set càng ít thì dữ liệu càng dễ được bảm đảm nhưng có thể gây lag nếu dữ liệu quá nhiều
-  # Lấy theo giây(s)
-  time: 600
+database:
+  while-ending-session:
+    # [TYPE: SAVE - SAVE_AND_UNLOAD]
+    # SAVE: Hệ thống sẽ lưu dữ liệu vào file .yml nhưng không unload data
+    # SAVE_AND_UNLOAD: Hệ thống sẽ lưu dữ liệu  vào file.yml và unload data (Tối ưu hóa dữ liệu)
+    # Lưu ý: Data bị unload có thể được load lại nếu có một cái gì đó tác động lên dữ liệu
+    #        Ví dụ: Player sử dụng lệnh "/taixiu thongtin <data bị unload>"
+    #               lúc này data sẽ được load lại
+    #
+    # KHUYẾN KHÍCH XÀI SAVE_AND_UNLOAD
+    type: SAVE_AND_UNLOAD
+  # Tự động lưu dữ liệu các phiên
+  # Đề phòng trường hợp bị crash
+  while-disabling-plugin:
+    # [TYPE: SAVE_ALL - SAVE_LATEST - SAVE_LATEST_AND_DELETE_OLD_DATA]
+    # SAVE_ALL: Lưu tất cả dữ liệu của các phiên đang load vào file .yml, sẽ tốn khá nhiều thời gian
+    #           nếu dữ liệu quá nhiều (Tuy nhiên bạn có thể khắc phục điều này bằng cách chỉnh
+    #           type while-loading-plugin thành LOAD_LATEST và type while-ending-session thành SAVE_AND_UNLOAD)
+    # SAVE_LATEST: Lưu dữ liệu cuối cùng vào file .yml và không lưu các dữ liệu còn lại
+    # SAVE_LATEST_AND_DELETE_OLD_DATA: Xóa tất cả dữ liệu cũ (Phiên đã có kết quả) và giữ nguyên dữ liệu cuối cùng (Phiên chưa có kết quả)
+    #
+    # ĐỂ TỐI ƯU DỮ LIỆU, BẠN CÓ THỂ XÀI DELETE_OLD_DATA
+    # TUY NHIÊN BẠN CŨNG NÊN SỬ DỤNG SAVE_LATEST (Đọc ghi chú ở trên), DỮ LIỆU KHÔNG CẦN PHẢI TỐI ƯU QUÁ MỨC
+    type: SAVE_LATEST
+  auto-save:
+    enable: true
+    # Set càng ít thì dữ liệu càng dễ được bảm đảm nhưng có thể gây lag nếu dữ liệu quá nhiều
+    # Lấy theo giây(s)
+    time: 600
 
 task:
   taiXiuTask:
@@ -24,12 +46,10 @@ task:
     # Lấy theo giây(s)
     time-per-session: 120
 
-
 # Số tiền sẽ được hiển thị theo cách dễ nhìn hơn
 # Ví dụ: Bạn đặt '#,###' tại 'format-money', số tiền là 500000 -> Số tiền hiền thị: 500,000
 # Chi tiết tại: https://www.baeldung.com/java-decimalformat
 format-money: '#,###'
-
 
 # Tùy chỉnh về đặt cược
 bet-settings:
@@ -44,6 +64,15 @@ bet-settings:
   # Theo luật thì cái sẽ ăn hết, người đặt tài và xỉu đều thua
   # Nếu bạn chỉnh thành 'true' cái này thì sẽ không còn rơi vào 2 trường hợp nên nữa
   disable-special: false
+
+boss-bar:
+  enable: true
+  title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
+  color:
+    playing: YELLOW
+    bet-disabling: RED
+    pausing: RED
+  style: SOLID
 
 # Phần thông báo từ bossbar và message
 toggle-settings:

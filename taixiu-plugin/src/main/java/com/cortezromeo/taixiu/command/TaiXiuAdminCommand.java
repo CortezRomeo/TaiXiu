@@ -6,17 +6,25 @@ import com.cortezromeo.taixiu.api.TaiXiuState;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.manager.AutoSaveManager;
+import com.cortezromeo.taixiu.manager.BossBarManager;
+import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.setDebug;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendBoardCast;
 
-public class TaiXiuAdminCommand implements CommandExecutor {
+public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
     private TaiXiu plugin;
 
     public TaiXiuAdminCommand(TaiXiu plugin) {
@@ -54,12 +62,14 @@ public class TaiXiuAdminCommand implements CommandExecutor {
                     TaiXiu.plugin.reloadConfig();
                     MessageFile.reload();
                     InventoryFile.reload();
+                    DatabaseManager.loadLoadingType();
+                    BossBarManager.setupValue();
 
                     setDebug(TaiXiu.plugin.getConfig().getBoolean("debug"));
-                    if (AutoSaveManager.getAutoSaveStatus() && !TaiXiu.plugin.getConfig().getBoolean("auto-save-database.enable")) {
+                    if (AutoSaveManager.getAutoSaveStatus() && !TaiXiu.plugin.getConfig().getBoolean("database.auto-save.enable")) {
                         AutoSaveManager.stopAutoSave();
                     } else {
-                        AutoSaveManager.startAutoSave(TaiXiu.plugin.getConfig().getInt("auto-save-database.time"));
+                        AutoSaveManager.startAutoSave(TaiXiu.plugin.getConfig().getInt("database.auto-save.time"));
                     }
                     AutoSaveManager.reloadTimeAutoSave();
 
@@ -151,6 +161,24 @@ public class TaiXiuAdminCommand implements CommandExecutor {
 
     public void sendMessage(CommandSender sender, String message) {
         sender.sendMessage(TaiXiu.nms.addColor(message.replace("%prefix%", MessageFile.get().getString("admin-prefix"))));
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+        List<String> completions = new ArrayList<>();
+        List<String> commands = new ArrayList<>();
+
+        if (args.length == 1) {
+            if (sender.hasPermission("taixiu.admin")) {
+                commands.add("reload");
+                commands.add("changestate");
+                commands.add("settime");
+                commands.add("setresult");
+            }
+            StringUtil.copyPartialMatches(args[0], commands, completions);
+        }
+        Collections.sort(completions);
+        return completions;
     }
 
 }

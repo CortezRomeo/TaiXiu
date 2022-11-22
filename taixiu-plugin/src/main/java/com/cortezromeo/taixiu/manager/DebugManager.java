@@ -20,7 +20,7 @@ public class DebugManager {
         if (!debug)
             return;
 
-        Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor("&f[TAIXIU-DEBUG] &e" + message));
+        Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor("&6[TAI XIU DEBUG] &e" + message));
     }
 
 }

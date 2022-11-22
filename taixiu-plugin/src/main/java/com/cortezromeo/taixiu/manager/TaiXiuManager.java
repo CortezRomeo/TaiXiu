@@ -10,10 +10,12 @@ import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import net.milkbowl.vault.economy.Economy;
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -85,11 +87,13 @@ public class TaiXiuManager {
 
         if (total == 3 && cfg.getBoolean("bet-settings.disable-special")) {
             dice3++;
+            total++;
             session.setDice3(dice3);
         }
 
         if (total == 18 && cfg.getBoolean("bet-settings.disable-special")) {
             dice3--;
+            total--;
             session.setDice3(dice3);
         }
 
@@ -103,65 +107,76 @@ public class TaiXiuManager {
 
         FileConfiguration messageF = MessageFile.get();
 
-        for (String string : messageF.getStringList("session-result")) {
-            string = string.replace("%session%", String.valueOf(session.getSession()));
-            string = string.replace("%dice1%", String.valueOf(session.getDice1()));
-            string = string.replace("%dice2%", String.valueOf(session.getDice2()));
-            string = string.replace("%dice3%", String.valueOf(session.getDice3()));
-            string = string.replace("%total%", String.valueOf(total));
-            string = string.replace("%result%", MessageUtil.getFormatName(session.getResult()));
-            string = string.replace("%bestWinners%", getBestWinner(session));
+        try {
+            for (String string : messageF.getStringList("session-result")) {
+                string = string.replace("%session%", String.valueOf(session.getSession()));
+                string = string.replace("%dice1%", String.valueOf(session.getDice1()));
+                string = string.replace("%dice2%", String.valueOf(session.getDice2()));
+                string = string.replace("%dice3%", String.valueOf(session.getDice3()));
+                string = string.replace("%total%", String.valueOf(total));
+                string = string.replace("%result%", MessageUtil.getFormatName(session.getResult()));
+                string = string.replace("%bestWinners%", getBestWinner(session));
 
-            sendBoardCast(string);
+                sendBoardCast(string);
+            }
+
+            if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
+                for (String player : session.getXiuPlayers().keySet()) {
+                    econ.depositPlayer(player, session.getXiuPlayers().get(player) * 2);
+                    sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
+                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
+                            .replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(player) * 2)));
+                }
+            } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
+                for (String player : session.getTaiPlayers().keySet()) {
+                    econ.depositPlayer(player, session.getTaiPlayers().get(player) * 2);
+                    sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
+                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
+                            .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(player) * 2)));
+                }
+            } else
+                sendBoardCast(messageF.getString("session-special-win"));
+
+            SessionResultEvent event = new SessionResultEvent(session);
+            TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
+
+            debug("SESSION RESULTED " + ">>> session: " + session.getSession() + " " +
+                    "| dice1: " + dice1 + " " +
+                    "| dice2: " + dice2 + " " +
+                    "| dice3: " + dice3 + " " +
+                    "| result: " + session.getResult());
+        } catch (Exception e) {
+            resultSeason(session, dice1, dice2, dice3);
+            debug("ERROR [SESSION RESULTED] " + ">>> " + e);
+            debug("&b&lVUI LÒNG BÁO LẠI LỖI NÀY QUA DISCORD CỦA MÌNH: Cortez_Romeo#1290");
         }
-
-        if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
-            for (String player : session.getXiuPlayers().keySet()) {
-                econ.depositPlayer(player, session.getXiuPlayers().get(player) * 2);
-                sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
-                        .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                        .replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(player) * 2)));
-            }
-        } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
-            for (String player : session.getTaiPlayers().keySet()) {
-                econ.depositPlayer(player, session.getTaiPlayers().get(player) * 2);
-                sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
-                        .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                        .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(player) * 2)));
-            }
-        } else
-            sendBoardCast(messageF.getString("session-special-win"));
-
-        SessionResultEvent event = new SessionResultEvent(session);
-        TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
-
-        debug("SESSION RESULTED " + ">>> session: " + session.getSession() + " " +
-                "| dice1: " + dice1 + " " +
-                "| dice2: " + dice2 + " " +
-                "| dice3: " + dice3 + " " +
-                "| result: " + session.getResult());
 
     }
 
-    public static Long getTotalBet(@NotNull ISession session) {
+    public static Long getXiuBet(@NotNull ISession session) {
 
-        long sum1 = 0L;
+        long sum = 0L;
         if (session.getXiuPlayers() != null) {
             for (long value : session.getXiuPlayers().values()) {
-                sum1 += value;
+                sum += value;
             }
         }
+        return sum;
+    }
 
-        long sum2 = 0L;
+    public static Long getTaiBet(@NotNull ISession session) {
+
+        long sum = 0L;
         if (session.getTaiPlayers() != null) {
             for (long value : session.getTaiPlayers().values()) {
-                sum2 += value;
+                sum += value;
             }
         }
+        return sum;
+    }
 
-        long total = sum1 + sum2;
-
-        return total;
+    public static Long getTotalBet(@NotNull ISession session) {
+        return getXiuBet(session) + getTaiBet(session);
     }
 
     public static String getBestWinner(@NotNull ISession session) {

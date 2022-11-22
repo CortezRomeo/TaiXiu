@@ -1,7 +1,6 @@
 package com.cortezromeo.taixiu.listener;
 
 import com.cortezromeo.taixiu.TaiXiu;
-import com.cortezromeo.taixiu.inventory.page.PagedPane;
 import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -9,22 +8,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class JoinListener implements Listener {
+public class QuitListener implements Listener {
     private TaiXiu plugin;
 
-    public JoinListener(TaiXiu plugin) {
+    public QuitListener(TaiXiu plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
 
         Player p = event.getPlayer();
-        if (TaiXiu.plugin.getConfig().getBoolean("toggle-settings.auto-toggle") && !DatabaseManager.togglePlayers.contains(p.getName())) {
-            DatabaseManager.togglePlayers.add(p.getName());
-            BossBarManager.toggleBossBar(p);
+        if (DatabaseManager.togglePlayers.contains(p.getName())) {
+            DatabaseManager.togglePlayers.remove(p.getName());
         }
 
     }

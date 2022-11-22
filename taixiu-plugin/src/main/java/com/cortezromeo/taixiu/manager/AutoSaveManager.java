@@ -9,7 +9,7 @@ public class AutoSaveManager {
 
     public static void startAutoSave(int time) {
 
-        if (TaiXiu.plugin.getConfig().getBoolean("auto-save-database.enable") && autoSaveStatus == true && autoSaveTask != null)
+        if (TaiXiu.plugin.getConfig().getBoolean("database.auto-save.enable") && autoSaveStatus == true && autoSaveTask != null)
             return;
 
         autoSaveTask = new AutoSaveTask(time);
@@ -33,7 +33,7 @@ public class AutoSaveManager {
             return;
 
         stopAutoSave();
-        startAutoSave(TaiXiu.plugin.getConfig().getInt("auto-save-database.time"));
+        startAutoSave(TaiXiu.plugin.getConfig().getInt("database.auto-save.time"));
 
     }
 

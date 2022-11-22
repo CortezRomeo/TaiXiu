@@ -6,6 +6,7 @@ import com.cortezromeo.taixiu.api.event.PlayerBetEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.inventory.page.TaiXiuInfoPagedPane;
+import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.support.VaultSupport;
@@ -16,15 +17,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendMessage;
 
-public class TaiXiuCommand implements CommandExecutor {
+public class TaiXiuCommand implements CommandExecutor, TabExecutor {
 
     private TaiXiu plugin;
 
@@ -77,6 +82,7 @@ public class TaiXiuCommand implements CommandExecutor {
                         togglePlayers.add(p.getName());
                         sendMessage(p, messageF.getString("toggle-on"));
                     }
+                    BossBarManager.toggleBossBar(p);
 
                     return false;
                 default:
@@ -98,12 +104,20 @@ public class TaiXiuCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if (!DatabaseManager.taiXiuData.containsKey(session)) {
-                        sendMessage(p, messageF.getString("invalid-session").replace("%session%", String.valueOf(session)));
-                        return false;
+                    try {
+                        if (DatabaseManager.checkExistsFileData(session)) {
+                            DatabaseManager.loadSessionData(session);
+                            TaiXiuInfoPagedPane.openInventory(p, session);
+                        } else {
+                            if (!DatabaseManager.taiXiuData.containsKey(session)) {
+                                sendMessage(p, messageF.getString("invalid-session").replace("%session%", String.valueOf(session)));
+                            }
+                        }
+                    } catch (Exception e) {
+                        debug("ERROR [/taixiu thongtin] " + ">>> " + e);
+                        debug("&b&lVUI LÒNG BÁO LẠI LỖI NÀY QUA DISCORD CỦA MÌNH: Cortez_Romeo#1290");
                     }
 
-                    TaiXiuInfoPagedPane.openInventory(p, session);
                     return false;
                 default:
                     sendMessage(p, messageF.getString("wrong-argument"));
@@ -217,4 +231,27 @@ public class TaiXiuCommand implements CommandExecutor {
         }
         return false;
     }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+        List<String> completions = new ArrayList<>();
+        List<String> commands = new ArrayList<>();
+
+        if (args.length == 1) {
+            commands.add("toggle");
+            commands.add("luatchoi");
+            commands.add("cuoc");
+            commands.add("thongtin");
+            StringUtil.copyPartialMatches(args[0], commands, completions);
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("cuoc")) {
+                commands.add("xiu");
+                commands.add("tai");
+            }
+            StringUtil.copyPartialMatches(args[1], commands, completions);
+        }
+        Collections.sort(completions);
+        return completions;
+    }
+
 }

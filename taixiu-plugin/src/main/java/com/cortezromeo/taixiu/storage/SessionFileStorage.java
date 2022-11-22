@@ -15,7 +15,7 @@ import java.util.List;
 public class SessionFileStorage implements SessionStorage  {
 
     private static File getFile(long session) {
-        final File file = new File(TaiXiu.plugin.getDataFolder() + "/session/" + String.valueOf(session) + ".yml");
+        File file = new File(TaiXiu.plugin.getDataFolder() + "/session/" + String.valueOf(session) + ".yml");
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -26,13 +26,13 @@ public class SessionFileStorage implements SessionStorage  {
         return file;
     }
 
-    public static SessionData fromFile(File file) {
+    public static SessionData fromFile(File file, long session) {
         final YamlConfiguration storage = YamlConfiguration.loadConfiguration(file);
 
         HashMap<String, Long> hashmap = new HashMap<>();
         HashMap<String, Long> hashmap2 = new HashMap<>();
 
-        final SessionData data = new SessionData(DatabaseManager.getLastSession(), 0, 0, 0, TaiXiuResult.NONE, hashmap, hashmap2);
+        SessionData data = new SessionData(session, 0, 0, 0, TaiXiuResult.NONE, hashmap, hashmap2);
 
         if (!storage.contains("data"))
             return data;
@@ -85,7 +85,7 @@ public class SessionFileStorage implements SessionStorage  {
 
     public ISession getData(long session) {
         final File file = getFile(session);
-        return fromFile(file);
+        return fromFile(file, session);
     }
 
 }

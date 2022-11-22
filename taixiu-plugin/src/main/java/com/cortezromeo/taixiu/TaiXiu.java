@@ -7,7 +7,9 @@ import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.listener.JoinListener;
 import com.cortezromeo.taixiu.listener.PaneListener;
+import com.cortezromeo.taixiu.listener.QuitListener;
 import com.cortezromeo.taixiu.manager.AutoSaveManager;
+import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
@@ -17,6 +19,7 @@ import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
 import com.cortezromeo.taixiu.task.AutoSaveTask;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -42,7 +45,6 @@ public final class TaiXiu extends JavaPlugin {
         nms = new CrossVersionSupport(plugin);
 
     }
-
     @Override
     public void onEnable() {
 
@@ -70,12 +72,14 @@ public final class TaiXiu extends JavaPlugin {
         initSupport();
 
         TaiXiuManager.startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
-        AutoSaveManager.startAutoSave(getConfig().getInt("auto-save-database.time"));
+        AutoSaveManager.startAutoSave(getConfig().getInt("database.auto-save.time"));
+        BossBarManager.setupValue();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (getConfig().getBoolean("toggle-settings.auto-toggle")) {
                 if (!DatabaseManager.togglePlayers.contains(p.getName())) {
                     DatabaseManager.togglePlayers.add(p.getName());
+                    BossBarManager.toggleBossBar(p);
                 }
             }
         }
@@ -122,11 +126,12 @@ public final class TaiXiu extends JavaPlugin {
     private void initListener() {
         new PaneListener(this);
         new JoinListener(this);
+        new QuitListener(this);
     }
 
     private void initDatabase() {
+        DatabaseManager.loadLoadingType();
         SessionDataStorage.init();
-        DatabaseManager.loadAllDatabase();
     }
 
     private void initSupport() {
@@ -178,7 +183,14 @@ public final class TaiXiu extends JavaPlugin {
         log("&fAuthor: &bCortez_Romeo");
         log("&f--------------------------------");
 
-        DatabaseManager.saveAllDatabase();
+        DatabaseManager.saveDatabase();
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            BossBar bossBar = BossBarManager.bossBarPlayers.get(p);
+            if (bossBar != null)
+                bossBar.removeAll();
+        }
+
 
     }
 }
