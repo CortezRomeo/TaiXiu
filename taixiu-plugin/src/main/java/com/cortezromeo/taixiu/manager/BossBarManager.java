@@ -56,7 +56,10 @@ public class BossBarManager {
             bossBarPlayers.remove(p);
         }
 
-        BossBar newBossBar = Bukkit.createBossBar(TaiXiu.nms.addColor(MessageFile.get().getString("request-loading")), colorPausing, style, new BarFlag[0]);
+        BossBar newBossBar = Bukkit.createBossBar(TaiXiu.nms.addColor(MessageFile.get().getString("request-loading").replace("%prefix%", "")),
+                colorPausing,
+                style,
+                new BarFlag[0]);
         newBossBar.setProgress(1);
         newBossBar.addPlayer(p);
         newBossBar.setVisible(true);
@@ -88,8 +91,12 @@ public class BossBarManager {
                 bossBarTitle = bossBarTitle.replace("%taiBet%", MessageUtil.formatMoney(TaiXiuManager.getTaiBet(session)));
                 bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
 
-                double bossBarProgess = (double) timeLeft / (double) timePerSession;
-                bossBar.setProgress(bossBarProgess);
+                try {
+                    double bossBarProgess = (double) timeLeft / (double) timePerSession;
+                    bossBar.setProgress(bossBarProgess);
+                } catch (Exception e) {
+                    MessageUtil.thowErrorMessage("" + e);
+                }
 
                 if (timeLeft <= timeDisabling) {
                     bossBar.setColor(colorBetDisabling);

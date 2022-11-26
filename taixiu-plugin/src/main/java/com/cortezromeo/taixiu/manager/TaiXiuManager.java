@@ -10,12 +10,10 @@ import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import net.milkbowl.vault.economy.Economy;
-import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -67,8 +65,13 @@ public class TaiXiuManager {
     }
 
     public static void resultSeason(@NotNull ISession session, int dice1, int dice2, int dice3) {
-        if (session.getResult() != TaiXiuResult.NONE)
+
+        debug("RESULTING SESSION", "Session number " + session.getSession());
+
+        if (session.getResult() != TaiXiuResult.NONE) {
+            debug("RESULTING SESSION [CANCELED]", "Session number " + session.getSession() + " không thể trao kết quả vì đã có kết quả");
             return;
+        }
 
         Economy econ = VaultSupport.econ;
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
@@ -140,15 +143,14 @@ public class TaiXiuManager {
             SessionResultEvent event = new SessionResultEvent(session);
             TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
 
-            debug("SESSION RESULTED " + ">>> session: " + session.getSession() + " " +
-                    "| dice1: " + dice1 + " " +
-                    "| dice2: " + dice2 + " " +
-                    "| dice3: " + dice3 + " " +
-                    "| result: " + session.getResult());
+            debug("SESSION RESULTED", "Session: " + session.getSession() + " " +
+                    "| Dice1: " + dice1 + " " +
+                    "| Dice2: " + dice2 + " " +
+                    "| Dice3: " + dice3 + " " +
+                    "| Result: " + session.getResult());
         } catch (Exception e) {
             resultSeason(session, dice1, dice2, dice3);
-            debug("ERROR [SESSION RESULTED] " + ">>> " + e);
-            debug("&b&lVUI LÒNG BÁO LẠI LỖI NÀY QUA DISCORD CỦA MÌNH: Cortez_Romeo#1290");
+            MessageUtil.thowErrorMessage("" + e);
         }
 
     }

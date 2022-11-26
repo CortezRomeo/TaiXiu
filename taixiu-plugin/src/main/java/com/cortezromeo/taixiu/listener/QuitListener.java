@@ -1,13 +1,11 @@
 package com.cortezromeo.taixiu.listener;
 
 import com.cortezromeo.taixiu.TaiXiu;
-import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class QuitListener implements Listener {

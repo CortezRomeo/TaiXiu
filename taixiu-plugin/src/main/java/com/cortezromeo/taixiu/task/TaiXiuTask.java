@@ -5,9 +5,11 @@ import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.TaiXiuState;
 import com.cortezromeo.taixiu.api.event.SessionSwapEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
+import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
+import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -25,7 +27,7 @@ public class TaiXiuTask implements Runnable {
         this.time = time;
         this.state = TaiXiuState.PLAYING;
 
-        debug("TAIXIU TASK >>> RUNNING TASK ID: " + getTaskID() + " | SESSION NUMBER: " + data.getSession());
+        debug("TAIXIU TASK", "RUNNING TASK ID: " + getTaskID() + " | SESSION NUMBER: " + data.getSession());
     }
 
     public BukkitTask getBukkitTask() {
@@ -76,30 +78,32 @@ public class TaiXiuTask implements Runnable {
                 if (time == 0) {
                     time = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
 
-                    TaiXiuManager.resultSeason(getSession(), 0, 0, 0);
-
-                    ISession oldSessionData = getSession();
-                    long newSession = DatabaseManager.getLastSession() + 1;
-                    setSession(newSession);
-
-                    SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
-
-                    debug("SESSION SWAPPED " + ">>> old_session: " + oldSessionData.getSession() + " " +
-                            "| new_session: " + newSession);
-
-                    TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
-
-                    if (DatabaseManager.sessionEndingType == SessionEndingType.SAVE) {
-                        DatabaseManager.saveSessionData(oldSessionData.getSession());
+                    if (getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) {
+                        MessageUtil.sendBoardCast(MessageFile.get().getString("session-result-not-enough-player").replace("%session%", String.valueOf(getSession().getSession())));
                     } else {
-                        DatabaseManager.unloadSessionData(oldSessionData.getSession());
-                    }
+                        TaiXiuManager.resultSeason(getSession(), 0, 0, 0);
 
+                        ISession oldSessionData = getSession();
+                        long newSession = DatabaseManager.getLastSession() + 1;
+                        setSession(newSession);
+
+                        SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
+
+                        debug("SESSION SWAPPED", "Old session: " + oldSessionData.getSession() + " " +
+                                "| New session: " + newSession);
+
+                        TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
+
+                        if (DatabaseManager.sessionEndingType == SessionEndingType.SAVE) {
+                            DatabaseManager.saveSessionData(oldSessionData.getSession());
+                        } else {
+                            DatabaseManager.unloadSessionData(oldSessionData.getSession());
+                        }
+                    }
                 }
             } catch (Exception e) {
                 cancel();
-                debug("ERROR [SESSION SWAPPED] " + ">>> " + e);
-                debug("&b&lVUI LÒNG BÁO LẠI LỖI NÀY QUA DISCORD CỦA MÌNH: Cortez_Romeo#1290");
+                MessageUtil.thowErrorMessage("" + e);
                 setSession(DatabaseManager.getLastSession() + 1);
                 TaiXiuManager.startTask(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
             }

@@ -36,6 +36,7 @@ late-bet: '%prefix%&cVì chỉ còn &d%time% giây (Bé hơn %configDisableTime%
 have-bet-before: '%prefix%&cBạn đã đặt cược trước đó rồi! Bạn cược vào %bet%&c với số tiền &6%money%$'
 invalid-money: '%prefix%&cSố tiền không hợp lệ, vui lòng nhập lại'
 not-enough-money: '%prefix%&cBạn không có đủ tiền!'
+session-result-not-enough-player: '%prefix%&cTài xỉu phiên số &b#%session%&c sẽ bắt đầu lại vì không có người đặt cược!'
 session-result:
   - '%prefix%&fTài xỉu phiên số &b#%session%&f có các nút xúc xắc sau: &b%dice1% &7- &b%dice2% &7- &b%dice3%'
   - '%prefix%&fVới tổng 3 xúc xắc là &e%total%&f. Tuyên bố: %result%&f thắng'

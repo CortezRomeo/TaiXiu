@@ -15,12 +15,12 @@ public class DebugManager {
         debug = b;
     }
 
-    public static void debug(String message) {
+    public static void debug(String prefix, String message) {
 
         if (!debug)
             return;
 
-        Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor("&6[TAI XIU DEBUG] &e" + message));
+        Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor("&6[TAI XIU DEBUG] &e" + prefix.toUpperCase() + " >>> " + message));
     }
 
 }

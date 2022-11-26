@@ -3,7 +3,6 @@ package com.cortezromeo.taixiu.storage;
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.storage.ISession;
-import com.cortezromeo.taixiu.manager.DatabaseManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;

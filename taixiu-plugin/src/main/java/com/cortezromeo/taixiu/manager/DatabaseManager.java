@@ -1,7 +1,6 @@
 package com.cortezromeo.taixiu.manager;
 
 import com.cortezromeo.taixiu.TaiXiu;
-import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import com.cortezromeo.taixiu.storage.loadingtype.PluginDisablingType;
@@ -10,11 +9,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 import static com.cortezromeo.taixiu.util.MessageUtil.log;
+import static com.cortezromeo.taixiu.util.MessageUtil.thowErrorMessage;
 
 public class DatabaseManager {
     public static List<String> togglePlayers = new ArrayList<>();
@@ -73,19 +72,27 @@ public class DatabaseManager {
 
     public static void loadSessionData(long session) {
 
+        debug("LOADING SESSION DATA", "Session number " + session);
         if (taiXiuData.containsKey(session))
             return;
 
         taiXiuData.put(session, SessionDataStorage.getSessionData(session));
+        debug("SESSION DATA LOADED", "Session number " + session);
     }
 
     public static void saveSessionData(long session) {
+
+        debug("SAVING SESSION DATA", "Session number " + session);
         SessionDataStorage.saveTaiXiuData(session, taiXiuData.get(session));
+        debug("SESSION DATA SAVED", "Session number " + session);
     }
 
     public static void unloadSessionData(long session) {
+
+        debug("UNLOADING SESSION DATA", "Session number " + session);
         SessionDataStorage.saveTaiXiuData(session, taiXiuData.get(session));
         taiXiuData.remove(session);
+        debug("SESSION DATA UNLOADED", "Session number " + session);
     }
 
     public static boolean checkExistsFileData(long session) {
@@ -98,8 +105,7 @@ public class DatabaseManager {
             try {
                 return true;
             } catch (Exception e) {
-                debug("ERROR " + ">>> " + e);
-                debug("&b&lVUI LÒNG BÁO LẠI LỖI NÀY QUA DISCORD CỦA MÌNH: Cortez_Romeo#1290");
+                thowErrorMessage("" + e);
                 return false;
             }
         }
@@ -138,7 +144,7 @@ public class DatabaseManager {
             log("&e[TAI XIU] Tiến hành save dữ liệu số " + DatabaseManager.getLastSession() + " và xóa tất cả dữ liệu cũ...");
 
             int totalFiles = 0;
-            for (int i = 0; i <= listOfFilesSession.length; i++) {
+            for (int i = 0; i < listOfFilesSession.length; i++) {
                 if (listOfFilesSession[i].isFile()) {
                     totalFiles++;
 
@@ -155,7 +161,7 @@ public class DatabaseManager {
                     if(sessionFile.delete()) {
                         // stuffs
                     } else {
-                        debug("&cERROR [COULD NOT DELETE FILE] " + ">>> " + session + ".yml");
+                        thowErrorMessage("KHÔNG THỂ XÓA FILE " + sessionFile.getName());
                     }
                 }
             }

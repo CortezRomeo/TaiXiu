@@ -1,7 +1,6 @@
 package com.cortezromeo.taixiu.listener;
 
 import com.cortezromeo.taixiu.TaiXiu;
-import com.cortezromeo.taixiu.inventory.page.PagedPane;
 import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import org.bukkit.Bukkit;

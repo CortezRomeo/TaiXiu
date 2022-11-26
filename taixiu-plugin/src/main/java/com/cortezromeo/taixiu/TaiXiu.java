@@ -16,7 +16,6 @@ import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import com.cortezromeo.taixiu.support.PAPISupport;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
-import com.cortezromeo.taixiu.task.AutoSaveTask;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
@@ -31,7 +30,6 @@ import static com.cortezromeo.taixiu.util.MessageUtil.log;
 
 public final class TaiXiu extends JavaPlugin {
 
-    private AutoSaveTask autoSaveTask = null;
     public static TaiXiu plugin;
     private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     public static VersionSupport nms;
@@ -118,6 +116,11 @@ public final class TaiXiu extends JavaPlugin {
         InventoryFile.reload();
     }
 
+    private void initDatabase() {
+        DatabaseManager.loadLoadingType();
+        SessionDataStorage.init();
+    }
+
     private void initCommand() {
         new TaiXiuCommand(this);
         new TaiXiuAdminCommand(this);
@@ -127,11 +130,6 @@ public final class TaiXiu extends JavaPlugin {
         new PaneListener(this);
         new JoinListener(this);
         new QuitListener(this);
-    }
-
-    private void initDatabase() {
-        DatabaseManager.loadLoadingType();
-        SessionDataStorage.init();
     }
 
     private void initSupport() {

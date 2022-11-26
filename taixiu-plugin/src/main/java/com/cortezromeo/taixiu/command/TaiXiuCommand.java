@@ -114,8 +114,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                             }
                         }
                     } catch (Exception e) {
-                        debug("ERROR [/taixiu thongtin] " + ">>> " + e);
-                        debug("&b&lVUI LÒNG BÁO LẠI LỖI NÀY QUA DISCORD CỦA MÌNH: Cortez_Romeo#1290");
+                        MessageUtil.thowErrorMessage("" + e);
                     }
 
                     return false;
@@ -212,11 +211,11 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                     PlayerBetEvent event = new PlayerBetEvent(p, result, money);
                     Bukkit.getServer().getPluginManager().callEvent(event);
 
-                    debug("PLAYER BETTED " +
-                            ">>> name: " + pName + " " +
-                            "| bet: " + result.toString() + " " +
-                            "| money: " + money + " " +
-                            "| session: " + data.getSession());
+                    debug("PLAYER BETTED",
+                            "Name: " + pName + " " +
+                            "| Bet: " + result.toString() + " " +
+                            "| Money: " + money + " " +
+                            "| Session: " + data.getSession());
 
                     return false;
                 default:

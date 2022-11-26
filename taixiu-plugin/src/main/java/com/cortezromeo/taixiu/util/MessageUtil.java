@@ -49,6 +49,11 @@ public class MessageUtil {
         }
     }
 
+    public static void thowErrorMessage(String message) {
+        Bukkit.getLogger().severe(message);
+        log("&4&l[LAC BUA CUA ERROR] &c&lNếu lỗi này ảnh hưởng đến trải nghiệm của người chơi, hãy liên hệ mình qua discord: Cortez_Romeo#1290");
+    }
+
     public static void log(String message) {
         Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor(message));
     }
