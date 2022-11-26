@@ -1,10 +1,8 @@
 ![](https://i.imgur.com/o9Mucfz.png)
 # YÊU CẦU
-Java 11 hoặc trở lên
-
-Plugin Vault
-
-Plugin Economy, nếu bạn có cài EssentialsX thì bỏ qua phần này
+- Java 11 hoặc trở lên
+- Plugin Vault
+- Plugin Economy, nếu bạn có cài EssentialsX thì bỏ qua phần này
 # TÍNH NĂNG
 - Plugin có hỗ trợ API để thêm tính năng nâng cao
 - Tự động cập nhật file config và message khi có thay đổi trong bản mới
@@ -27,5 +25,5 @@ Plugin Economy, nếu bạn có cài EssentialsX thì bỏ qua phần này
 - Khi tổng các nút là 3 hoặc 18 thì Nhà cái ăn (Xỉu và Tài đều thua)
 - Khi thắng bạn sẽ nhận được gấp đôi số tiền đã đặt (1 ăn 1)
 
-# HÌNH ẢNH
+# HÌNH ẢNH [OUTDATED]
 ![](https://i.imgur.com/fZ5pd4a.png)
