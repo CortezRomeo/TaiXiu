@@ -123,19 +123,49 @@ public class TaiXiuManager {
                 sendBoardCast(string);
             }
 
+            double tax = cfg.getDouble("bet-settings.tax") / 100;
+
             if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
                 for (String player : session.getXiuPlayers().keySet()) {
-                    econ.depositPlayer(player, session.getXiuPlayers().get(player) * 2);
-                    sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
+
+                    long money = session.getXiuPlayers().get(player) * 2;
+                    String message;
+
+                    if (tax > 0) {
+                        money = Math.round(money - (money * tax));
+                        message = messageF.getString("session-player-win-with-tax")
                             .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                            .replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(player) * 2)));
+                            .replaceAll("%money%", MessageUtil.formatMoney(money))
+                            .replaceAll("%tax%", String.valueOf(tax)));
+                    } else {
+                        message = messageF.getString("session-player-win")
+                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
+                            .replaceAll("%money%", MessageUtil.formatMoney(money)));
+                    }
+
+                    econ.depositPlayer(player, money);
+                    sendMessage(Bukkit.getPlayer(player), message);
                 }
             } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
                 for (String player : session.getTaiPlayers().keySet()) {
-                    econ.depositPlayer(player, session.getTaiPlayers().get(player) * 2);
-                    sendMessage(Bukkit.getPlayer(player), messageF.getString("session-player-win")
+
+                    long money = session.getTaiPlayers().get(player) * 2;
+                    String message;
+
+                    if (tax > 0) {
+                        money = Math.round(money - (money * tax));
+                        message = messageF.getString("session-player-win-with-tax")
                             .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                            .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(player) * 2)));
+                            .replaceAll("%money%", MessageUtil.formatMoney(money))
+                            .replaceAll("%tax%", String.valueOf(tax)));
+                    } else {
+                        message = messageF.getString("session-player-win")
+                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
+                            .replaceAll("%money%", MessageUtil.formatMoney(money)));
+                    }
+
+                    econ.depositPlayer(player, money);
+                    sendMessage(Bukkit.getPlayer(player), message);
                 }
             } else
                 sendBoardCast(messageF.getString("session-special-win"));
@@ -152,7 +182,6 @@ public class TaiXiuManager {
             resultSeason(session, dice1, dice2, dice3);
             MessageUtil.thowErrorMessage("" + e);
         }
-
     }
 
     public static Long getXiuBet(@NotNull ISession session) {

@@ -57,6 +57,12 @@ bet-settings:
   max-bet: 1000000
   # Số tiền tối thiểu có thể cược
   min-bet: 500
+  # Tính thêm thuế
+  # Cách tính thuế:
+  # 1. <thuế> = "bet-settings.tax" / 100
+  # 2. số tiền player nhận được = <tổng số tiền ăn được> - (<tổng số tiền ăn được> * <thuế>)
+  # Để là 0 nếu muốn tắt tính thuế
+  tax: 0
   # Đóng đặt cược khi thời gian bé hơn:
   disable-while-remaining: 15
   # Một số trường hợp cả 3 xúc xắc đều ra 1 nút hoặc 6 nút
