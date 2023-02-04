@@ -94,6 +94,7 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
                         }
 
                         TaiXiuManager.setTime(time);
+                        BossBarManager.setTimePerSession(time);
                         sendMessage(sender, messageF.getString("admin-settime").replace("%time%", String.valueOf(time)));
                         sendBoardCast(messageF.getString("admin-settime-boardcast")
                                 .replaceAll("%playerName%", sender.getName())

@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,6 @@ public final class TaiXiu extends JavaPlugin {
     public static TaiXiu plugin;
     private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     public static VersionSupport nms;
-    private boolean serverSoftwareSupport = true;
     private static boolean papiSupport = false;
 
     @Override
@@ -45,11 +45,6 @@ public final class TaiXiu extends JavaPlugin {
     }
     @Override
     public void onEnable() {
-
-        if (!serverSoftwareSupport) {
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
 
         log("&f--------------------------------");
         log("&a▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █");
@@ -151,6 +146,13 @@ public final class TaiXiu extends JavaPlugin {
 
     public static boolean PAPISupport() {
         return papiSupport;
+    }
+
+    public static boolean FloodgateSupport() {
+        if (FloodgateApi.getInstance() == null) {
+            return false;
+        }
+        return true;
     }
 
     public static String getServerVersion() {

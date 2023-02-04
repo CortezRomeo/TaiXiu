@@ -8,10 +8,13 @@ import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
+import com.cortezromeo.taixiu.util.CommandUtil;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -126,47 +129,9 @@ public class TaiXiuManager {
             double tax = cfg.getDouble("bet-settings.tax") / 100;
 
             if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
-                for (String player : session.getXiuPlayers().keySet()) {
-
-                    long money = session.getXiuPlayers().get(player) * 2;
-                    String message;
-
-                    if (tax > 0) {
-                        money = Math.round(money - (money * tax));
-                        message = messageF.getString("session-player-win-with-tax")
-                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                            .replaceAll("%money%", MessageUtil.formatMoney(money))
-                            .replaceAll("%tax%", String.valueOf(tax)));
-                    } else {
-                        message = messageF.getString("session-player-win")
-                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                            .replaceAll("%money%", MessageUtil.formatMoney(money)));
-                    }
-
-                    econ.depositPlayer(player, money);
-                    sendMessage(Bukkit.getPlayer(player), message);
-                }
+                giveMoney(session.getXiuPlayers(), session.getResult(), tax);
             } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
-                for (String player : session.getTaiPlayers().keySet()) {
-
-                    long money = session.getTaiPlayers().get(player) * 2;
-                    String message;
-
-                    if (tax > 0) {
-                        money = Math.round(money - (money * tax));
-                        message = messageF.getString("session-player-win-with-tax")
-                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                            .replaceAll("%money%", MessageUtil.formatMoney(money))
-                            .replaceAll("%tax%", String.valueOf(tax)));
-                    } else {
-                        message = messageF.getString("session-player-win")
-                            .replaceAll("%result%", MessageUtil.getFormatName(session.getResult()))
-                            .replaceAll("%money%", MessageUtil.formatMoney(money)));
-                    }
-
-                    econ.depositPlayer(player, money);
-                    sendMessage(Bukkit.getPlayer(player), message);
-                }
+                giveMoney(session.getTaiPlayers(), session.getResult(), tax);
             } else
                 sendBoardCast(messageF.getString("session-special-win"));
 
@@ -181,6 +146,39 @@ public class TaiXiuManager {
         } catch (Exception e) {
             resultSeason(session, dice1, dice2, dice3);
             MessageUtil.thowErrorMessage("" + e);
+        }
+    }
+
+    private static void giveMoney(@NotNull  HashMap<String, Long> players, TaiXiuResult result, double tax) {
+        FileConfiguration messageF = MessageFile.get();
+        for (String player : players.keySet()) {
+
+            long money = players.get(player) * 2;
+            String message;
+
+            if (tax > 0) {
+                money = Math.round(money - (money * tax));
+                message = messageF.getString("session-player-win-with-tax")
+                        .replaceAll("%result%", MessageUtil.getFormatName(result))
+                        .replaceAll("%money%", MessageUtil.formatMoney(money))
+                        .replaceAll("%tax%", String.valueOf(tax * 100));
+            } else {
+                message = messageF.getString("session-player-win")
+                        .replaceAll("%result%", MessageUtil.getFormatName(result))
+                        .replaceAll("%money%", MessageUtil.formatMoney(money));
+            }
+
+            if (TaiXiu.FloodgateSupport()) {
+                if (Bukkit.getPlayer(player).isOnline()) {
+                    if (FloodgateApi.getInstance().isFloodgatePlayer(Bukkit.getPlayer(player).getUniqueId())) {
+                        CommandUtil.dispatchCommand(Bukkit.getPlayer(player), "console:eco give " + player + " " + money);
+                        sendMessage(Bukkit.getPlayer(player), message);
+                        continue;
+                    }
+                }
+            }
+            VaultSupport.econ.depositPlayer(player, money);
+            sendMessage(Bukkit.getPlayer(player), message);
         }
     }
 

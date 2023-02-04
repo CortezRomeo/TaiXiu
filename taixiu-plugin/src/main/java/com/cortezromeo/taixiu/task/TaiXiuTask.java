@@ -6,6 +6,7 @@ import com.cortezromeo.taixiu.api.TaiXiuState;
 import com.cortezromeo.taixiu.api.event.SessionSwapEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
@@ -77,6 +78,7 @@ public class TaiXiuTask implements Runnable {
 
                 if (time == 0) {
                     time = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
+                    BossBarManager.setTimePerSession(time);
 
                     if (getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) {
                         MessageUtil.sendBoardCast(MessageFile.get().getString("session-result-not-enough-player").replace("%session%", String.valueOf(getSession().getSession())));

@@ -5,6 +5,7 @@ import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import com.cortezromeo.taixiu.storage.loadingtype.PluginDisablingType;
 import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
+import com.cortezromeo.taixiu.util.MessageUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -16,10 +17,10 @@ import static com.cortezromeo.taixiu.util.MessageUtil.log;
 import static com.cortezromeo.taixiu.util.MessageUtil.thowErrorMessage;
 
 public class DatabaseManager {
-    public static List<String> togglePlayers = new ArrayList<>();
-    public static Map<Long, ISession> taiXiuData = new TreeMap<>();
-    public static long lastSession;
 
+    public static List<String> togglePlayers = new ArrayList<>();
+    public static HashMap<Long, ISession> taiXiuData = new HashMap<>();
+    public static long lastSession;
     public static PluginDisablingType pluginDisablingType;
     public static SessionEndingType sessionEndingType;
 
@@ -31,10 +32,16 @@ public class DatabaseManager {
     }
 
     public static long getLastSession() {
-        if (taiXiuData.isEmpty())
-            lastSession = 0;
-        else {
-            lastSession = Collections.max(taiXiuData.keySet());
+
+        try {
+            if (taiXiuData.isEmpty())
+                lastSession = 0;
+            else {
+                lastSession = Collections.max(taiXiuData.keySet());
+            }
+        } catch (Exception e) {
+            MessageUtil.thowErrorMessage("" + e);
+            return getLastSessionFromFile();
         }
 
         return lastSession;

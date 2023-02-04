@@ -20,7 +20,6 @@ import java.util.Map;
 public class BossBarManager {
 
     public static Map<Player, BossBar> bossBarPlayers = new HashMap<>();
-
     private static boolean enable;
     private static String title;
     private static BarColor colorPlaying;
@@ -44,6 +43,10 @@ public class BossBarManager {
         timePerSession = config.getInt("task.taiXiuTask.time-per-session");
         timeDisabling = config.getInt("bet-settings.disable-while-remaining");
 
+    }
+
+    public static void setTimePerSession(int time) {
+        timePerSession = time;
     }
 
     public static void toggleBossBar(Player p) {
@@ -95,7 +98,7 @@ public class BossBarManager {
                     double bossBarProgess = (double) timeLeft / (double) timePerSession;
                     bossBar.setProgress(bossBarProgess);
                 } catch (Exception e) {
-                    MessageUtil.thowErrorMessage("" + e);
+                    bossBar.setProgress(1);
                 }
 
                 if (timeLeft <= timeDisabling) {
