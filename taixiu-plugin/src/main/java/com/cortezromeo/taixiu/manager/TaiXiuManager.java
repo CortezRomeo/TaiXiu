@@ -168,17 +168,18 @@ public class TaiXiuManager {
                         .replaceAll("%money%", MessageUtil.formatMoney(money));
             }
 
+            sendMessage(Bukkit.getPlayer(player), message);
+
             if (TaiXiu.FloodgateSupport()) {
-                if (Bukkit.getPlayer(player).isOnline()) {
+                if (Bukkit.getPlayer(player) != null) {
                     if (FloodgateApi.getInstance().isFloodgatePlayer(Bukkit.getPlayer(player).getUniqueId())) {
                         CommandUtil.dispatchCommand(Bukkit.getPlayer(player), "console:eco give " + player + " " + money);
-                        sendMessage(Bukkit.getPlayer(player), message);
                         continue;
                     }
                 }
             }
+
             VaultSupport.econ.depositPlayer(player, money);
-            sendMessage(Bukkit.getPlayer(player), message);
         }
     }
 
@@ -222,13 +223,15 @@ public class TaiXiuManager {
                 return messageF.getString("bestWinners-format.valid-special").replace("%allBet%", MessageUtil.formatMoney(getTotalBet(session)));
             }
 
-            HashMap<String, Long> bestWinners = (result == TaiXiuResult.XIU ? (session.getXiuPlayers() == null ? null : session.getXiuPlayers()) : (session.getTaiPlayers() == null ? null : session.getTaiPlayers()));
+            Map<String, Long> bestWinners = result == TaiXiuResult.XIU ? session.getXiuPlayers() : session.getTaiPlayers();
             Long bestWinnersBet = Collections.max(bestWinners.values());
 
             List<String> players = new ArrayList<>();
             for (Map.Entry<String, Long> entry : bestWinners.entrySet()) {
-                if (entry.getValue() == bestWinnersBet) {
+                if (entry.getValue() >= bestWinnersBet)
                     players.add(entry.getKey());
+                else {
+                    Bukkit.getConsoleSender().sendMessage(String.valueOf(entry.getValue() + " khong bang " + bestWinnersBet + " :))"));
                 }
             }
 

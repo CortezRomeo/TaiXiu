@@ -149,6 +149,11 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     public static boolean FloodgateSupport() {
+
+        if (!Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
+            return false;
+        }
+        
         if (FloodgateApi.getInstance() == null) {
             return false;
         }

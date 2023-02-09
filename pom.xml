@@ -7,7 +7,7 @@
     <groupId>com.cortezromeo.taixiu</groupId>
     <artifactId>TaiXiu</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
 
     <modules>
         <module>taixiu-plugin</module>
