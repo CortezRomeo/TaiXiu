@@ -31,8 +31,17 @@ public class PAPISupport extends PlaceholderExpansion {
         if (s == null)
             return null;
 
+        if (s.equals("phien") || s.equals("currentsession")) {
+            return String.valueOf(TaiXiuManager.getSessionData().getSession());
+        }
+
         if (s.startsWith("result_phien_")) {
-            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(s.replace("result_phien_", "")));
+
+            String sessionNumber = s.replace("result_phien_", "");
+            if (sessionNumber.equals("current") || sessionNumber.equals("hientai"))
+                sessionNumber = String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(sessionNumber));
             if (session == null) {
                 return "";
             }
@@ -40,7 +49,12 @@ public class PAPISupport extends PlaceholderExpansion {
         }
 
         if (s.startsWith("resultformat_phien_")) {
-            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(s.replace("resultformat_phien_", "")));
+
+            String sessionNumber = s.replace("resultformat_phien_", "");
+            if (sessionNumber.equals("current") || sessionNumber.equals("hientai"))
+                sessionNumber = String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(sessionNumber));
             if (session == null) {
                 return "";
             }
@@ -48,7 +62,12 @@ public class PAPISupport extends PlaceholderExpansion {
         }
 
         if (s.startsWith("taiplayers_phien_")) {
-            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(s.replace("taiplayers_phien_", "")));
+
+            String sessionNumber = s.replace("taiplayers_phien_", "");
+            if (sessionNumber.equals("current") || sessionNumber.equals("hientai"))
+                sessionNumber = String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(sessionNumber));
             if (session == null) {
                 return "";
             }
@@ -56,7 +75,12 @@ public class PAPISupport extends PlaceholderExpansion {
         }
 
         if (s.startsWith("xiuplayers_phien_")) {
-            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(s.replace("xiuplayers_phien_", "")));
+
+            String sessionNumber = s.replace("xiuplayers_phien_", "");
+            if (sessionNumber.equals("current") || sessionNumber.equals("hientai"))
+                sessionNumber = String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(sessionNumber));
             if (session == null) {
                 return "";
             }
@@ -64,7 +88,12 @@ public class PAPISupport extends PlaceholderExpansion {
         }
 
         if (s.startsWith("taiplayers_bet_phien_")) {
-            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(s.replace("taiplayers_bet_phien_", "")));
+
+            String sessionNumber = s.replace("taiplayers_bet_phien_", "");
+            if (sessionNumber.equals("current") || sessionNumber.equals("hientai"))
+                sessionNumber = String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(sessionNumber));
             if (session == null) {
                 return "";
             }
@@ -80,7 +109,12 @@ public class PAPISupport extends PlaceholderExpansion {
         }
 
         if (s.startsWith("xiuplayers_bet_phien_")) {
-            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(s.replace("xiuplayers_bet_phien_", "")));
+
+            String sessionNumber = s.replace("xiuplayers_bet_phien_", "");
+            if (sessionNumber.equals("current") || sessionNumber.equals("hientai"))
+                sessionNumber = String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(sessionNumber));
             if (session == null) {
                 return "";
             }
@@ -96,7 +130,12 @@ public class PAPISupport extends PlaceholderExpansion {
         }
 
         if (s.startsWith("totalbet_phien_")) {
-            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(s.replace("totalbet_phien_", "")));
+
+            String sessionNumber = s.replace("totalbet_phien_", "");
+            if (sessionNumber.equals("current") || sessionNumber.equals("hientai"))
+                sessionNumber = String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+            ISession session = DatabaseManager.taiXiuData.get(Long.valueOf(sessionNumber));
             if (session == null) {
                 return "";
             }

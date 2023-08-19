@@ -8,13 +8,10 @@ import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
-import com.cortezromeo.taixiu.util.CommandUtil;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -157,7 +154,7 @@ public class TaiXiuManager {
             String message;
 
             if (tax > 0) {
-                money = Math.round(money - (money * tax));
+                money = players.get(player) + Math.round(players.get(player) - (players.get(player) * tax));
                 message = messageF.getString("session-player-win-with-tax")
                         .replaceAll("%result%", MessageUtil.getFormatName(result))
                         .replaceAll("%money%", MessageUtil.formatMoney(money))
@@ -169,16 +166,6 @@ public class TaiXiuManager {
             }
 
             sendMessage(Bukkit.getPlayer(player), message);
-
-            if (TaiXiu.FloodgateSupport()) {
-                if (Bukkit.getPlayer(player) != null) {
-                    if (FloodgateApi.getInstance().isFloodgatePlayer(Bukkit.getPlayer(player).getUniqueId())) {
-                        CommandUtil.dispatchCommand(Bukkit.getPlayer(player), "console:eco give " + player + " " + money);
-                        continue;
-                    }
-                }
-            }
-
             VaultSupport.econ.depositPlayer(player, money);
         }
     }
@@ -227,13 +214,9 @@ public class TaiXiuManager {
             Long bestWinnersBet = Collections.max(bestWinners.values());
 
             List<String> players = new ArrayList<>();
-            for (Map.Entry<String, Long> entry : bestWinners.entrySet()) {
+            for (Map.Entry<String, Long> entry : bestWinners.entrySet())
                 if (entry.getValue() >= bestWinnersBet)
                     players.add(entry.getKey());
-                else {
-                    Bukkit.getConsoleSender().sendMessage(String.valueOf(entry.getValue() + " khong bang " + bestWinnersBet + " :))"));
-                }
-            }
 
             String delim = messageF.getString("bestWinners-format.playerName-delim");
             String bestWinnersName = String.join(delim, players);

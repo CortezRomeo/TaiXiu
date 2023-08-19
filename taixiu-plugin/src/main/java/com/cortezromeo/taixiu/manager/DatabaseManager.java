@@ -151,25 +151,21 @@ public class DatabaseManager {
             log("&e[TAI XIU] Tiến hành save dữ liệu số " + DatabaseManager.getLastSession() + " và xóa tất cả dữ liệu cũ...");
 
             int totalFiles = 0;
-            for (int i = 0; i < listOfFilesSession.length; i++) {
-                if (listOfFilesSession[i].isFile()) {
+            for (File sessionFile : listOfFilesSession) {
+                if (sessionFile.isFile()) {
                     totalFiles++;
 
-                    File sessionFile = listOfFilesSession[i];
                     Long session = Long.valueOf(FilenameUtils.removeExtension(sessionFile.getName()));
                     if (session == getLastSessionFromFile()) {
                         totalFiles--;
 
-                        if(taiXiuData.containsKey(session))
+                        if (taiXiuData.containsKey(session))
                             saveSessionData(session);
                         continue;
                     }
 
-                    if(sessionFile.delete()) {
-                        // stuffs
-                    } else {
+                    if (!sessionFile.delete())
                         thowErrorMessage("KHÔNG THỂ XÓA FILE " + sessionFile.getName());
-                    }
                 }
             }
             log("&e[TAI XIU] Save thành công dữ liệu số " + DatabaseManager.getLastSession() + " và xóa " + totalFiles + " dữ liệu!");

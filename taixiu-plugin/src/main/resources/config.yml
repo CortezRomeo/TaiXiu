@@ -60,7 +60,7 @@ bet-settings:
   # Tính thêm thuế
   # Cách tính thuế:
   # 1. <thuế> = "bet-settings.tax" / 100
-  # 2. số tiền player nhận được = <tổng số tiền ăn được> - (<tổng số tiền ăn được> * <thuế>)
+  # 2. số tiền player nhận được = <tổng tiền cược trước đó> + (<tổng số tiền cược trước đó> * <thuế>)
   # Để là 0 nếu muốn tắt tính thuế
   tax: 0
   # Đóng đặt cược khi thời gian bé hơn:

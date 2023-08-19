@@ -73,14 +73,15 @@ public class TaiXiuTask implements Runnable {
             try {
                 time--;
 
-                if (getSession().getResult() != TaiXiuResult.NONE)
+                if (getSession().getResult() != TaiXiuResult.NONE) {
                     time = 0;
+                }
 
                 if (time == 0) {
                     time = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
                     BossBarManager.setTimePerSession(time);
 
-                    if (getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) {
+                    if ((getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) && getSession().getResult() == TaiXiuResult.NONE) {
                         MessageUtil.sendBoardCast(MessageFile.get().getString("session-result-not-enough-player").replace("%session%", String.valueOf(getSession().getSession())));
                     } else {
                         TaiXiuManager.resultSeason(getSession(), 0, 0, 0);
