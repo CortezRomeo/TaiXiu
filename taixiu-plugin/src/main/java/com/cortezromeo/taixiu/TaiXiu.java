@@ -127,7 +127,6 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     private void initSupport() {
-
         // papi
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PAPISupport().register();

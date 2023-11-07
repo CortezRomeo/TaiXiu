@@ -29,7 +29,7 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
 
     public TaiXiuAdminCommand(TaiXiu plugin) {
         this.plugin = plugin;
-        plugin.getCommand("taixiuadmin").setExecutor((CommandExecutor) this);
+        plugin.getCommand("taixiuadmin").setExecutor(this);
     }
 
     @Override

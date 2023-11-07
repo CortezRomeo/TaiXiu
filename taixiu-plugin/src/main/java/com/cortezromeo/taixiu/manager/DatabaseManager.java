@@ -5,8 +5,8 @@ import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import com.cortezromeo.taixiu.storage.loadingtype.PluginDisablingType;
 import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
+import com.cortezromeo.taixiu.util.FilenameUtil;
 import com.cortezromeo.taixiu.util.MessageUtil;
-import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -62,7 +62,7 @@ public class DatabaseManager {
             if (listOfFilesSession[i].isFile()) {
 
                 File sessionFile = listOfFilesSession[i];
-                String session = FilenameUtils.removeExtension(sessionFile.getName());
+                String session = FilenameUtil.removeExtension(sessionFile.getName());
 
                 try {
                     Long.parseLong(session);
@@ -155,7 +155,7 @@ public class DatabaseManager {
                 if (sessionFile.isFile()) {
                     totalFiles++;
 
-                    Long session = Long.valueOf(FilenameUtils.removeExtension(sessionFile.getName()));
+                    Long session = Long.valueOf(FilenameUtil.removeExtension(sessionFile.getName()));
                     if (session == getLastSessionFromFile()) {
                         totalFiles--;
 
@@ -171,5 +171,4 @@ public class DatabaseManager {
             log("&e[TAI XIU] Save thành công dữ liệu số " + DatabaseManager.getLastSession() + " và xóa " + totalFiles + " dữ liệu!");
         }
     }
-
 }

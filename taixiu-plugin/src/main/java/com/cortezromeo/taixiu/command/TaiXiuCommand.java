@@ -35,7 +35,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
 
     public TaiXiuCommand(TaiXiu plugin) {
         this.plugin = plugin;
-        plugin.getCommand("taixiu").setExecutor((CommandExecutor) this);
+        plugin.getCommand("taixiu").setExecutor(this);
     }
 
     @Override

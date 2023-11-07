@@ -7,7 +7,7 @@
     <groupId>com.cortezromeo.taixiu</groupId>
     <artifactId>TaiXiu</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 
     <modules>
         <module>taixiu-plugin</module>
@@ -74,12 +74,6 @@
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
