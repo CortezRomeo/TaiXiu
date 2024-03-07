@@ -62,10 +62,10 @@ public class InventoryFile {
                         " * Có hỗ trợ hex color\n" +
                         " * Có 3 type chính, đó là:\n" +
                         "   + material: value chỉnh thành MATERIAL của block\n" +
-                        "     > Theo các phiên bản bé hơn 1.13, bạn có thể điền số trong phần 'value:' và 'data:' của item đó" +
-                        "         Ví dụ: (value: 95 | data: 1) [https://minecraft-ids.grahamedgecombe.com/]" +
-                        "     > Theo các phiên bản lớn hơn 1.12.2, bạn có thể điền thẳng tên item đó (Phần 'data:' sẽ không còn cần thiết)" +
-                        "         Ví dụ: (value: BOOK) [https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html]" +
+                        "     > Theo các phiên bản bé hơn 1.13, bạn có thể điền số trong phần 'value:' và 'data:' của item đó\n" +
+                        "         Ví dụ: (value: 95 | data: 1) [https://minecraft-ids.grahamedgecombe.com/]\n" +
+                        "     > Theo các phiên bản lớn hơn 1.12.2, bạn có thể điền thẳng tên item đó (Phần 'data:' sẽ không còn cần thiết)\n" +
+                        "         Ví dụ: (value: BOOK) [https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html]\n" +
                         "   + playerhead: dành cho item \"bet-player:\" để hiện thị đầu người hơi\n" +
                         "   + customhead: Đọc phần ở dưới\n" +
                         "     + Cách sử dụng custom-head:\n" +
@@ -105,7 +105,7 @@ public class InventoryFile {
 
         String txinfo = "inventory.taiXiuInfo.";
         get().addDefault(txinfo + "title", "&0Thông tin phiên số &b#%session%");
-        get().addDefault(txinfo + "rows", 6);
+        get().addDefault(txinfo + "rows", 5);
         get().addDefault(txinfo + "items.bet-player.name", "&b%playerName%");
         get().addDefault(txinfo + "items.bet-player.type", "playerhead");
         get().addDefault(txinfo + "items.bet-player.data", 0);

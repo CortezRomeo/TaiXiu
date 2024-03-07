@@ -12,6 +12,7 @@ import com.cortezromeo.taixiu.util.MessageUtil;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -20,6 +21,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendBoardCast;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendMessage;
+
+enum SoundType {
+    win, lose
+}
 
 public class TaiXiuManager {
 
@@ -126,9 +131,14 @@ public class TaiXiuManager {
             double tax = cfg.getDouble("bet-settings.tax") / 100;
 
             if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
-                giveMoney(session.getXiuPlayers(), session.getResult(), tax);
+                executeWinners(session.getXiuPlayers(), session.getResult(), tax);
+                playSound(session.getXiuPlayers().keySet(), SoundType.win);
+                playSound(session.getTaiPlayers().keySet(), SoundType.lose);
             } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
-                giveMoney(session.getTaiPlayers(), session.getResult(), tax);
+                executeWinners(session.getTaiPlayers(), session.getResult(), tax);
+                playSound(session.getTaiPlayers().keySet(), SoundType.win);
+                playSound(session.getXiuPlayers().keySet(), SoundType.lose);
+
             } else
                 sendBoardCast(messageF.getString("session-special-win"));
 
@@ -146,7 +156,7 @@ public class TaiXiuManager {
         }
     }
 
-    private static void giveMoney(@NotNull  HashMap<String, Long> players, TaiXiuResult result, double tax) {
+    private static void executeWinners(@NotNull HashMap<String, Long> players, TaiXiuResult result, double tax) {
         FileConfiguration messageF = MessageFile.get();
         for (String player : players.keySet()) {
 
@@ -169,6 +179,24 @@ public class TaiXiuManager {
             VaultSupport.econ.depositPlayer(player, money);
         }
     }
+
+    private static void playSound(@NotNull Set<String> players, SoundType soundType) {
+
+        for (String playerName : players) {
+            Player player = Bukkit.getPlayer(playerName);
+
+            if (Bukkit.getPlayer(playerName) == null)
+                continue;
+
+            if (TaiXiu.plugin.getConfig().getBoolean("sound." + soundType + ".enable")) {
+                player.playSound(player.getLocation(),
+                        TaiXiu.nms.createSound(TaiXiu.plugin.getConfig().getString("sound." + soundType + ".sound-name")),
+                        TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".volume"),
+                        TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".pitch"));
+            }
+        }
+    }
+
 
     public static Long getXiuBet(@NotNull ISession session) {
 
