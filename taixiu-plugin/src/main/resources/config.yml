@@ -44,7 +44,7 @@ task:
   taiXiuTask:
     # Thời gian đếm ngược lấy kết quả của mỗi phiên
     # Lấy theo giây(s)
-    time-per-session: 120
+    time-per-session: 125
 
 # Số tiền sẽ được hiển thị theo cách dễ nhìn hơn
 # Ví dụ: Bạn đặt '#,###' tại 'format-money', số tiền là 500000 -> Số tiền hiền thị: 500,000
@@ -84,16 +84,25 @@ sound:
     volume: 1
     pitch: 1
 
-
 # Thanh máu boss được dùng để hiển thị thông tin
 boss-bar:
   enable: true
-  title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
-  color:
-    playing: YELLOW
-    bet-disabling: RED
-    pausing: RED
-  style: SOLID
+  type:
+    playing:
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
+      color:
+        playing: YELLOW
+        bet-disabling: RED
+        pausing: RED
+      style: SOLID
+    # Hiển thị khi kết thúc phiên với kết quả phiên của cuối cùng
+    reloading:
+      enable: true
+      time: 5
+      title: '&a&lT&c&lX &b#%session% &f| %result% &e%numberOfPlayers% &fngười thắng &6$%money%'
+      color: WHITE
+      style: SOLID
+
 
 # Phần thông báo từ bossbar và message
 toggle-settings:

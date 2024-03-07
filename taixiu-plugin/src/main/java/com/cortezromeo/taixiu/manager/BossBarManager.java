@@ -29,7 +29,6 @@ public class BossBarManager {
     private static int timePerSession;
     private static int timeDisabling;
 
-
     public static void setupValue() {
         FileConfiguration config = TaiXiu.plugin.getConfig();
 
@@ -85,6 +84,7 @@ public class BossBarManager {
 
                 BossBar bossBar = bossBarPlayers.get(p);
                 ISession session = TaiXiuManager.getSessionData();
+
                 int timeLeft = TaiXiuManager.getTaiXiuTask().getTime();
 
                 String bossBarTitle = title.replace("%session%", String.valueOf(session.getSession()));

@@ -46,9 +46,11 @@ public final class TaiXiu extends JavaPlugin {
     public void onEnable() {
 
         log("&f--------------------------------");
-        log("&a▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █");
-        log("&a  █    █▄▄█  █      █    █   █  █");
-        log("&a  █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀");
+        log("&#03fc88  _____           _    __  __  _         ");
+        log("&#03fc88 |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
+        log("&#03fc88   | |    / _  | | |    \\  /  | | | | | |");
+        log("&#03fc88   | |   | (_| | | |    /  \\  | | | |_| |");
+        log("&#03fc88   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
         log("");
         log("&fVersion: &b" + getDescription().getVersion());
         log("&fAuthor: &bCortez_Romeo");
@@ -166,9 +168,11 @@ public final class TaiXiu extends JavaPlugin {
     public void onDisable() {
 
         log("&f--------------------------------");
-        log("&c▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █");
-        log("&c  █    █▄▄█  █      █    █   █  █");
-        log("&c  █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀");
+        log("&c  _____           _    __  __  _         ");
+        log("&c |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
+        log("&c   | |    / _  | | |    \\  /  | | | | | |");
+        log("&c   | |   | (_| | | |    /  \\  | | | |_| |");
+        log("&c   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
         log("");
         log("&fVersion: &b" + getDescription().getVersion());
         log("&fAuthor: &bCortez_Romeo");
