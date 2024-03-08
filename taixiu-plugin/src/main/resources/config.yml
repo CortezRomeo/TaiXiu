@@ -99,7 +99,7 @@ boss-bar:
     reloading:
       enable: true
       time: 5
-      title: '&a&lT&c&lX &b#%session% &f| %result% &e%numberOfPlayers% &fngười thắng &6$%money%'
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fngười thắng &6$%money%'
       color: WHITE
       style: SOLID
 

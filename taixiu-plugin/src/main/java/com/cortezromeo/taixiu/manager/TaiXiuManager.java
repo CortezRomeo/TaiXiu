@@ -132,13 +132,26 @@ public class TaiXiuManager {
 
             if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
                 executeWinners(session.getXiuPlayers(), session.getResult(), tax);
-                playSound(session.getXiuPlayers().keySet(), SoundType.win);
-                playSound(session.getTaiPlayers().keySet(), SoundType.lose);
+
+                for (String taiPlayer : session.getTaiPlayers().keySet()) {
+                    String message = messageF.getString("session-player-lose")
+                            .replaceAll("%result%", MessageUtil.getFormatName(TaiXiuResult.TAI))
+                            .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(taiPlayer)));
+
+                    playSound(Bukkit.getPlayer(taiPlayer), SoundType.lose);
+                    sendMessage(Bukkit.getPlayer(taiPlayer), message);
+                }
             } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
                 executeWinners(session.getTaiPlayers(), session.getResult(), tax);
-                playSound(session.getTaiPlayers().keySet(), SoundType.win);
-                playSound(session.getXiuPlayers().keySet(), SoundType.lose);
 
+                for (String xiuPlayer : session.getXiuPlayers().keySet()) {
+                    String message = messageF.getString("session-player-lose")
+                            .replaceAll("%result%", MessageUtil.getFormatName(TaiXiuResult.XIU))
+                            .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(xiuPlayer)));
+
+                    playSound(Bukkit.getPlayer(xiuPlayer), SoundType.lose);
+                    sendMessage(Bukkit.getPlayer(xiuPlayer), message);
+                }
             } else
                 sendBoardCast(messageF.getString("session-special-win"));
 
@@ -174,26 +187,21 @@ public class TaiXiuManager {
                         .replaceAll("%result%", MessageUtil.getFormatName(result))
                         .replaceAll("%money%", MessageUtil.formatMoney(money));
             }
-
+            playSound(Bukkit.getPlayer(player), SoundType.win);
             sendMessage(Bukkit.getPlayer(player), message);
             VaultSupport.econ.depositPlayer(player, money);
         }
     }
 
-    private static void playSound(@NotNull Set<String> players, SoundType soundType) {
+    private static void playSound(Player player, SoundType soundType) {
+        if (player == null)
+            return;
 
-        for (String playerName : players) {
-            Player player = Bukkit.getPlayer(playerName);
-
-            if (Bukkit.getPlayer(playerName) == null)
-                continue;
-
-            if (TaiXiu.plugin.getConfig().getBoolean("sound." + soundType + ".enable")) {
-                player.playSound(player.getLocation(),
-                        TaiXiu.nms.createSound(TaiXiu.plugin.getConfig().getString("sound." + soundType + ".sound-name")),
-                        TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".volume"),
-                        TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".pitch"));
-            }
+        if (TaiXiu.plugin.getConfig().getBoolean("sound." + soundType + ".enable")) {
+            player.playSound(player.getLocation(),
+                    TaiXiu.nms.createSound(TaiXiu.plugin.getConfig().getString("sound." + soundType + ".sound-name")),
+                    TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".volume"),
+                    TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".pitch"));
         }
     }
 
