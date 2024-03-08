@@ -1,7 +1,10 @@
 #
-#    ▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █
-#      █    █▄▄█  █      █    █   █  █
-#      █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀
+#     ______   ______     __        __  __     __     __  __
+#    /\__  _\ /\  __ \   /\ \      /\_\_\_\   /\ \   /\ \/\ \
+#    \/_/\ \/ \ \  __ \  \ \ \     \/_/\_\/_  \ \ \  \ \ \_\ \
+#       \ \_\  \ \_\ \_\  \ \_\      /\_\/\_\  \ \_\  \ \_____\
+#        \/_/   \/_/\/_/   \/_/      \/_/\/_/   \/_/   \/_____/
+#
 #
 #  Author: Cortez_Romeo
 #  Download plugin này miễn phí tại: https://minecraftvn.net
@@ -72,6 +75,7 @@ bet-settings:
   disable-special: false
 
 # Thiết lập âm thanh
+# List sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 sound:
   win:
     enable: true
@@ -85,6 +89,8 @@ sound:
     pitch: 1
 
 # Thanh máu boss được dùng để hiển thị thông tin
+# List bar color: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
+# List bar style: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarStyle.html
 boss-bar:
   enable: true
   type:
@@ -92,15 +98,19 @@ boss-bar:
       title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
       color:
         playing: YELLOW
-        bet-disabling: RED
-        pausing: RED
+        bet-disabling: BLUE
+        pausing: BLUE
       style: SOLID
     # Hiển thị khi kết thúc phiên với kết quả phiên của cuối cùng
     reloading:
       enable: true
       time: 5
       title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fngười thắng &6$%money%'
-      color: WHITE
+      # Có thể để color là 'RESULT-COLOR' nếu muốn theo màu của tài hoặc xỉu
+      color: RESULT-COLOR
+      result-color-setting:
+        xiu: GREEN
+        tai: RED
       style: SOLID
 
 

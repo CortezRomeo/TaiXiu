@@ -31,10 +31,11 @@ public class BossBarManager {
     private static BarColor bbPlayingColorPlaying;
     private static BarColor bbPlayingColorBetDisabling;
     private static BarColor bbPlayingColorPausing;
-    private static BarColor bbReloadingColor;
+    private static HashMap<TaiXiuResult, BarColor> bbReloadingColor = new HashMap<>();
     private static BarStyle bbPlayingStyle;
     private static BarStyle bbReloadingStyle;
     private static ISession bbReloadingSession;
+    public static int timePerSession;
     private static int timeDisabling;
     private static double timeReloading;
     private static double timeReloadingCount;
@@ -43,19 +44,27 @@ public class BossBarManager {
         FileConfiguration config = TaiXiu.plugin.getConfig();
 
         enable = config.getBoolean("boss-bar.enable");
+        timePerSession = config.getInt("task.taiXiuTask.time-per-session");
         currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
 
         bbPlayingTitle = config.getString("boss-bar.type.playing.title");
-        bbPlayingColorPlaying = BarColor.valueOf(config.getString("boss-bar.type.playing.color.playing"));
-        bbPlayingColorBetDisabling = BarColor.valueOf(config.getString("boss-bar.type.playing.color.bet-disabling"));
-        bbPlayingColorPausing = BarColor.valueOf(config.getString("boss-bar.type.playing.color.pausing"));
-        bbPlayingStyle = BarStyle.valueOf(config.getString("boss-bar.type.playing.style"));
+        bbPlayingColorPlaying = BarColor.valueOf(config.getString("boss-bar.type.playing.color.playing").toUpperCase());
+        bbPlayingColorBetDisabling = BarColor.valueOf(config.getString("boss-bar.type.playing.color.bet-disabling").toUpperCase());
+        bbPlayingColorPausing = BarColor.valueOf(config.getString("boss-bar.type.playing.color.pausing").toUpperCase());
+        bbPlayingStyle = BarStyle.valueOf(config.getString("boss-bar.type.playing.style").toUpperCase());
         timeDisabling = config.getInt("bet-settings.disable-while-remaining");
 
         bbReloadingEnable = config.getBoolean("boss-bar.type.reloading.enable");
         bbReloadingTitle = config.getString("boss-bar.type.reloading.title");
-        bbReloadingColor = BarColor.valueOf(config.getString("boss-bar.type.reloading.color"));
-        bbReloadingStyle = BarStyle.valueOf(config.getString("boss-bar.type.reloading.style"));
+
+        if (config.getString("boss-bar.type.reloading.color").equalsIgnoreCase("RESULT-COLOR")) {
+            bbReloadingColor.put(TaiXiuResult.XIU, BarColor.valueOf(config.getString("boss-bar.type.reloading.result-color-setting.xiu").toUpperCase()));
+            bbReloadingColor.put(TaiXiuResult.TAI, BarColor.valueOf(config.getString("boss-bar.type.reloading.result-color-setting.tai").toUpperCase()));
+        } else {
+            bbReloadingColor.remove(TaiXiuResult.XIU);
+            bbReloadingColor.put(TaiXiuResult.NONE, BarColor.valueOf(config.getString("boss-bar.type.reloading.color").toUpperCase()));
+        }
+        bbReloadingStyle = BarStyle.valueOf(config.getString("boss-bar.type.reloading.style").toUpperCase());
         timeReloading = config.getDouble("boss-bar.type.reloading.time");
         if (timeReloading <= 0)
             bbReloadingEnable = false;
@@ -90,7 +99,7 @@ public class BossBarManager {
         bossBarPlayers.put(p, taiXiuBossBar);
     }
 
-    public static void putValueBossBar(Player p, int timeLeft, int timePerSession) {
+    public static void putValueBossBar(Player p, int timeLeft) {
 
         if (!bossBarPlayers.containsKey(p) || !p.isOnline()) {
             return;
@@ -110,6 +119,7 @@ public class BossBarManager {
                 bbReloadingSession = currentBossBarSession;
             } else {
                 currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
+                timePerSession = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
                 timeLeft = timePerSession;
             }
         }
@@ -137,12 +147,21 @@ public class BossBarManager {
                 bossBar.setProgress(1);
             }
 
-            bossBar.setColor(bbReloadingColor);
+            if (bbReloadingColor.get(TaiXiuResult.XIU) == null)
+                bossBar.setColor(bbReloadingColor.get(TaiXiuResult.NONE));
+            else {
+                if (bbReloadingSession.getResult() == TaiXiuResult.XIU)
+                    bossBar.setColor(bbReloadingColor.get(TaiXiuResult.XIU));
+                else
+                    bossBar.setColor(bbReloadingColor.get(TaiXiuResult.TAI));
+            }
+
 
             if (timeReloadingCount / timeReloading == 1) {
                 setReloadingBossBar(false);
                 timeReloadingCount = 0;
                 currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
+                timePerSession = timeLeft;
             }
         } else {
 

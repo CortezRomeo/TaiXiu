@@ -90,7 +90,7 @@ public class TaiXiuTask implements Runnable {
                         setSession(newSession);
 
                         for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
-                            BossBarManager.putValueBossBar(playerBossBar, time, TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
+                            BossBarManager.putValueBossBar(playerBossBar, time);
 
                         SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
 
@@ -105,10 +105,10 @@ public class TaiXiuTask implements Runnable {
                             DatabaseManager.unloadSessionData(oldSessionData.getSession());
                         }
                     }
-                    time = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
+                    TaiXiuManager.setTime(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
                 } else {
                     for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
-                        BossBarManager.putValueBossBar(playerBossBar, time, TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
+                        BossBarManager.putValueBossBar(playerBossBar, time);
                 }
             } catch (Exception e) {
                 cancel();

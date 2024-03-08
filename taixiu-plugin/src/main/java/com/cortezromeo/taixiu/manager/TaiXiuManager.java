@@ -52,6 +52,7 @@ public class TaiXiuManager {
 
     public static void setTime(int time) {
         getTaiXiuTask().setTime(time);
+        BossBarManager.timePerSession = time;
     }
 
     public static ISession getSessionData() {
@@ -147,7 +148,7 @@ public class TaiXiuManager {
                 for (String xiuPlayer : session.getXiuPlayers().keySet()) {
                     String message = messageF.getString("session-player-lose")
                             .replaceAll("%result%", MessageUtil.getFormatName(TaiXiuResult.XIU))
-                            .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(xiuPlayer)));
+                            .replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(xiuPlayer)));
 
                     playSound(Bukkit.getPlayer(xiuPlayer), SoundType.lose);
                     sendMessage(Bukkit.getPlayer(xiuPlayer), message);
