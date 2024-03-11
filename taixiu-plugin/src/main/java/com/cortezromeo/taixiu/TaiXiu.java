@@ -34,6 +34,7 @@ public final class TaiXiu extends JavaPlugin {
     private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     public static VersionSupport nms;
     private static boolean papiSupport = false;
+    private static boolean floodgateSupport = false;
 
     @Override
     public void onLoad() {
@@ -44,18 +45,6 @@ public final class TaiXiu extends JavaPlugin {
     }
     @Override
     public void onEnable() {
-
-        log("&f--------------------------------");
-        log("&#03fc88  _____           _    __  __  _         ");
-        log("&#03fc88 |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
-        log("&#03fc88   | |    / _  | | |    \\  /  | | | | | |");
-        log("&#03fc88   | |   | (_| | | |    /  \\  | | | |_| |");
-        log("&#03fc88   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
-        log("");
-        log("&fVersion: &b" + getDescription().getVersion());
-        log("&fAuthor: &bCortez_Romeo");
-        log("&eKhởi chạy plugin trên phiên bản: " + version);
-        log("&f--------------------------------");
 
         initFile();
         setDebug(getConfig().getBoolean("debug"));
@@ -68,6 +57,25 @@ public final class TaiXiu extends JavaPlugin {
         TaiXiuManager.startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
         AutoSaveManager.startAutoSave(getConfig().getInt("database.auto-save.time"));
         BossBarManager.setupValue();
+
+        log("&f--------------------------------");
+        log("&#03fc88  _____           _    __  __  _         ");
+        log("&#03fc88 |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
+        log("&#03fc88   | |    / _  | | |    \\  /  | | | | | |");
+        log("&#03fc88   | |   | (_| | | |    /  \\  | | | |_| |");
+        log("&#03fc88   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
+        log("");
+        log("&fVersion: &b" + getDescription().getVersion());
+        log("&fAuthor: &bCortez_Romeo");
+        log("&eKhởi chạy plugin trên phiên bản: " + version);
+        log("");
+        log("&fSupport:");
+        log((papiSupport ? "&2[YES] &aPlaceholderAPI" : "&4[NO] &cPlaceholderAPI"));
+        log((floodgateSupport ? "&2[YES] &aFloodgate API (Forms and Cumulus)" : "&4[NO] &cFloodgate API (Forms and Cumulus)"));
+        if (!getConfig().getBoolean("floodgate-settings.enable"))
+            log("  &e&oquyền sử dụng Floodgate API đã bị tắt trong config.yml");
+        log("");
+        log("&f--------------------------------");
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (getConfig().getBoolean("toggle-settings.auto-toggle")) {
@@ -129,11 +137,6 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     private void initSupport() {
-        // papi
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PAPISupport().register();
-            papiSupport = true;
-        }
 
         // vault
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
@@ -142,10 +145,26 @@ public final class TaiXiu extends JavaPlugin {
         } else {
             VaultSupport.setup();
         }
+
+        // papi
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PAPISupport().register();
+            papiSupport = true;
+        }
+
+        // floodgate
+        if (Bukkit.getPluginManager().getPlugin("floodgate") != null && getConfig().getBoolean("floodgate-settings.enable")) {
+            floodgateSupport = true;
+        }
+
     }
 
     public static boolean PAPISupport() {
         return papiSupport;
+    }
+
+    public static boolean floodgateSupport() {
+        return floodgateSupport;
     }
 
     public static String getServerVersion() {

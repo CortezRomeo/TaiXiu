@@ -74,6 +74,11 @@ bet-settings:
   # Nếu bạn chỉnh thành 'true' cái này thì sẽ không còn rơi vào 2 trường hợp nên nữa
   disable-special: false
 
+# Geyser API/Floodgate API
+# Được dùng để hiển thị form cho người chơi PE/BE
+floodgate-settings:
+  enable: true
+
 # Thiết lập âm thanh
 # List sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 sound:
@@ -112,7 +117,6 @@ boss-bar:
         xiu: GREEN
         tai: RED
       style: SOLID
-
 
 # Phần thông báo từ bossbar và message
 toggle-settings:
