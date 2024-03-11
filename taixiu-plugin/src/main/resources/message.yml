@@ -51,6 +51,7 @@ bestWinners-format:
 session-special-win: '%prefix%&d&lCái đã thắng, người đặt tài hoặc xỉu đều thua và không nhận được tiền trong phiên này!'
 session-player-win: '%prefix%&fBạn đã đặt vào %result%&f và thắng &6$%money%'
 session-player-win-with-tax: '%prefix%&fBạn đã đặt vào %result%&f và thắng &6$%money% &c&l(TAX: %tax%%)'
+session-player-lose: '%prefix%&fBạn đã đặt vào %result%&f và thua &6$%money%'
 command-taixiu:
   - ' '
   - '&aTài Xỉu'

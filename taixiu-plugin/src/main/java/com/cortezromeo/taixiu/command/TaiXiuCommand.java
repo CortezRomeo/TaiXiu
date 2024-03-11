@@ -57,7 +57,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
 
         Player p = (Player) sender;
 
-        if (TaiXiu.floodgateSupport()) {
+        if (TaiXiu.floodgateSupport() && FloodgateApi.getInstance().isFloodgateId(p.getUniqueId())) {
             FloodgatePlayer fgPlayer = FloodgateApi.getInstance().getPlayer(p.getUniqueId());
             fgPlayer.sendForm(MenuGeyserForm.getForm(p));
             return false;

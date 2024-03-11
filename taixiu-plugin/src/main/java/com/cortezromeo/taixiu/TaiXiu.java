@@ -3,8 +3,13 @@ package com.cortezromeo.taixiu;
 import com.cortezromeo.taixiu.api.server.VersionSupport;
 import com.cortezromeo.taixiu.command.TaiXiuAdminCommand;
 import com.cortezromeo.taixiu.command.TaiXiuCommand;
+import com.cortezromeo.taixiu.file.GeyserFormFile;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.geyserform.BetGeyserForm;
+import com.cortezromeo.taixiu.geyserform.InfoGeyserForm;
+import com.cortezromeo.taixiu.geyserform.MenuGeyserForm;
+import com.cortezromeo.taixiu.geyserform.RuleGeyserForm;
 import com.cortezromeo.taixiu.listener.JoinListener;
 import com.cortezromeo.taixiu.listener.PaneListener;
 import com.cortezromeo.taixiu.listener.QuitListener;
@@ -21,6 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,14 +55,17 @@ public final class TaiXiu extends JavaPlugin {
         initFile();
         setDebug(getConfig().getBoolean("debug"));
 
+        initSupport();
         initDatabase();
         initCommand();
         initListener();
-        initSupport();
 
         TaiXiuManager.startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
         AutoSaveManager.startAutoSave(getConfig().getInt("database.auto-save.time"));
         BossBarManager.setupValue();
+
+        if (floodgateSupport())
+            setupGeyserForm();
 
         log("&f--------------------------------");
         log("&#03fc88  _____           _    __  __  _         ");
@@ -118,6 +127,15 @@ public final class TaiXiu extends JavaPlugin {
         } else
             InventoryFile.fileExists();
         InventoryFile.reload();
+
+        // geyserform.yml
+        if (!new File(getDataFolder() + "/geyserform.yml").exists()) {
+            GeyserFormFile.setup();
+            GeyserFormFile.setupLang();
+        } else
+            GeyserFormFile.fileExists();
+        GeyserFormFile.reload();
+
     }
 
     private void initDatabase() {
@@ -153,10 +171,20 @@ public final class TaiXiu extends JavaPlugin {
         }
 
         // floodgate
-        if (Bukkit.getPluginManager().getPlugin("floodgate") != null && getConfig().getBoolean("floodgate-settings.enable")) {
+        if (Bukkit.getPluginManager().getPlugin("floodgate") != null
+                && getConfig().getBoolean("floodgate-settings.enable")) {
             floodgateSupport = true;
         }
 
+    }
+
+    private void setupGeyserForm() {
+        if (floodgateSupport()) {
+            InfoGeyserForm.setupValue();
+            MenuGeyserForm.setupValue();
+            RuleGeyserForm.setupValue();
+            BetGeyserForm.setupValue();
+        }
     }
 
     public static boolean PAPISupport() {

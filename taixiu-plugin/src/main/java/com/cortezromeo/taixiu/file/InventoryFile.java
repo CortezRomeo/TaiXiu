@@ -11,9 +11,10 @@ public class InventoryFile {
 
     private static File file;
     private static FileConfiguration inventoryFile;
+    private static final String fileName = "inventory.yml";
 
     public static void setup() {
-        file = new File(TaiXiu.plugin.getDataFolder() + "/inventory.yml");
+        file = new File(TaiXiu.plugin.getDataFolder() + "/" + fileName);
 
         if (!file.exists()) {
             try {
@@ -30,7 +31,7 @@ public class InventoryFile {
     }
 
     public static void fileExists() {
-        file = new File(TaiXiu.plugin.getDataFolder() + "/inventory.yml");
+        file = new File(TaiXiu.plugin.getDataFolder() + "/" + fileName);
         inventoryFile = YamlConfiguration.loadConfiguration(file);
     }
 
@@ -51,9 +52,11 @@ public class InventoryFile {
 
         get().options().header(
                 "\n" +
-                        "    ▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █\n" +
-                        "      █    █▄▄█  █      █    █   █  █\n" +
-                        "      █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀\n" +
+                        "     ______   ______     __        __  __     __     __  __\n" +
+                        "    /\\__  _\\ /\\  __ \\   /\\ \\      /\\_\\_\\_\\   /\\ \\   /\\ \\/\\ \\\n" +
+                        "    \\/_/\\ \\/ \\ \\  __ \\  \\ \\ \\     \\/_/\\_\\/_  \\ \\ \\  \\ \\ \\_\\ \\\n" +
+                        "       \\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\      /\\_\\/\\_\\  \\ \\_\\  \\ \\_____\\\n" +
+                        "        \\/_/   \\/_/\\/_/   \\/_/      \\/_/\\/_/   \\/_/   \\/_____/\n" +
                         "\n" +
                         " Author: Cortez_Romeo\n" +
                         " Download plugin này miễn phí tại: https://minecraftvn.net\n" +
@@ -77,6 +80,8 @@ public class InventoryFile {
                         "ĐỌC KỸ TRƯỚC KHI CHỈNH FILE" +
                         "\n"
         );
+
+        get().addDefault("file-version", 2);
 
         String defaultitems = "inventory.default-items.";
         get().addDefault(defaultitems + "nextPage.name", "&aTrang sau");
