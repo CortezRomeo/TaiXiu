@@ -1,9 +1,11 @@
 package com.cortezromeo.taixiu.support.version.cross;
 
 import com.cortezromeo.taixiu.api.server.VersionSupport;
-import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
+import com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
+import com.cryptomorin.xseries.profiles.objects.Profileable;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -59,10 +61,7 @@ public class CrossVersionSupport extends VersionSupport {
 
     @Override
     public ItemStack getHeadItem(String headValue) {
-        ItemStack item = XMaterial.PLAYER_HEAD.parseItem();
-        assert item != null;
-        item.setItemMeta(SkullUtils.applySkin(item.getItemMeta(), headValue));
-        return item;
+        return XSkull.createItem().profile(Profileable.of(ProfileInputType.BASE64, headValue)).apply();
     }
 
     @Override

@@ -1,0 +1,35 @@
+{
+    "author": {
+      "name": "%playerName%",
+      "icon_url": "https://api.mineatar.io/face/%playerUUID%"
+    },
+    "color": {
+		"tai": 16720384,
+		"xiu": 4390656
+	},
+    "fields": [
+     {
+        "name": ":timer: Thời gian",
+		"fieldtype": "normal",
+        "value": "**%date%**",
+        "inline": false
+     },
+     {
+        "name": ":pencil2: Cược vào",
+		"fieldtype": "normal",
+        "value": "**%bet%**",
+        "inline": false
+     },
+     {
+        "name": ":money_with_wings: Số tiền",
+		"fieldtype": "normal",
+        "value": "**%money%**",
+        "inline": false
+     }
+    ],
+	"placeholders": {
+		"tai": "Tài",
+		"xiu": "Xỉu",
+		"date": "dd/MM/yyyy hh:mm:ss"
+	}
+ }

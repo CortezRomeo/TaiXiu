@@ -13,10 +13,7 @@ import com.cortezromeo.taixiu.geyserform.RuleGeyserForm;
 import com.cortezromeo.taixiu.listener.JoinListener;
 import com.cortezromeo.taixiu.listener.PaneListener;
 import com.cortezromeo.taixiu.listener.QuitListener;
-import com.cortezromeo.taixiu.manager.AutoSaveManager;
-import com.cortezromeo.taixiu.manager.BossBarManager;
-import com.cortezromeo.taixiu.manager.DatabaseManager;
-import com.cortezromeo.taixiu.manager.TaiXiuManager;
+import com.cortezromeo.taixiu.manager.*;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import com.cortezromeo.taixiu.support.PAPISupport;
 import com.cortezromeo.taixiu.support.VaultSupport;
@@ -40,17 +37,15 @@ public final class TaiXiu extends JavaPlugin {
     public static VersionSupport nms;
     private static boolean papiSupport = false;
     private static boolean floodgateSupport = false;
+    private static DiscordManager discordManager;
 
     @Override
     public void onLoad() {
-
         plugin = this;
         nms = new CrossVersionSupport(plugin);
-
     }
     @Override
     public void onEnable() {
-
         initFile();
         setDebug(getConfig().getBoolean("debug"));
 
@@ -80,8 +75,9 @@ public final class TaiXiu extends JavaPlugin {
         log("&fSupport:");
         log((papiSupport ? "&2[YES] &aPlaceholderAPI" : "&4[NO] &cPlaceholderAPI"));
         log((floodgateSupport ? "&2[YES] &aFloodgate API (Forms and Cumulus)" : "&4[NO] &cFloodgate API (Forms and Cumulus)"));
-        if (!getConfig().getBoolean("floodgate-settings.enable"))
+        if (!getConfig().getBoolean("floodgate-settings.enabled"))
             log("  &e&oquyền sử dụng Floodgate API đã bị tắt trong config.yml");
+        log((discordManager != null ? "&2[YES] &aDiscordSRV" : "&4[NO] &cDiscordSRV"));
         log("");
         log("&f--------------------------------");
 
@@ -93,10 +89,12 @@ public final class TaiXiu extends JavaPlugin {
                 }
             }
         }
+
+        if (Metrics.isEnabled())
+            new Metrics(this, 21630);
     }
 
     private void initFile() {
-
         // config.yml
         saveDefaultConfig();
         File configFile = new File(getDataFolder(), "config.yml");
@@ -135,6 +133,13 @@ public final class TaiXiu extends JavaPlugin {
             GeyserFormFile.fileExists();
         GeyserFormFile.reload();
 
+        // discordsrv-result-message.json
+        File resultJsonFile = new File(getDataFolder(), "discordsrv-result-message.json");
+        if (!resultJsonFile.exists()) saveResource(resultJsonFile.getName(), false);
+
+        // discordsrv-playerbet-message.json
+        File playerBetJsonFile = new File(getDataFolder(), "discordsrv-playerbet-message.json");
+        if (!playerBetJsonFile.exists()) saveResource(playerBetJsonFile.getName(), false);
     }
 
     private void initDatabase() {
@@ -154,7 +159,6 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     private void initSupport() {
-
         // vault
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             log("&cPlugin &bTài Xỉu &ccần thêm plugin &6Vault&c và plugin về &6Economy&c để hoạt động");
@@ -171,8 +175,13 @@ public final class TaiXiu extends JavaPlugin {
 
         // floodgate
         if (Bukkit.getPluginManager().getPlugin("floodgate") != null
-                && getConfig().getBoolean("floodgate-settings.enable")) {
+                && getConfig().getBoolean("floodgate-settings.enabled")) {
             floodgateSupport = true;
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null
+                && getConfig().getBoolean("discordsrv-settings.enabled")) {
+            discordManager = new DiscordManager(this);
         }
     }
 
@@ -193,6 +202,10 @@ public final class TaiXiu extends JavaPlugin {
         return floodgateSupport;
     }
 
+    public static DiscordManager getDiscordManager() {
+        return discordManager;
+    }
+
     public static String getServerVersion() {
         return version;
     }
@@ -211,7 +224,6 @@ public final class TaiXiu extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
         log("&f--------------------------------");
         log("&c  _____           _    __  __  _         ");
         log("&c |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
@@ -230,7 +242,5 @@ public final class TaiXiu extends JavaPlugin {
             if (bossBar != null)
                 bossBar.removeAll();
         }
-
-
     }
 }

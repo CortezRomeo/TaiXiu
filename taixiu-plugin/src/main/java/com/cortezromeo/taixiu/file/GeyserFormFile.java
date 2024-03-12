@@ -59,10 +59,7 @@ public class GeyserFormFile {
                         "        \\/_/   \\/_/\\/_/   \\/_/      \\/_/\\/_/   \\/_/   \\/_____/\n" +
                         "\n" +
                         " Author: Cortez_Romeo\n" +
-                        " Download plugin này miễn phí tại: https://minecraftvn.net\n" +
-                        "\n" +
-                        "ĐỌC KỸ TRƯỚC KHI CHỈNH FILE" +
-                        "\n"
+                        " Download plugin này miễn phí tại: https://minecraftvn.net\n"
         );
 
         get().addDefault("file-version", 2);

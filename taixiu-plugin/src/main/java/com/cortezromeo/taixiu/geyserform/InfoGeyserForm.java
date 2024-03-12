@@ -37,7 +37,6 @@ public class InfoGeyserForm {
     }
 
     private static String getContent(ISession session) {
-
         String content = geyserFormFile.getString("form.info.content.content");
         content = content.replace("%session%", String.valueOf(session.getSession()));
         content = content.replace("%time%", String.valueOf(TaiXiuManager.getTaiXiuTask().getTime()));

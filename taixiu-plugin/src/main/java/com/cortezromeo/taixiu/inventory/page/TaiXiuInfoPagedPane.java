@@ -103,7 +103,5 @@ public class TaiXiuInfoPagedPane {
 
         material.get().setItemMeta(materialMeta);
         return material.get();
-
     }
-
 }

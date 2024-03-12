@@ -61,7 +61,6 @@ public class MenuGeyserForm {
                 .validResultHandler((simpleForm, simpleFormResponse) -> {
 
                     FloodgatePlayer fgPlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
-
                     int clickedButtonID = simpleFormResponse.clickedButtonId();
 
                     if (clickedButtonID == 0)
@@ -71,7 +70,6 @@ public class MenuGeyserForm {
                         fgPlayer.sendForm(InfoGeyserForm.getForm(player));
 
                     if (clickedButtonID == 2) {
-
                         int configDisableTime = TaiXiu.plugin.getConfig().getInt("bet-settings.disable-while-remaining");
                         if (TaiXiuManager.getTaiXiuTask().getTime() <= configDisableTime) {
                             sendMessage(player, MessageFile.get().getString("late-bet")
@@ -79,8 +77,7 @@ public class MenuGeyserForm {
                                     .replaceAll("%configDisableTime%", String.valueOf(configDisableTime)));
                             return;
                         }
-
-                            fgPlayer.sendForm(BetGeyserForm.getForm(player));
+                        fgPlayer.sendForm(BetGeyserForm.getForm(player));
                     }
 
                     if (clickedButtonID == 3) {
@@ -96,7 +93,6 @@ public class MenuGeyserForm {
 
                         openForm(player);
                     }
-
                 }).build();
         FloodgateApi.getInstance().getPlayer(player.getUniqueId()).sendForm(form);
     }

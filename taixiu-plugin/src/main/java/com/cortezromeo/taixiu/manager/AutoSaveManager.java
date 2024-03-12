@@ -8,33 +8,27 @@ public class AutoSaveManager {
     private static AutoSaveTask autoSaveTask;
 
     public static void startAutoSave(int time) {
-
-        if (TaiXiu.plugin.getConfig().getBoolean("database.auto-save.enable") && autoSaveStatus && autoSaveTask != null)
+        if (TaiXiu.plugin.getConfig().getBoolean("database.auto-save.enabled") && autoSaveStatus && autoSaveTask != null)
             return;
 
         autoSaveTask = new AutoSaveTask(time);
         autoSaveStatus = true;
-
     }
 
     public static void stopAutoSave() {
-
         if (!autoSaveStatus && autoSaveTask == null)
             return;
 
         autoSaveTask.cancel();
         autoSaveStatus = false;
-
     }
 
     public static void reloadTimeAutoSave() {
-
         if (!getAutoSaveStatus())
             return;
 
         stopAutoSave();
         startAutoSave(TaiXiu.plugin.getConfig().getInt("database.auto-save.time"));
-
     }
 
     public static boolean autoSaveStatus = false;
@@ -43,8 +37,8 @@ public class AutoSaveManager {
         return autoSaveStatus;
     }
 
-    public static void setAutoSaveStatus(boolean b) {
-        autoSaveStatus = b;
+    public static void setAutoSaveStatus(boolean status) {
+        autoSaveStatus = status;
     }
 
 }

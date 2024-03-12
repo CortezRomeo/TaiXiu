@@ -20,26 +20,20 @@ public class MessageUtil {
     }
 
     public static String getFormatName(@NotNull TaiXiuResult result) {
-
         FileConfiguration messageF = MessageFile.get();
 
-        if (result.toString().equals("XIU"))
+        if (result == TaiXiuResult.XIU)
             return messageF.getString("xiu-name");
-
-        if (result.toString().equals("TAI"))
+        if (result == TaiXiuResult.TAI)
             return messageF.getString("tai-name");
-
-        if (result.toString().equals("SPECIAL"))
+        if (result == TaiXiuResult.SPECIAL)
             return messageF.getString("special-name");
-
-        if (result.toString().equals("NONE"))
+        if (result == TaiXiuResult.NONE)
             return messageF.getString("none-name");
-
         return null;
     }
 
     public static void sendBoardCast(String message) {
-
         if (message.equals(""))
             return;
 
@@ -51,7 +45,7 @@ public class MessageUtil {
 
     public static void thowErrorMessage(String message) {
         Bukkit.getLogger().severe(message);    
-        log("&4&l[TAI XIU ERROR] &c&lNếu lỗi này ảnh hưởng đến trải nghiệm của người chơi, hãy liên hệ mình qua discord: Cortez_Romeo#1290");
+        log("&4&l[TAI XIU ERROR] &c&lNếu lỗi này ảnh hưởng đến trải nghiệm của người chơi, hãy liên hệ mình qua discord: Cortez_Romeo");
     }
 
     public static void log(String message) {
@@ -59,7 +53,6 @@ public class MessageUtil {
     }
 
     public static void sendMessage(Player player, String message) {
-
         if (player == null | message.equals(""))
             return;
 

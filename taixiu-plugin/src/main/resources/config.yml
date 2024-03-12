@@ -38,7 +38,7 @@ database:
     # TUY NHIÊN BẠN CŨNG NÊN SỬ DỤNG SAVE_LATEST (Đọc ghi chú ở trên), DỮ LIỆU KHÔNG CẦN PHẢI TỐI ƯU QUÁ MỨC
     type: SAVE_LATEST
   auto-save:
-    enable: true
+    enabled: true
     # Set càng ít thì dữ liệu càng dễ được bảo đảm nhưng có thể gây lag nếu dữ liệu quá nhiều
     # Lấy theo giây(s)
     time: 600
@@ -77,18 +77,25 @@ bet-settings:
 # Geyser API/Floodgate API
 # Được dùng để hiển thị form cho người chơi PE/BE
 floodgate-settings:
-  enable: true
+  enabled: true
+
+# DiscordSRV API
+# Được dùng để hiển thị thông báo kết quả phiên cho kênh discord
+# Chỉnh sửa message tại các file json trong folder plugin
+discordsrv-settings:
+  enabled: true
+  channel-id: "1286680792462000301"
 
 # Thiết lập âm thanh
 # List sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 sound:
   win:
-    enable: true
+    enabled: true
     sound-name: ENTITY_PLAYER_LEVELUP
     volume: 1
     pitch: 2
   lose:
-    enable: true
+    enabled: true
     sound-name: ENTITY_VILLAGER_NO
     volume: 1
     pitch: 1
@@ -97,7 +104,7 @@ sound:
 # List bar color: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
 # List bar style: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarStyle.html
 boss-bar:
-  enable: true
+  enabled: true
   type:
     playing:
       title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
@@ -108,7 +115,7 @@ boss-bar:
       style: SOLID
     # Hiển thị khi kết thúc phiên với kết quả phiên của cuối cùng
     reloading:
-      enable: true
+      enabled: true
       time: 5
       title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fngười thắng &6$%money%'
       # Có thể để color là 'RESULT-COLOR' nếu muốn theo màu của tài hoặc xỉu
@@ -122,3 +129,8 @@ boss-bar:
 toggle-settings:
   # Tự động bật thông báo khi người chơi vào game
   auto-toggle: true
+
+# Dùng để lấy số người chơi trong máy chủ sử dụng plugin tài xỉu
+# Không tốn tài nguyên máy chủ, cảm ơn bản đã sử dụng plugin.
+bStats:
+  enabled: true

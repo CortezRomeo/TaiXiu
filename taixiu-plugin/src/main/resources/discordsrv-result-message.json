@@ -1,0 +1,79 @@
+{
+	"title": ":tada: Kết quả phiên tài xỉu :coin:",
+    "description": "Phiên số #**%session%**",
+    "thumbnail": {
+      "tai": "https://static.wikia.nocookie.net/colors/images/8/8e/-FF0000.png",
+	  "xiu": "https://static.wikia.nocookie.net/colors/images/c/cd/00ff00.png",
+	  "special": "https://static.wikia.nocookie.net/colors/images/6/69/Lavender_-B57EDC.png"
+    },
+    "color": {
+		"tai": 16720384,
+		"xiu": 4390656,
+		"special": 16732159
+	},
+    "fields": [
+	 {
+        "name": "",
+		"fieldtype": "blank",
+        "value": "",
+        "inline": false
+     },
+     {
+        "name": ":game_die: Xúc xắc 1",
+		"fieldtype": "normal",
+        "value": "**%dice1%**",
+        "inline": true
+     },
+     {
+        "name": ":game_die: Xúc xắc 2",
+		"fieldtype": "normal",
+        "value": "**%dice2%**",
+        "inline": true
+     },
+     {
+        "name": ":game_die: Xúc xắc 3",
+		"fieldtype": "normal",
+        "value": "**%dice3%**",
+        "inline": true
+     },
+	 {
+        "name": "",
+		"fieldtype": "blank",
+        "value": "",
+        "inline": false
+     },
+	 {
+        "name": ":dart: Tổng số điểm",
+		"fieldtype": "normal",
+        "value": "**%totalPoint%**",
+        "inline": false
+     },
+	 {
+        "name": ":pencil: Kết quả",
+		"fieldtype": "normal",
+        "value": "**%result%**",
+        "inline": false
+     },
+	 {
+        "name": ":chart_with_upwards_trend: Ăn nhiều nhất",
+		"fieldtype": "normal",
+        "value": "**%bestWinners%**",
+        "inline": false
+     }
+    ],
+	"placeholders": {
+		"tai": "Tài",
+		"xiu": "Xỉu",
+		"special": "Đặc biệt",
+		"bestWinners": {
+			"invalid": "Không ai cả",
+			"valid": ":person_pouting: %playerName% %bet%",
+			"valid-special": "Nhà cái ăn %allBet%",
+			"playerName-delim": ", "
+		}
+	},
+    "footer": {
+      "text": "minecraftvn.com",
+      "icon_url": "https://static.wikia.nocookie.net/animatorvsanimation/images/5/52/MinecraftIcon.png"
+    }
+ }

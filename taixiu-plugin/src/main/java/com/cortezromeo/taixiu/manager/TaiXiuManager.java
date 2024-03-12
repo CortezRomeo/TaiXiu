@@ -73,7 +73,6 @@ public class TaiXiuManager {
     }
 
     public static void playerBet(Player player, long money, TaiXiuResult result) {
-
         String pName = player.getName();
         Economy econ = VaultSupport.econ;
         ISession data = getSessionData();
@@ -150,10 +149,17 @@ public class TaiXiuManager {
                         "| Money: " + money + " " +
                         "| Session: " + data.getSession());
 
+        // discordSRV
+        if (TaiXiu.getDiscordManager() != null) {
+            try {
+                TaiXiu.getDiscordManager().sendMessage(DiscordManager.getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", player, result, money));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 
     public static void resultSeason(@NotNull ISession session, int dice1, int dice2, int dice3) {
-
         debug("RESULTING SESSION", "Session number " + session.getSession());
 
         if (session.getResult() != TaiXiuResult.NONE) {
@@ -248,7 +254,16 @@ public class TaiXiuManager {
                     "| Result: " + session.getResult());
         } catch (Exception e) {
             resultSeason(session, dice1, dice2, dice3);
-            MessageUtil.thowErrorMessage("" + e);
+            MessageUtil.thowErrorMessage("<taixiumanager.java<resultSeason>>" + e);
+        }
+
+        // discordSRV
+        if (TaiXiu.getDiscordManager() != null) {
+            try {
+                TaiXiu.getDiscordManager().sendMessage(DiscordManager.getResultMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-result-message.json", session));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
@@ -280,7 +295,7 @@ public class TaiXiuManager {
         if (player == null)
             return;
 
-        if (TaiXiu.plugin.getConfig().getBoolean("sound." + soundType + ".enable")) {
+        if (TaiXiu.plugin.getConfig().getBoolean("sound." + soundType + ".enabled")) {
             player.playSound(player.getLocation(),
                     TaiXiu.nms.createSound(TaiXiu.plugin.getConfig().getString("sound." + soundType + ".sound-name")),
                     TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".volume"),
@@ -290,7 +305,6 @@ public class TaiXiuManager {
 
 
     public static Long getXiuBet(@NotNull ISession session) {
-
         long sum = 0L;
         if (session.getXiuPlayers() != null) {
             for (long value : session.getXiuPlayers().values()) {
@@ -305,7 +319,6 @@ public class TaiXiuManager {
     }
 
     public static Long getTaiBet(@NotNull ISession session) {
-
         long sum = 0L;
         if (session.getTaiPlayers() != null) {
             for (long value : session.getTaiPlayers().values()) {
@@ -338,6 +351,8 @@ public class TaiXiuManager {
             }
 
             Map<String, Long> bestWinners = result == TaiXiuResult.XIU ? session.getXiuPlayers() : session.getTaiPlayers();
+            if (bestWinners.isEmpty())
+                return messageF.getString("bestWinners-format.invalid");
             Long bestWinnersBet = Collections.max(bestWinners.values());
 
             List<String> players = new ArrayList<>();

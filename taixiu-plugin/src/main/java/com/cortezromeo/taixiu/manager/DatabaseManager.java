@@ -40,7 +40,7 @@ public class DatabaseManager {
                 lastSession = Collections.max(taiXiuData.keySet());
             }
         } catch (Exception e) {
-            MessageUtil.thowErrorMessage("" + e);
+            MessageUtil.thowErrorMessage("<databasemanager.java<getLastSession>>" + e);
             return getLastSessionFromFile();
         }
 
@@ -112,7 +112,7 @@ public class DatabaseManager {
             try {
                 return true;
             } catch (Exception e) {
-                thowErrorMessage("" + e);
+                thowErrorMessage("<databasemanager.java<checkExistsFileData>>" + e);
                 return false;
             }
         }

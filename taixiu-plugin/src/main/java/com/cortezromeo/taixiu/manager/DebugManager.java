@@ -16,11 +16,8 @@ public class DebugManager {
     }
 
     public static void debug(String prefix, String message) {
-
         if (!debug)
             return;
-
         Bukkit.getConsoleSender().sendMessage(TaiXiu.nms.addColor("&6[TAI XIU DEBUG] &e" + prefix.toUpperCase() + " >>> " + message));
     }
-
 }

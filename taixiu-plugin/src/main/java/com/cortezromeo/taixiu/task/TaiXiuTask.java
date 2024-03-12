@@ -79,7 +79,6 @@ public class TaiXiuTask implements Runnable {
                 }
 
                 if (time == 0) {
-
                     if ((getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) && getSession().getResult() == TaiXiuResult.NONE) {
                         MessageUtil.sendBoardCast(MessageFile.get().getString("session-result-not-enough-player").replace("%session%", String.valueOf(getSession().getSession())));
                     } else {
@@ -89,8 +88,9 @@ public class TaiXiuTask implements Runnable {
                         long newSession = DatabaseManager.getLastSession() + 1;
                         setSession(newSession);
 
-                        for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
-                            BossBarManager.putValueBossBar(playerBossBar, time);
+                        if (!BossBarManager.bossBarPlayers.isEmpty())
+                            for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
+                                BossBarManager.putValueBossBar(playerBossBar, time);
 
                         SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
 
@@ -107,12 +107,13 @@ public class TaiXiuTask implements Runnable {
                     }
                     TaiXiuManager.setTime(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
                 } else {
-                    for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
-                        BossBarManager.putValueBossBar(playerBossBar, time);
+                    if (!BossBarManager.bossBarPlayers.isEmpty())
+                        for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
+                            BossBarManager.putValueBossBar(playerBossBar, time);
                 }
             } catch (Exception e) {
                 cancel();
-                MessageUtil.thowErrorMessage("" + e);
+                MessageUtil.thowErrorMessage("<taixiutask.java<run>>" + e);
                 setSession(DatabaseManager.getLastSession() + 1);
                 TaiXiuManager.startTask(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
             }
@@ -122,5 +123,4 @@ public class TaiXiuTask implements Runnable {
     public void cancel() {
         task.cancel();
     }
-
 }

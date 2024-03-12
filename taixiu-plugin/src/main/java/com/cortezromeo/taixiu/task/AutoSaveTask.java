@@ -27,7 +27,6 @@ public class AutoSaveTask implements Runnable {
 
     @Override
     public void run() {
-
         Set<Long> sessionData = DatabaseManager.taiXiuData.keySet();
         log("&e[TAI XIU] Tiến hành save " + sessionData.size() + " dữ liệu...");
         for (long session : sessionData)

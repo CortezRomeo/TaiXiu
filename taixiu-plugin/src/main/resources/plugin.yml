@@ -5,6 +5,7 @@ main: com.cortezromeo.taixiu.TaiXiu
 api-version: 1.13
 softdepend:
   - PlaceholderAPI
+  - DiscordSRV
 depend:
   - Vault
 commands:

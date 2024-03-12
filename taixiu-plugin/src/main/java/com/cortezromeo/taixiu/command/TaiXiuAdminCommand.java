@@ -35,7 +35,6 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         FileConfiguration messageF = MessageFile.get();
 
         if (sender instanceof Player) {
@@ -59,7 +58,6 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
                             .replaceAll("%state%", TaiXiuManager.getState().toString()));
                     return false;
                 case "reload":
-
                     TaiXiu.plugin.reloadConfig();
                     MessageFile.reload();
                     InventoryFile.reload();
@@ -118,7 +116,6 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
         if (args.length == 4) {
             switch (args[0]) {
                 case "setresult":
-
                     if (TaiXiuManager.getSessionData().getResult() != TaiXiuResult.NONE) {
                         sendMessage(sender, "%prefix%&eVui lòng đợi vài giây và xài lại lệnh này!");
                         return false;

@@ -65,7 +65,6 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                     TaiXiuInfoPagedPane.openInventory(p, TaiXiuManager.getSessionData().getSession());
                     return false;
                 case "toggle":
-
                     List<String> togglePlayers = DatabaseManager.togglePlayers;
                     if (togglePlayers.contains(p.getName())) {
                         togglePlayers.remove(p.getName());
@@ -75,7 +74,6 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                         sendMessage(p, messageF.getString("toggle-on"));
                     }
                     BossBarManager.toggleBossBar(p);
-
                     return false;
                 default:
                     sendMessage(p, messageF.getString("wrong-argument"));
@@ -106,7 +104,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                             }
                         }
                     } catch (Exception e) {
-                        MessageUtil.thowErrorMessage("" + e);
+                        MessageUtil.thowErrorMessage("<taixiucommand.java<case<thongtin>>>" + e);
                     }
 
                     return false;

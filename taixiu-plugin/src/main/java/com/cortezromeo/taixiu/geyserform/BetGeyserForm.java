@@ -35,7 +35,6 @@ public class BetGeyserForm {
     }
 
     public static CustomForm getForm(Player player) {
-
         String firstOrder = geyserFormFile.getString("form.bet.order.1.label");
         firstOrder = firstOrder.replace("%session%", String.valueOf(TaiXiuManager.getTaiXiuTask().getSession().getSession()));
         firstOrder = firstOrder.replace("%secondsLeft%", String.valueOf(
@@ -65,8 +64,6 @@ public class BetGeyserForm {
                         result = TaiXiuResult.XIU;
 
                     TaiXiuManager.playerBet(player, money, result);
-
                 }).build();
     }
-
 }
