@@ -169,6 +169,8 @@ public class BossBarManager {
             bossBarTitle = bossBarTitle.replace("%taiBet%", MessageUtil.formatMoney(TaiXiuManager.getTaiBet(currentBossBarSession)));
             bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
 
+            bossBarPlayers.get(p).setStyle(bbPlayingStyle);
+
             try {
                 bossBar.setProgress((double) timeLeft / (double) timePerSession);
             } catch (Exception e) {
@@ -183,7 +185,6 @@ public class BossBarManager {
             if (TaiXiuManager.getState() == TaiXiuState.PAUSING)
                 bossBar.setColor(bbPlayingColorPausing);
         }
-
     }
 
 }
