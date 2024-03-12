@@ -21,17 +21,17 @@ public class RuleGeyserForm {
         content = geyserFormFile.getString(stringPath + "content");
         content = content.replace("%minBet%", TaiXiu.plugin.getConfig().getString("bet-settings.min-bet"));
         content = content.replace("%maxBet%", TaiXiu.plugin.getConfig().getString("bet-settings.max-bet"));
-        goBackButtonName = geyserFormFile.getString(stringPath + "button.goBack");
-        closeButtonName = geyserFormFile.getString(stringPath + "button.close");
+        goBackButtonName = geyserFormFile.getString(stringPath + "button.goBack.name");
+        closeButtonName = geyserFormFile.getString(stringPath + "button.close.name");
     }
 
     public static ModalForm getForm(Player player) {
-        return ModalForm.builder().title(title)
-                .content(content)
-                .button1(goBackButtonName)
-                .button2(closeButtonName)
+        return ModalForm.builder().title(TaiXiu.nms.addColor(title))
+                .content(TaiXiu.nms.addColor(content))
+                .button1(TaiXiu.nms.addColor(goBackButtonName))
+                .button2(TaiXiu.nms.addColor(closeButtonName))
                 .validResultHandler((modalForm, modalFormResponse) -> {
-                    if (modalFormResponse.clickedButtonId() == 1)
+                    if (modalFormResponse.clickedButtonId() == 0)
                         FloodgateApi.getInstance().getPlayer(player.getUniqueId()).sendForm(MenuGeyserForm.getForm(player));
                 })
                 .build();

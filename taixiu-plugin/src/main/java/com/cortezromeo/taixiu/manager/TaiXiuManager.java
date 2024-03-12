@@ -3,12 +3,14 @@ package com.cortezromeo.taixiu.manager;
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.TaiXiuState;
+import com.cortezromeo.taixiu.api.event.PlayerBetEvent;
 import com.cortezromeo.taixiu.api.event.SessionResultEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
 import com.cortezromeo.taixiu.util.MessageUtil;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,6 +70,86 @@ public class TaiXiuManager {
             return DatabaseManager.getSessionData(session);
 
         return null;
+    }
+
+    public static void playerBet(Player player, long money, TaiXiuResult result) {
+
+        String pName = player.getName();
+        Economy econ = VaultSupport.econ;
+        ISession data = getSessionData();
+        FileConfiguration messageF = MessageFile.get();
+        FileConfiguration cfg = TaiXiu.plugin.getConfig();
+
+        if (getSessionData().getXiuPlayers().containsKey(pName) || data.getTaiPlayers().containsKey(pName)) {
+            sendMessage(player, messageF.getString("have-bet-before")
+                    .replace("%bet%", MessageUtil.getFormatName((data.getXiuPlayers().containsKey(pName)
+                            ? TaiXiuResult.XIU
+                            : TaiXiuResult.TAI)))
+                    .replace("%money%", (data.getXiuPlayers().containsKey(pName)
+                            ? MessageUtil.formatMoney(data.getXiuPlayers().get(pName))
+                            : MessageUtil.formatMoney(data.getTaiPlayers().get(pName)))));
+            return;
+        }
+
+        int configDisableTime = cfg.getInt("bet-settings.disable-while-remaining");
+        if (TaiXiuManager.getTime() <= configDisableTime) {
+            sendMessage(player, messageF.getString("late-bet")
+                    .replaceAll("%time%", String.valueOf(TaiXiuManager.getTime()))
+                    .replaceAll("%configDisableTime%", String.valueOf(configDisableTime)));
+            return;
+        }
+
+        if (econ.getBalance(player) < money) {
+            sendMessage(player, messageF.getString("not-enough-money"));
+            return;
+        }
+
+        long minBet = cfg.getLong("bet-settings.min-bet");
+        if (money < minBet) {
+            sendMessage(player, messageF.getString("min-bet").replace("%minBet%", MessageUtil.formatMoney(minBet)));
+            return;
+        }
+
+        long maxBet = cfg.getLong("bet-settings.max-bet");
+        if (money > maxBet) {
+            sendMessage(player, messageF.getString("max-bet").replace("%maxBet%", MessageUtil.formatMoney(maxBet)));
+            return;
+        }
+
+        econ.withdrawPlayer(player, money);
+
+        if (result == TaiXiuResult.XIU)
+            data.addXiuPlayer(pName, money);
+
+        if (result == TaiXiuResult.TAI)
+            data.addTaiPlayer(pName, money);
+
+        sendMessage(player, messageF.getString("player-bet")
+                .replace("%bet%", MessageUtil.getFormatName(result))
+                .replace("%money%", MessageUtil.formatMoney(money))
+                .replace("%session%", String.valueOf(data.getSession()))
+                .replace("%time%", String.valueOf(TaiXiuManager.getTime())));
+
+        String messageBoardcastPlayerBet = messageF.getString("broadcast-player-bet")
+                .replace("%prefix%", messageF.getString("prefix"))
+                .replace("%player%", player.getName())
+                .replace("%bet%", MessageUtil.getFormatName(result))
+                .replace("%money%", MessageUtil.formatMoney(money));
+
+        if (!TaiXiu.PAPISupport())
+            Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageBoardcastPlayerBet));
+        else
+            Bukkit.broadcastMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(player, messageBoardcastPlayerBet)));
+
+        PlayerBetEvent event = new PlayerBetEvent(player, result, money);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        debug("PLAYER BETTED",
+                "Name: " + pName + " " +
+                        "| Bet: " + result.toString() + " " +
+                        "| Money: " + money + " " +
+                        "| Session: " + data.getSession());
+
     }
 
     public static void resultSeason(@NotNull ISession session, int dice1, int dice2, int dice3) {

@@ -70,17 +70,20 @@ public class GeyserFormFile {
         String menuForm = "form.menu.";
         get().addDefault(menuForm + "title", "&0Tài xỉu");
         get().addDefault(menuForm + "button.rule.name", "&0Luật chơi");
-        get().addDefault(menuForm + "button.rule.imageType", "PATH");
-        get().addDefault(menuForm + "button.rule.imageData", "images/menubutton1.png");
+        get().addDefault(menuForm + "button.rule.imageType", "URL");
+        get().addDefault(menuForm + "button.rule.imageData", "https://i.imgur.com/UD8v9Ui.png");
         get().addDefault(menuForm + "button.sessionInfo.name", "&0Thông tin phiên");
-        get().addDefault(menuForm + "button.sessionInfo.imageType", "PATH");
-        get().addDefault(menuForm + "button.sessionInfo.imageData", "images/menubutton2.png");
+        get().addDefault(menuForm + "button.sessionInfo.imageType", "URL");
+        get().addDefault(menuForm + "button.sessionInfo.imageData", "https://i.imgur.com/m6EdubF.png");
         get().addDefault(menuForm + "button.bet.name", "&0Cược");
-        get().addDefault(menuForm + "button.bet.imageType", "PATH");
-        get().addDefault(menuForm + "button.bet.imageData", "images/menubutton3.png");
-        get().addDefault(menuForm + "button.toggle.name", "&0Bật/Tắt thông báo");
-        get().addDefault(menuForm + "button.toggle.imageType", "PATH");
-        get().addDefault(menuForm + "button.toggle.imageData", "images/menubutton4.png");
+        get().addDefault(menuForm + "button.bet.imageType", "URL");
+        get().addDefault(menuForm + "button.bet.imageData", "https://i.imgur.com/ReMGrcW.png");
+        get().addDefault(menuForm + "button.toggle.on.name", "&2Bật&0 thông báo");
+        get().addDefault(menuForm + "button.toggle.on.imageType", "URL");
+        get().addDefault(menuForm + "button.toggle.on.imageData", "https://i.imgur.com/aANvBJ9.png");
+        get().addDefault(menuForm + "button.toggle.off.name", "&4Tắt&0 thông báo");
+        get().addDefault(menuForm + "button.toggle.off.imageType", "URL");
+        get().addDefault(menuForm + "button.toggle.off.imageData", "https://i.imgur.com/3pDJQgt.png");
 
         String ruleForm = "form.rule.";
         get().addDefault(ruleForm + "title", "&0Luật chơi tài xỉu");
@@ -97,18 +100,27 @@ public class GeyserFormFile {
 
         String infoForm = "form.info.";
         get().addDefault(infoForm + "title", "Thông tin phiên");
-        get().addDefault(infoForm + "content", "&fTài xỉu phiên số &b#%session%");
+        get().addDefault(infoForm + "content.content",
+                "&fTài xỉu phiên số &b#%session%\n" +
+                "&fCó kết quả sau: &d%time% giây\n\n" +
+                "&fNgười chọn xỉu:\n" +
+                "%xiuPlayers%\n" +
+                "&fNgười chọn tài:\n" +
+                "%taiPlayers%\n" +
+                "&fTổng tiền cược: &6$%totalBet%");
+        get().addDefault(infoForm + "content.placeholders.xiuPlayers", "&a%player% &7- &6$%money%\n");
+        get().addDefault(infoForm + "content.placeholders.taiPlayers", "&c%player% &7- &6$%money%\n");
         get().addDefault(infoForm + "button.goBack.name", "&cTrở về");
         get().addDefault(infoForm + "button.close.name", "&4Đóng");
 
         String betForm = "form.bet.";
         get().addDefault(betForm + "title", "Đặt cược");
         get().addDefault(betForm + "order.1.label"
-                , "Bạn đang đặt cược vào phiên số &b#%session%\n" +
-                 "Bạn còn &d%secondsLeft% giây &rđể đặt cược trước khi phiên khóa.");
+                , "Bạn đang đặt cược vào phiên số &b#%session%&r. " +
+                 "&rBạn còn &d%secondsLeft% giây &rđể đặt cược trước khi phiên khóa.");
         get().addDefault(betForm + "order.2.dropdown.name", "Vui lòng chọn:");
-        get().addDefault(betForm + "order.2.dropdown.options.tai", "Tài");
-        get().addDefault(betForm + "order.2.dropdown.options.xiu", "Xỉu");
+        get().addDefault(betForm + "order.2.dropdown.options.tai", "&4Tài");
+        get().addDefault(betForm + "order.2.dropdown.options.xiu", "&2Xỉu");
         get().addDefault(betForm + "order.3.input.name", "Số tiền muốn cược:");
         get().addDefault(betForm + "order.3.input.placeholder", "%minBet% - %maxBet%");
 

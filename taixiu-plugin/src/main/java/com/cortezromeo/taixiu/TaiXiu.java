@@ -26,7 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,11 +67,11 @@ public final class TaiXiu extends JavaPlugin {
             setupGeyserForm();
 
         log("&f--------------------------------");
-        log("&#03fc88  _____           _    __  __  _         ");
-        log("&#03fc88 |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
-        log("&#03fc88   | |    / _  | | |    \\  /  | | | | | |");
-        log("&#03fc88   | |   | (_| | | |    /  \\  | | | |_| |");
-        log("&#03fc88   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
+        log("&2  _____           _    __  __  _         ");
+        log("&2 |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
+        log("&2   | |    / _  | | |    \\  /  | | | | | |");
+        log("&2   | |   | (_| | | |    /  \\  | | | |_| |");
+        log("&2   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
         log("");
         log("&fVersion: &b" + getDescription().getVersion());
         log("&fAuthor: &bCortez_Romeo");
@@ -175,10 +174,9 @@ public final class TaiXiu extends JavaPlugin {
                 && getConfig().getBoolean("floodgate-settings.enable")) {
             floodgateSupport = true;
         }
-
     }
 
-    private void setupGeyserForm() {
+    public static void setupGeyserForm() {
         if (floodgateSupport()) {
             InfoGeyserForm.setupValue();
             MenuGeyserForm.setupValue();
