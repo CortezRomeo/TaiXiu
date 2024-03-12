@@ -300,6 +300,10 @@ public class TaiXiuManager {
         return sum;
     }
 
+    public static String getXiuBetFormat(@NotNull ISession session) {
+        return MessageUtil.formatMoney(getXiuBet(session));
+    }
+
     public static Long getTaiBet(@NotNull ISession session) {
 
         long sum = 0L;
@@ -309,6 +313,10 @@ public class TaiXiuManager {
             }
         }
         return sum;
+    }
+
+    public static String getTaiBetFormat(@NotNull ISession session) {
+        return MessageUtil.formatMoney(getTaiBet(session));
     }
 
     public static Long getTotalBet(@NotNull ISession session) {

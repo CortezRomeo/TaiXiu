@@ -5,7 +5,6 @@ import com.cortezromeo.taixiu.file.GeyserFormFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.ModalForm;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 public class RuleGeyserForm {
 
@@ -32,7 +31,7 @@ public class RuleGeyserForm {
                 .button2(TaiXiu.nms.addColor(closeButtonName))
                 .validResultHandler((modalForm, modalFormResponse) -> {
                     if (modalFormResponse.clickedButtonId() == 0)
-                        FloodgateApi.getInstance().getPlayer(player.getUniqueId()).sendForm(MenuGeyserForm.getForm(player));
+                        MenuGeyserForm.openForm(player);
                 })
                 .build();
     }

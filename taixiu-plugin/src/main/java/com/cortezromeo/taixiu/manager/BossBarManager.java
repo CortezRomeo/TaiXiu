@@ -130,8 +130,8 @@ public class BossBarManager {
             bossBarTitle = bossBarTitle.replace("%result%", MessageUtil.getFormatName(bbReloadingSession.getResult()));
             bossBarTitle = bossBarTitle.replace("%numberOfPlayers%", String.valueOf(
                     (bbReloadingSession.getResult() == TaiXiuResult.XIU ? bbReloadingSession.getXiuPlayers().size() : bbReloadingSession.getTaiPlayers().size())));
-            bossBarTitle = bossBarTitle.replace("%money%", String.valueOf(
-                    (bbReloadingSession.getResult() == TaiXiuResult.XIU ? TaiXiuManager.getXiuBet(bbReloadingSession) : TaiXiuManager.getTaiBet(bbReloadingSession))));
+            bossBarTitle = bossBarTitle.replace("%money%",
+                    (bbReloadingSession.getResult() == TaiXiuResult.XIU ? TaiXiuManager.getXiuBetFormat(bbReloadingSession) : TaiXiuManager.getTaiBetFormat(bbReloadingSession)));
 
             bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
 

@@ -45,13 +45,11 @@ public class MenuGeyserForm {
     }
 
     private static boolean checkTogglePlayer(Player player) {
-        if (DatabaseManager.togglePlayers.contains(player.getName()))
-            return true;
-        return false;
+        return DatabaseManager.togglePlayers.contains(player.getName());
     }
 
-    public static SimpleForm getForm(Player player) {
-        return SimpleForm.builder().title(TaiXiu.nms.addColor(title))
+    public static void openForm(Player player) {
+        SimpleForm form = SimpleForm.builder().title(TaiXiu.nms.addColor(title))
                 .button(buttonData.get(1).getButtonName(), buttonData.get(1).getButtonImageType(), buttonData.get(1).getButtonImageData())
                 .button(buttonData.get(2).getButtonName(), buttonData.get(2).getButtonImageType(), buttonData.get(2).getButtonImageData())
                 .button(buttonData.get(3).getButtonName(), buttonData.get(3).getButtonImageType(), buttonData.get(3).getButtonImageData())
@@ -96,10 +94,10 @@ public class MenuGeyserForm {
                         }
                         BossBarManager.toggleBossBar(player);
 
-                        fgPlayer.sendForm(getForm(player));
+                        openForm(player);
                     }
 
                 }).build();
+        FloodgateApi.getInstance().getPlayer(player.getUniqueId()).sendForm(form);
     }
-
 }

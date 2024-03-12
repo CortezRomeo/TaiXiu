@@ -2,16 +2,13 @@ package com.cortezromeo.taixiu.command;
 
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
-import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.geyserform.MenuGeyserForm;
 import com.cortezromeo.taixiu.inventory.page.TaiXiuInfoPagedPane;
 import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
-import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.util.MessageUtil;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +17,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.geysermc.floodgate.api.FloodgateApi;
-import org.geysermc.floodgate.api.player.FloodgatePlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,9 +48,6 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
         }
 
         Player p = (Player) sender;
-        String pName = p.getName();
-        Economy econ = VaultSupport.econ;
-        ISession data = TaiXiuManager.getSessionData();
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
 
         if (args.length == 1) {
@@ -157,9 +150,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
         }
 
         if (TaiXiu.floodgateSupport() && FloodgateApi.getInstance().isFloodgateId(p.getUniqueId())) {
-            FloodgatePlayer fgPlayer = FloodgateApi.getInstance().getPlayer(p.getUniqueId());
-            fgPlayer.sendForm(MenuGeyserForm.getForm(p));
-            return false;
+            MenuGeyserForm.openForm(p);
         } else {
             for (String string : messageF.getStringList("command-taixiu")) {
                 string = string.replace("%version%", TaiXiu.plugin.getDescription().getVersion());
