@@ -11,9 +11,10 @@ public class MessageFile {
 
     private static File file;
     private static FileConfiguration messageFile;
+    private static final String fileName = "message.yml";
 
     public static void setup() {
-        file = new File(TaiXiu.plugin.getDataFolder() + "/message.yml");
+        file = new File(TaiXiu.plugin.getDataFolder() + "/" + fileName);
 
         if (!file.exists()) {
             try {
@@ -32,7 +33,7 @@ public class MessageFile {
     public static void saveDefault() {
         try {
             if (!file.exists()) {
-                TaiXiu.plugin.saveResource("message.yml", false);
+                TaiXiu.plugin.saveResource(fileName, false);
             }
         } catch (Exception e) {
             e.printStackTrace();

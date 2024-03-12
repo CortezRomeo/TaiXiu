@@ -11,9 +11,10 @@ public class InventoryFile {
 
     private static File file;
     private static FileConfiguration inventoryFile;
+    private static final String fileName = "inventory.yml";
 
     public static void setup() {
-        file = new File(TaiXiu.plugin.getDataFolder() + "/inventory.yml");
+        file = new File(TaiXiu.plugin.getDataFolder() + "/" + fileName);
 
         if (!file.exists()) {
             try {
@@ -30,7 +31,7 @@ public class InventoryFile {
     }
 
     public static void fileExists() {
-        file = new File(TaiXiu.plugin.getDataFolder() + "/inventory.yml");
+        file = new File(TaiXiu.plugin.getDataFolder() + "/" + fileName);
         inventoryFile = YamlConfiguration.loadConfiguration(file);
     }
 
@@ -51,9 +52,11 @@ public class InventoryFile {
 
         get().options().header(
                 "\n" +
-                        "    ▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █\n" +
-                        "      █    █▄▄█  █      █    █   █  █\n" +
-                        "      █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀\n" +
+                        "     ______   ______     __        __  __     __     __  __\n" +
+                        "    /\\__  _\\ /\\  __ \\   /\\ \\      /\\_\\_\\_\\   /\\ \\   /\\ \\/\\ \\\n" +
+                        "    \\/_/\\ \\/ \\ \\  __ \\  \\ \\ \\     \\/_/\\_\\/_  \\ \\ \\  \\ \\ \\_\\ \\\n" +
+                        "       \\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\      /\\_\\/\\_\\  \\ \\_\\  \\ \\_____\\\n" +
+                        "        \\/_/   \\/_/\\/_/   \\/_/      \\/_/\\/_/   \\/_/   \\/_____/\n" +
                         "\n" +
                         " Author: Cortez_Romeo\n" +
                         " Download plugin này miễn phí tại: https://minecraftvn.net\n" +
@@ -62,10 +65,10 @@ public class InventoryFile {
                         " * Có hỗ trợ hex color\n" +
                         " * Có 3 type chính, đó là:\n" +
                         "   + material: value chỉnh thành MATERIAL của block\n" +
-                        "     > Theo các phiên bản bé hơn 1.13, bạn có thể điền số trong phần 'value:' và 'data:' của item đó" +
-                        "         Ví dụ: (value: 95 | data: 1) [https://minecraft-ids.grahamedgecombe.com/]" +
-                        "     > Theo các phiên bản lớn hơn 1.12.2, bạn có thể điền thẳng tên item đó (Phần 'data:' sẽ không còn cần thiết)" +
-                        "         Ví dụ: (value: BOOK) [https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html]" +
+                        "     > Theo các phiên bản bé hơn 1.13, bạn có thể điền số trong phần 'value:' và 'data:' của item đó\n" +
+                        "         Ví dụ: (value: 95 | data: 1) [https://minecraft-ids.grahamedgecombe.com/]\n" +
+                        "     > Theo các phiên bản lớn hơn 1.12.2, bạn có thể điền thẳng tên item đó (Phần 'data:' sẽ không còn cần thiết)\n" +
+                        "         Ví dụ: (value: BOOK) [https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html]\n" +
                         "   + playerhead: dành cho item \"bet-player:\" để hiện thị đầu người hơi\n" +
                         "   + customhead: Đọc phần ở dưới\n" +
                         "     + Cách sử dụng custom-head:\n" +
@@ -77,6 +80,8 @@ public class InventoryFile {
                         "ĐỌC KỸ TRƯỚC KHI CHỈNH FILE" +
                         "\n"
         );
+
+        get().addDefault("file-version", 2);
 
         String defaultitems = "inventory.default-items.";
         get().addDefault(defaultitems + "nextPage.name", "&aTrang sau");
@@ -105,7 +110,7 @@ public class InventoryFile {
 
         String txinfo = "inventory.taiXiuInfo.";
         get().addDefault(txinfo + "title", "&0Thông tin phiên số &b#%session%");
-        get().addDefault(txinfo + "rows", 6);
+        get().addDefault(txinfo + "rows", 5);
         get().addDefault(txinfo + "items.bet-player.name", "&b%playerName%");
         get().addDefault(txinfo + "items.bet-player.type", "playerhead");
         get().addDefault(txinfo + "items.bet-player.data", 0);

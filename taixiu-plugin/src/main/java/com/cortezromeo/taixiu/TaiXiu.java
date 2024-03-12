@@ -3,8 +3,13 @@ package com.cortezromeo.taixiu;
 import com.cortezromeo.taixiu.api.server.VersionSupport;
 import com.cortezromeo.taixiu.command.TaiXiuAdminCommand;
 import com.cortezromeo.taixiu.command.TaiXiuCommand;
+import com.cortezromeo.taixiu.file.GeyserFormFile;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.geyserform.BetGeyserForm;
+import com.cortezromeo.taixiu.geyserform.InfoGeyserForm;
+import com.cortezromeo.taixiu.geyserform.MenuGeyserForm;
+import com.cortezromeo.taixiu.geyserform.RuleGeyserForm;
 import com.cortezromeo.taixiu.listener.JoinListener;
 import com.cortezromeo.taixiu.listener.PaneListener;
 import com.cortezromeo.taixiu.listener.QuitListener;
@@ -34,6 +39,7 @@ public final class TaiXiu extends JavaPlugin {
     private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     public static VersionSupport nms;
     private static boolean papiSupport = false;
+    private static boolean floodgateSupport = false;
 
     @Override
     public void onLoad() {
@@ -45,27 +51,39 @@ public final class TaiXiu extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        log("&f--------------------------------");
-        log("&a▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █");
-        log("&a  █    █▄▄█  █      █    █   █  █");
-        log("&a  █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀");
-        log("");
-        log("&fVersion: &b" + getDescription().getVersion());
-        log("&fAuthor: &bCortez_Romeo");
-        log("&eKhởi chạy plugin trên phiên bản: " + version);
-        log("&f--------------------------------");
-
         initFile();
         setDebug(getConfig().getBoolean("debug"));
 
+        initSupport();
         initDatabase();
         initCommand();
         initListener();
-        initSupport();
 
         TaiXiuManager.startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
         AutoSaveManager.startAutoSave(getConfig().getInt("database.auto-save.time"));
         BossBarManager.setupValue();
+
+        if (floodgateSupport())
+            setupGeyserForm();
+
+        log("&f--------------------------------");
+        log("&2  _____           _    __  __  _         ");
+        log("&2 |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
+        log("&2   | |    / _  | | |    \\  /  | | | | | |");
+        log("&2   | |   | (_| | | |    /  \\  | | | |_| |");
+        log("&2   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
+        log("");
+        log("&fVersion: &b" + getDescription().getVersion());
+        log("&fAuthor: &bCortez_Romeo");
+        log("&eKhởi chạy plugin trên phiên bản: " + version);
+        log("");
+        log("&fSupport:");
+        log((papiSupport ? "&2[YES] &aPlaceholderAPI" : "&4[NO] &cPlaceholderAPI"));
+        log((floodgateSupport ? "&2[YES] &aFloodgate API (Forms and Cumulus)" : "&4[NO] &cFloodgate API (Forms and Cumulus)"));
+        if (!getConfig().getBoolean("floodgate-settings.enable"))
+            log("  &e&oquyền sử dụng Floodgate API đã bị tắt trong config.yml");
+        log("");
+        log("&f--------------------------------");
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (getConfig().getBoolean("toggle-settings.auto-toggle")) {
@@ -108,6 +126,15 @@ public final class TaiXiu extends JavaPlugin {
         } else
             InventoryFile.fileExists();
         InventoryFile.reload();
+
+        // geyserform.yml
+        if (!new File(getDataFolder() + "/geyserform.yml").exists()) {
+            GeyserFormFile.setup();
+            GeyserFormFile.setupLang();
+        } else
+            GeyserFormFile.fileExists();
+        GeyserFormFile.reload();
+
     }
 
     private void initDatabase() {
@@ -127,11 +154,6 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     private void initSupport() {
-        // papi
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PAPISupport().register();
-            papiSupport = true;
-        }
 
         // vault
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
@@ -140,10 +162,35 @@ public final class TaiXiu extends JavaPlugin {
         } else {
             VaultSupport.setup();
         }
+
+        // papi
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PAPISupport().register();
+            papiSupport = true;
+        }
+
+        // floodgate
+        if (Bukkit.getPluginManager().getPlugin("floodgate") != null
+                && getConfig().getBoolean("floodgate-settings.enable")) {
+            floodgateSupport = true;
+        }
+    }
+
+    public static void setupGeyserForm() {
+        if (floodgateSupport()) {
+            InfoGeyserForm.setupValue();
+            MenuGeyserForm.setupValue();
+            RuleGeyserForm.setupValue();
+            BetGeyserForm.setupValue();
+        }
     }
 
     public static boolean PAPISupport() {
         return papiSupport;
+    }
+
+    public static boolean floodgateSupport() {
+        return floodgateSupport;
     }
 
     public static String getServerVersion() {
@@ -166,9 +213,11 @@ public final class TaiXiu extends JavaPlugin {
     public void onDisable() {
 
         log("&f--------------------------------");
-        log("&c▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █");
-        log("&c  █    █▄▄█  █      █    █   █  █");
-        log("&c  █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀");
+        log("&c  _____           _    __  __  _         ");
+        log("&c |_   _|   __ _  (_)   \\ \\/ / (_)  _   _ ");
+        log("&c   | |    / _  | | |    \\  /  | | | | | |");
+        log("&c   | |   | (_| | | |    /  \\  | | | |_| |");
+        log("&c   |_|    \\____| |_|   /_/\\_\\ |_|  \\____|");
         log("");
         log("&fVersion: &b" + getDescription().getVersion());
         log("&fAuthor: &bCortez_Romeo");

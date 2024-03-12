@@ -3,6 +3,7 @@ package com.cortezromeo.taixiu.command;
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.TaiXiuState;
+import com.cortezromeo.taixiu.file.GeyserFormFile;
 import com.cortezromeo.taixiu.file.InventoryFile;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.manager.AutoSaveManager;
@@ -62,8 +63,13 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
                     TaiXiu.plugin.reloadConfig();
                     MessageFile.reload();
                     InventoryFile.reload();
+                    GeyserFormFile.reload();
                     DatabaseManager.loadLoadingType();
+
                     BossBarManager.setupValue();
+
+                    if (TaiXiu.floodgateSupport())
+                        TaiXiu.setupGeyserForm();
 
                     setDebug(TaiXiu.plugin.getConfig().getBoolean("debug"));
                     if (AutoSaveManager.getAutoSaveStatus() && !TaiXiu.plugin.getConfig().getBoolean("database.auto-save.enable")) {
@@ -94,7 +100,6 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
                         }
 
                         TaiXiuManager.setTime(time);
-                        BossBarManager.setTimePerSession(time);
                         sendMessage(sender, messageF.getString("admin-settime").replace("%time%", String.valueOf(time)));
                         sendBoardCast(messageF.getString("admin-settime-boardcast")
                                 .replaceAll("%playerName%", sender.getName())

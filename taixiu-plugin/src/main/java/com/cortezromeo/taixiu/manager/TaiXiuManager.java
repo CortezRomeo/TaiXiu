@@ -3,15 +3,18 @@ package com.cortezromeo.taixiu.manager;
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.TaiXiuState;
+import com.cortezromeo.taixiu.api.event.PlayerBetEvent;
 import com.cortezromeo.taixiu.api.event.SessionResultEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
 import com.cortezromeo.taixiu.util.MessageUtil;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -20,6 +23,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendBoardCast;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendMessage;
+
+enum SoundType {
+    win, lose
+}
 
 public class TaiXiuManager {
 
@@ -47,6 +54,7 @@ public class TaiXiuManager {
 
     public static void setTime(int time) {
         getTaiXiuTask().setTime(time);
+        BossBarManager.timePerSession = time;
     }
 
     public static ISession getSessionData() {
@@ -62,6 +70,86 @@ public class TaiXiuManager {
             return DatabaseManager.getSessionData(session);
 
         return null;
+    }
+
+    public static void playerBet(Player player, long money, TaiXiuResult result) {
+
+        String pName = player.getName();
+        Economy econ = VaultSupport.econ;
+        ISession data = getSessionData();
+        FileConfiguration messageF = MessageFile.get();
+        FileConfiguration cfg = TaiXiu.plugin.getConfig();
+
+        if (getSessionData().getXiuPlayers().containsKey(pName) || data.getTaiPlayers().containsKey(pName)) {
+            sendMessage(player, messageF.getString("have-bet-before")
+                    .replace("%bet%", MessageUtil.getFormatName((data.getXiuPlayers().containsKey(pName)
+                            ? TaiXiuResult.XIU
+                            : TaiXiuResult.TAI)))
+                    .replace("%money%", (data.getXiuPlayers().containsKey(pName)
+                            ? MessageUtil.formatMoney(data.getXiuPlayers().get(pName))
+                            : MessageUtil.formatMoney(data.getTaiPlayers().get(pName)))));
+            return;
+        }
+
+        int configDisableTime = cfg.getInt("bet-settings.disable-while-remaining");
+        if (TaiXiuManager.getTime() <= configDisableTime) {
+            sendMessage(player, messageF.getString("late-bet")
+                    .replaceAll("%time%", String.valueOf(TaiXiuManager.getTime()))
+                    .replaceAll("%configDisableTime%", String.valueOf(configDisableTime)));
+            return;
+        }
+
+        if (econ.getBalance(player) < money) {
+            sendMessage(player, messageF.getString("not-enough-money"));
+            return;
+        }
+
+        long minBet = cfg.getLong("bet-settings.min-bet");
+        if (money < minBet) {
+            sendMessage(player, messageF.getString("min-bet").replace("%minBet%", MessageUtil.formatMoney(minBet)));
+            return;
+        }
+
+        long maxBet = cfg.getLong("bet-settings.max-bet");
+        if (money > maxBet) {
+            sendMessage(player, messageF.getString("max-bet").replace("%maxBet%", MessageUtil.formatMoney(maxBet)));
+            return;
+        }
+
+        econ.withdrawPlayer(player, money);
+
+        if (result == TaiXiuResult.XIU)
+            data.addXiuPlayer(pName, money);
+
+        if (result == TaiXiuResult.TAI)
+            data.addTaiPlayer(pName, money);
+
+        sendMessage(player, messageF.getString("player-bet")
+                .replace("%bet%", MessageUtil.getFormatName(result))
+                .replace("%money%", MessageUtil.formatMoney(money))
+                .replace("%session%", String.valueOf(data.getSession()))
+                .replace("%time%", String.valueOf(TaiXiuManager.getTime())));
+
+        String messageBoardcastPlayerBet = messageF.getString("broadcast-player-bet")
+                .replace("%prefix%", messageF.getString("prefix"))
+                .replace("%player%", player.getName())
+                .replace("%bet%", MessageUtil.getFormatName(result))
+                .replace("%money%", MessageUtil.formatMoney(money));
+
+        if (!TaiXiu.PAPISupport())
+            Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageBoardcastPlayerBet));
+        else
+            Bukkit.broadcastMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(player, messageBoardcastPlayerBet)));
+
+        PlayerBetEvent event = new PlayerBetEvent(player, result, money);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        debug("PLAYER BETTED",
+                "Name: " + pName + " " +
+                        "| Bet: " + result.toString() + " " +
+                        "| Money: " + money + " " +
+                        "| Session: " + data.getSession());
+
     }
 
     public static void resultSeason(@NotNull ISession session, int dice1, int dice2, int dice3) {
@@ -126,9 +214,27 @@ public class TaiXiuManager {
             double tax = cfg.getDouble("bet-settings.tax") / 100;
 
             if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
-                giveMoney(session.getXiuPlayers(), session.getResult(), tax);
+                executeWinners(session.getXiuPlayers(), session.getResult(), tax);
+
+                for (String taiPlayer : session.getTaiPlayers().keySet()) {
+                    String message = messageF.getString("session-player-lose")
+                            .replaceAll("%result%", MessageUtil.getFormatName(TaiXiuResult.TAI))
+                            .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(taiPlayer)));
+
+                    playSound(Bukkit.getPlayer(taiPlayer), SoundType.lose);
+                    sendMessage(Bukkit.getPlayer(taiPlayer), message);
+                }
             } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
-                giveMoney(session.getTaiPlayers(), session.getResult(), tax);
+                executeWinners(session.getTaiPlayers(), session.getResult(), tax);
+
+                for (String xiuPlayer : session.getXiuPlayers().keySet()) {
+                    String message = messageF.getString("session-player-lose")
+                            .replaceAll("%result%", MessageUtil.getFormatName(TaiXiuResult.XIU))
+                            .replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(xiuPlayer)));
+
+                    playSound(Bukkit.getPlayer(xiuPlayer), SoundType.lose);
+                    sendMessage(Bukkit.getPlayer(xiuPlayer), message);
+                }
             } else
                 sendBoardCast(messageF.getString("session-special-win"));
 
@@ -146,7 +252,7 @@ public class TaiXiuManager {
         }
     }
 
-    private static void giveMoney(@NotNull  HashMap<String, Long> players, TaiXiuResult result, double tax) {
+    private static void executeWinners(@NotNull HashMap<String, Long> players, TaiXiuResult result, double tax) {
         FileConfiguration messageF = MessageFile.get();
         for (String player : players.keySet()) {
 
@@ -164,11 +270,24 @@ public class TaiXiuManager {
                         .replaceAll("%result%", MessageUtil.getFormatName(result))
                         .replaceAll("%money%", MessageUtil.formatMoney(money));
             }
-
+            playSound(Bukkit.getPlayer(player), SoundType.win);
             sendMessage(Bukkit.getPlayer(player), message);
             VaultSupport.econ.depositPlayer(player, money);
         }
     }
+
+    private static void playSound(Player player, SoundType soundType) {
+        if (player == null)
+            return;
+
+        if (TaiXiu.plugin.getConfig().getBoolean("sound." + soundType + ".enable")) {
+            player.playSound(player.getLocation(),
+                    TaiXiu.nms.createSound(TaiXiu.plugin.getConfig().getString("sound." + soundType + ".sound-name")),
+                    TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".volume"),
+                    TaiXiu.plugin.getConfig().getInt("sound." + soundType + ".pitch"));
+        }
+    }
+
 
     public static Long getXiuBet(@NotNull ISession session) {
 
@@ -181,6 +300,10 @@ public class TaiXiuManager {
         return sum;
     }
 
+    public static String getXiuBetFormat(@NotNull ISession session) {
+        return MessageUtil.formatMoney(getXiuBet(session));
+    }
+
     public static Long getTaiBet(@NotNull ISession session) {
 
         long sum = 0L;
@@ -190,6 +313,10 @@ public class TaiXiuManager {
             }
         }
         return sum;
+    }
+
+    public static String getTaiBetFormat(@NotNull ISession session) {
+        return MessageUtil.formatMoney(getTaiBet(session));
     }
 
     public static Long getTotalBet(@NotNull ISession session) {

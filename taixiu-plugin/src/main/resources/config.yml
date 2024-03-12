@@ -1,7 +1,10 @@
 #
-#    ▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █
-#      █    █▄▄█  █      █    █   █  █
-#      █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀
+#     ______   ______     __        __  __     __     __  __
+#    /\__  _\ /\  __ \   /\ \      /\_\_\_\   /\ \   /\ \/\ \
+#    \/_/\ \/ \ \  __ \  \ \ \     \/_/\_\/_  \ \ \  \ \ \_\ \
+#       \ \_\  \ \_\ \_\  \ \_\      /\_\/\_\  \ \_\  \ \_____\
+#        \/_/   \/_/\/_/   \/_/      \/_/\/_/   \/_/   \/_____/
+#
 #
 #  Author: Cortez_Romeo
 #  Download plugin này miễn phí tại: https://minecraftvn.net
@@ -27,16 +30,16 @@ database:
     # [TYPE: SAVE_ALL - SAVE_LATEST - SAVE_LATEST_AND_DELETE_OLD_DATA]
     # SAVE_ALL: Lưu tất cả dữ liệu của các phiên đang load vào file .yml, sẽ tốn khá nhiều thời gian
     #           nếu dữ liệu quá nhiều (Tuy nhiên bạn có thể khắc phục điều này bằng cách chỉnh
-    #           type while-loading-plugin thành LOAD_LATEST và type while-ending-session thành SAVE_AND_UNLOAD)
+    #           while-ending-session thành SAVE_AND_UNLOAD)
     # SAVE_LATEST: Lưu dữ liệu cuối cùng vào file .yml và không lưu các dữ liệu còn lại
     # SAVE_LATEST_AND_DELETE_OLD_DATA: Xóa tất cả dữ liệu cũ (Phiên đã có kết quả) và giữ nguyên dữ liệu cuối cùng (Phiên chưa có kết quả)
     #
-    # ĐỂ TỐI ƯU DỮ LIỆU, BẠN CÓ THỂ XÀI DELETE_OLD_DATA
+    # ĐỂ TỐI ƯU TỐI ĐA DỮ LIỆU, BẠN CÓ THỂ XÀI SAVE_LATEST_AND_DELETE_OLD_DATA
     # TUY NHIÊN BẠN CŨNG NÊN SỬ DỤNG SAVE_LATEST (Đọc ghi chú ở trên), DỮ LIỆU KHÔNG CẦN PHẢI TỐI ƯU QUÁ MỨC
     type: SAVE_LATEST
   auto-save:
     enable: true
-    # Set càng ít thì dữ liệu càng dễ được bảm đảm nhưng có thể gây lag nếu dữ liệu quá nhiều
+    # Set càng ít thì dữ liệu càng dễ được bảo đảm nhưng có thể gây lag nếu dữ liệu quá nhiều
     # Lấy theo giây(s)
     time: 600
 
@@ -44,7 +47,7 @@ task:
   taiXiuTask:
     # Thời gian đếm ngược lấy kết quả của mỗi phiên
     # Lấy theo giây(s)
-    time-per-session: 120
+    time-per-session: 125
 
 # Số tiền sẽ được hiển thị theo cách dễ nhìn hơn
 # Ví dụ: Bạn đặt '#,###' tại 'format-money', số tiền là 500000 -> Số tiền hiền thị: 500,000
@@ -71,14 +74,49 @@ bet-settings:
   # Nếu bạn chỉnh thành 'true' cái này thì sẽ không còn rơi vào 2 trường hợp nên nữa
   disable-special: false
 
+# Geyser API/Floodgate API
+# Được dùng để hiển thị form cho người chơi PE/BE
+floodgate-settings:
+  enable: true
+
+# Thiết lập âm thanh
+# List sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+sound:
+  win:
+    enable: true
+    sound-name: ENTITY_PLAYER_LEVELUP
+    volume: 1
+    pitch: 2
+  lose:
+    enable: true
+    sound-name: ENTITY_VILLAGER_NO
+    volume: 1
+    pitch: 1
+
+# Thanh máu boss được dùng để hiển thị thông tin
+# List bar color: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
+# List bar style: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarStyle.html
 boss-bar:
   enable: true
-  title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
-  color:
-    playing: YELLOW
-    bet-disabling: RED
-    pausing: RED
-  style: SOLID
+  type:
+    playing:
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
+      color:
+        playing: YELLOW
+        bet-disabling: BLUE
+        pausing: BLUE
+      style: SOLID
+    # Hiển thị khi kết thúc phiên với kết quả phiên của cuối cùng
+    reloading:
+      enable: true
+      time: 5
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fngười thắng &6$%money%'
+      # Có thể để color là 'RESULT-COLOR' nếu muốn theo màu của tài hoặc xỉu
+      color: RESULT-COLOR
+      result-color-setting:
+        xiu: GREEN
+        tai: RED
+      style: SOLID
 
 # Phần thông báo từ bossbar và message
 toggle-settings:

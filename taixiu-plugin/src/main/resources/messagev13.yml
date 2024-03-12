@@ -1,7 +1,9 @@
 #
-#    ▀▀█▀▀  █▀▀█ ▀█▀   ▀▄ ▄▀ ▀█▀  █  █
-#      █    █▄▄█  █      █    █   █  █
-#      █    █  █ ▄█▄   ▄▀ ▀▄ ▄█▄  ▀▄▄▀
+#     ______   ______     __        __  __     __     __  __
+#    /\__  _\ /\  __ \   /\ \      /\_\_\_\   /\ \   /\ \/\ \
+#    \/_/\ \/ \ \  __ \  \ \ \     \/_/\_\/_  \ \ \  \ \ \_\ \
+#       \ \_\  \ \_\ \_\  \ \_\      /\_\/\_\  \ \_\  \ \_____\
+#        \/_/   \/_/\/_/   \/_/      \/_/\/_/   \/_/   \/_____/
 #
 #  Author: Cortez_Romeo
 #  Download plugin này miễn phí tại: https://minecraftvn.net
@@ -49,6 +51,7 @@ bestWinners-format:
 session-special-win: '%prefix%&d&lCái đã thắng, người đặt tài hoặc xỉu đều thua và không nhận được tiền trong phiên này!'
 session-player-win: '%prefix%&fBạn đã đặt vào %result%&f và thắng &6$%money%'
 session-player-win-with-tax: '%prefix%&fBạn đã đặt vào %result%&f và thắng &6$%money% &c&l(TAX: %tax%%)'
+session-player-lose: '%prefix%&fBạn đã đặt vào %result%&f và thua &6$%money%'
 command-taixiu:
   - ' '
   - '&#03fca1Tài Xỉu'
@@ -84,7 +87,7 @@ command-taixiuadmin:
   - ' '
   - ' &6<>&7: Bắt buộc phải nhập &7| &e()&7: Tùy chỉnh'
 admin-prefix: '&#eb5834[TÀI XỈU ADMIN]&r '
-admin-reload: '%prefix%&aTaiXiu reloaded'
+admin-reload: '%prefix%&aReloaded TaiXiu'
 admin-changestate: '%prefix%&aĐã thay đổi trạng thái phiên hiện tại thành: &e%state%'
 admin-changestate-boardcast: '%prefix%&e%playerName% &fđã thay đổi trạng thái phiên hiện tại thành: &e%state%'
 admin-settime: '%prefix%&aĐã thay đổi thời gian phiên hiện tại thành: &e%time% giây'

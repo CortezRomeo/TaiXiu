@@ -12,6 +12,7 @@ import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
@@ -23,7 +24,7 @@ public class TaiXiuTask implements Runnable {
     private ISession data;
 
     public TaiXiuTask(int time) {
-        this.task = Bukkit.getScheduler().runTaskTimer(TaiXiu.plugin, this, 0, 20L);
+        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(TaiXiu.plugin, this, 0, 20L);
         data = DatabaseManager.getSessionData(DatabaseManager.getLastSessionFromFile());
         this.time = time;
         this.state = TaiXiuState.PLAYING;
@@ -78,8 +79,6 @@ public class TaiXiuTask implements Runnable {
                 }
 
                 if (time == 0) {
-                    time = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
-                    BossBarManager.setTimePerSession(time);
 
                     if ((getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) && getSession().getResult() == TaiXiuResult.NONE) {
                         MessageUtil.sendBoardCast(MessageFile.get().getString("session-result-not-enough-player").replace("%session%", String.valueOf(getSession().getSession())));
@@ -89,6 +88,9 @@ public class TaiXiuTask implements Runnable {
                         ISession oldSessionData = getSession();
                         long newSession = DatabaseManager.getLastSession() + 1;
                         setSession(newSession);
+
+                        for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
+                            BossBarManager.putValueBossBar(playerBossBar, time);
 
                         SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
 
@@ -103,6 +105,10 @@ public class TaiXiuTask implements Runnable {
                             DatabaseManager.unloadSessionData(oldSessionData.getSession());
                         }
                     }
+                    TaiXiuManager.setTime(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
+                } else {
+                    for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
+                        BossBarManager.putValueBossBar(playerBossBar, time);
                 }
             } catch (Exception e) {
                 cancel();
