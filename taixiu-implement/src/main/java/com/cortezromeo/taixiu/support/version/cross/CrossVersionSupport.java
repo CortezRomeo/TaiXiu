@@ -7,12 +7,15 @@ import com.cryptomorin.xseries.profiles.builder.XSkull;
 import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
 import com.cryptomorin.xseries.profiles.objects.Profileable;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,8 +63,19 @@ public class CrossVersionSupport extends VersionSupport {
     }
 
     @Override
-    public ItemStack getHeadItem(String headValue) {
-        return XSkull.createItem().profile(Profileable.of(ProfileInputType.BASE64, headValue)).apply();
+    public ItemStack getHeadItem(String headValue, int type) {
+        if (type == 1)
+            return XSkull.createItem().profile(Profileable.of(ProfileInputType.BASE64, headValue)).apply();
+        else {
+            if (Bukkit.getPlayer(headValue) != null)
+                headValue = Bukkit.getPlayer(headValue).getUniqueId().toString();
+            else
+            if (!Bukkit.getServer().getOnlineMode()) {
+                String offlinePlayerString = "OfflinePlayer:" + headValue;
+                headValue = UUID.nameUUIDFromBytes(offlinePlayerString.getBytes(StandardCharsets.UTF_8)).toString();
+            }
+            return XSkull.createItem().profile(Profileable.of(UUID.fromString(headValue))).apply();
+        }
     }
 
     @Override

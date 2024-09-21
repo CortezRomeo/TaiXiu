@@ -19,7 +19,7 @@ public abstract class VersionSupport {
 
     public abstract Sound createSound(String soundName);
 
-    public abstract ItemStack getHeadItem(String headValue);
+    public abstract ItemStack getHeadItem(String headValue, int type);
 
     public abstract ItemStack addCustomData(ItemStack i, String data);
 

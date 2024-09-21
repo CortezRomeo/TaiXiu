@@ -231,9 +231,11 @@ public class PagedPane implements InventoryHolder {
     protected ItemStack getItem(String type, String value, short itemData, String name, List<String> lore) {
         AtomicReference<ItemStack> material = new AtomicReference<>(new ItemStack(Material.BEDROCK));
 
-        if (type.equalsIgnoreCase("customhead") || type.equalsIgnoreCase("playerhead"))
-            material.set(TaiXiu.nms.getHeadItem(value));
-
+        if (type.equalsIgnoreCase("customhead"))
+            material.set(TaiXiu.nms.getHeadItem(value, 1));
+        else if (type.equalsIgnoreCase("playerhead"))
+            material.set(TaiXiu.nms.getHeadItem(value, 2));
+        
         if (type.equalsIgnoreCase("material"))
             material.set(TaiXiu.nms.createItemStack(value, 1, itemData));
 
