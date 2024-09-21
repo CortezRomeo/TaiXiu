@@ -33,7 +33,7 @@ You might need these plugins to utilize my plugin resources totally.
 **Attention:** Change **{session_number}** to **current** if you want to get the last session.
 - [Floodgate API (GeyserMC)](https://geysermc.org/download#floodgate)
 	- This will let you be able to [use Bedrock forms](https://wiki.geysermc.org/geyser/forms/) which I already have set up for this plugin.
-- [DiscordSRV](https://geysermc.org/download#floodgate](https://www.spigotmc.org/resources/discordsrv.18494/))
+- [DiscordSRV](https://www.spigotmc.org/resources/discordsrv.18494/)
 	- Do you want notifications whenever a session ended or when player betted? Since version 2.2, TaiXiu supports messages for server using DiscordSRV to send session's information.
 	- You can modify the messages through the json files in plugin's folder.
 
