@@ -12,6 +12,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,111 +78,111 @@ public class BossBarManager {
     }
 
     public static void toggleBossBar(Player p) {
-        if (!enable || !DatabaseManager.togglePlayers.contains(p.getName()))
+        if (!enable)
             return;
 
+        // reset bossBar
         if (bossBarPlayers.containsKey(p)) {
             bossBarPlayers.get(p).removeAll();
             bossBarPlayers.remove(p);
         }
 
-        BossBar taiXiuBossBar = Bukkit.createBossBar(TaiXiu.nms.addColor(MessageFile.get().getString("request-loading").replace("%prefix%", "")),
-                bbPlayingColorPausing,
-                bbPlayingStyle
-        );
-        taiXiuBossBar.setProgress(1);
-        taiXiuBossBar.addPlayer(p);
-        taiXiuBossBar.setVisible(true);
-        bossBarPlayers.put(p, taiXiuBossBar);
+        if (DatabaseManager.togglePlayers.contains(p.getName())) {
+            BossBar taiXiuBossBar = Bukkit.createBossBar(TaiXiu.nms.addColor(MessageFile.get().getString("request-loading").replace("%prefix%", "")),
+                    bbPlayingColorPausing,
+                    bbPlayingStyle
+            );
+            taiXiuBossBar.setProgress(1);
+            taiXiuBossBar.addPlayer(p);
+            taiXiuBossBar.setVisible(true);
+            bossBarPlayers.put(p, taiXiuBossBar);
+        }
     }
 
-    public static void putValueBossBar(Player p, int timeLeft) {
-        if (!bossBarPlayers.containsKey(p) || !p.isOnline()) {
-            return;
-        }
+    public static void putValueBossBar(@NotNull Player p, int timeLeft) {
+        if (DatabaseManager.togglePlayers.contains(p.getName())) {
+            if (!bossBarPlayers.containsKey(p))
+                toggleBossBar(p);
+            BossBar bossBar = bossBarPlayers.get(p);
 
-        if (DatabaseManager.togglePlayers.contains(p.getName()) && !bossBarPlayers.containsKey(p))
-            toggleBossBar(p);
+            if (timeLeft <= 0) {
+                timeLeft = 0;
+                if (bbReloadingEnable) {
+                    setReloadingBossBar(true);
+                    bbReloadingSession = currentBossBarSession;
+                } else {
+                    currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
+                    timePerSession = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
+                    timeLeft = timePerSession;
+                }
+            }
 
-        if (!DatabaseManager.togglePlayers.contains(p.getName()) && bossBarPlayers.containsKey(p)) {
-            bossBarPlayers.get(p).removeAll();
-            bossBarPlayers.remove(p);
-            return;
-        }
+            String bossBarTitle = bbPlayingTitle;
 
-        BossBar bossBar = bossBarPlayers.get(p);
+            if (reloadingBossBar) {
+                bossBarTitle = bbReloadingTitle;
+                bossBarTitle = bossBarTitle.replace("%session%", String.valueOf(bbReloadingSession.getSession()));
+                bossBarTitle = bossBarTitle.replace("%result%", MessageUtil.getFormatName(bbReloadingSession.getResult()));
+                bossBarTitle = bossBarTitle.replace("%numberOfPlayers%", String.valueOf(
+                        (bbReloadingSession.getResult() == TaiXiuResult.XIU ? bbReloadingSession.getXiuPlayers().size() : bbReloadingSession.getTaiPlayers().size())));
+                bossBarTitle = bossBarTitle.replace("%money%",
+                        (bbReloadingSession.getResult() == TaiXiuResult.XIU ? TaiXiuManager.getXiuBetFormat(bbReloadingSession) : TaiXiuManager.getTaiBetFormat(bbReloadingSession)));
 
-        if (timeLeft == 0) {
-            if (bbReloadingEnable) {
-                setReloadingBossBar(true);
-                bbReloadingSession = currentBossBarSession;
+                bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
+
+                bossBarPlayers.get(p).setStyle(bbReloadingStyle);
+
+                try {
+                    bossBar.setProgress(timeReloadingCount / timeReloading);
+                    timeReloadingCount++;
+                } catch (Exception e) {
+                    bossBar.setProgress(1);
+                }
+
+                if (bbReloadingColor.get(TaiXiuResult.XIU) == null)
+                    bossBar.setColor(bbReloadingColor.get(TaiXiuResult.NONE));
+                else {
+                    if (bbReloadingSession.getResult() == TaiXiuResult.XIU)
+                        bossBar.setColor(bbReloadingColor.get(TaiXiuResult.XIU));
+                    else
+                        bossBar.setColor(bbReloadingColor.get(TaiXiuResult.TAI));
+                }
+
+                if (timeReloadingCount / timeReloading == 1) {
+                    setReloadingBossBar(false);
+                    timeReloadingCount = 0;
+                    currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
+                    timePerSession = timeLeft;
+                }
             } else {
-                currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
-                timePerSession = TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session");
-                timeLeft = timePerSession;
-            }
-        }
+                bossBarTitle = bossBarTitle.replace("%session%", String.valueOf(currentBossBarSession.getSession()));
+                bossBarTitle = bossBarTitle.replace("%timeLeft%", String.valueOf(timeLeft));
+                bossBarTitle = bossBarTitle.replace("%totalBet%", MessageUtil.formatMoney(TaiXiuManager.getTotalBet(currentBossBarSession)));
+                bossBarTitle = bossBarTitle.replace("%xiuBet%", MessageUtil.formatMoney(TaiXiuManager.getXiuBet(currentBossBarSession)));
+                bossBarTitle = bossBarTitle.replace("%taiBet%", MessageUtil.formatMoney(TaiXiuManager.getTaiBet(currentBossBarSession)));
+                bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
 
-        String bossBarTitle = bbPlayingTitle;
+                bossBarPlayers.get(p).setStyle(bbPlayingStyle);
 
-        if (reloadingBossBar) {
-            bossBarTitle = bbReloadingTitle;
-            bossBarTitle = bossBarTitle.replace("%session%", String.valueOf(bbReloadingSession.getSession()));
-            bossBarTitle = bossBarTitle.replace("%result%", MessageUtil.getFormatName(bbReloadingSession.getResult()));
-            bossBarTitle = bossBarTitle.replace("%numberOfPlayers%", String.valueOf(
-                    (bbReloadingSession.getResult() == TaiXiuResult.XIU ? bbReloadingSession.getXiuPlayers().size() : bbReloadingSession.getTaiPlayers().size())));
-            bossBarTitle = bossBarTitle.replace("%money%",
-                    (bbReloadingSession.getResult() == TaiXiuResult.XIU ? TaiXiuManager.getXiuBetFormat(bbReloadingSession) : TaiXiuManager.getTaiBetFormat(bbReloadingSession)));
+                try {
+                    bossBar.setProgress((double) timeLeft / (double) timePerSession);
+                } catch (Exception e) {
+                    bossBar.setProgress(1);
+                }
 
-            bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
+                if (timeLeft <= timeDisabling) {
+                    bossBar.setColor(bbPlayingColorBetDisabling);
+                } else
+                    bossBar.setColor(bbPlayingColorPlaying);
 
-            bossBarPlayers.get(p).setStyle(bbReloadingStyle);
-
-            try {
-                bossBar.setProgress(timeReloadingCount / timeReloading);
-                timeReloadingCount++;
-            } catch (Exception e) {
-                bossBar.setProgress(1);
-            }
-
-            if (bbReloadingColor.get(TaiXiuResult.XIU) == null)
-                bossBar.setColor(bbReloadingColor.get(TaiXiuResult.NONE));
-            else {
-                if (bbReloadingSession.getResult() == TaiXiuResult.XIU)
-                    bossBar.setColor(bbReloadingColor.get(TaiXiuResult.XIU));
-                else
-                    bossBar.setColor(bbReloadingColor.get(TaiXiuResult.TAI));
-            }
-
-            if (timeReloadingCount / timeReloading == 1) {
-                setReloadingBossBar(false);
-                timeReloadingCount = 0;
-                currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
-                timePerSession = timeLeft;
+                if (TaiXiuManager.getState() == TaiXiuState.PAUSING)
+                    bossBar.setColor(bbPlayingColorPausing);
             }
         } else {
-            bossBarTitle = bossBarTitle.replace("%session%", String.valueOf(currentBossBarSession.getSession()));
-            bossBarTitle = bossBarTitle.replace("%timeLeft%", String.valueOf(timeLeft));
-            bossBarTitle = bossBarTitle.replace("%totalBet%", MessageUtil.formatMoney(TaiXiuManager.getTotalBet(currentBossBarSession)));
-            bossBarTitle = bossBarTitle.replace("%xiuBet%", MessageUtil.formatMoney(TaiXiuManager.getXiuBet(currentBossBarSession)));
-            bossBarTitle = bossBarTitle.replace("%taiBet%", MessageUtil.formatMoney(TaiXiuManager.getTaiBet(currentBossBarSession)));
-            bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
-
-            bossBarPlayers.get(p).setStyle(bbPlayingStyle);
-
-            try {
-                bossBar.setProgress((double) timeLeft / (double) timePerSession);
-            } catch (Exception e) {
-                bossBar.setProgress(1);
+            if (bossBarPlayers.containsKey(p)) {
+                bossBarPlayers.get(p).removeAll();
+                bossBarPlayers.remove(p);
             }
-
-            if (timeLeft <= timeDisabling) {
-                bossBar.setColor(bbPlayingColorBetDisabling);
-            } else
-                bossBar.setColor(bbPlayingColorPlaying);
-
-            if (TaiXiuManager.getState() == TaiXiuState.PAUSING)
-                bossBar.setColor(bbPlayingColorPausing);
         }
     }
 }

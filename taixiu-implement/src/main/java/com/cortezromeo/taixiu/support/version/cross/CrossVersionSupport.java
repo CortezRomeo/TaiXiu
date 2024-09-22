@@ -63,19 +63,18 @@ public class CrossVersionSupport extends VersionSupport {
     }
 
     @Override
-    public ItemStack getHeadItem(String headValue, int type) {
-        if (type == 1)
-            return XSkull.createItem().profile(Profileable.of(ProfileInputType.BASE64, headValue)).apply();
-        else {
-            if (Bukkit.getPlayer(headValue) != null)
-                headValue = Bukkit.getPlayer(headValue).getUniqueId().toString();
-            else
-            if (!Bukkit.getServer().getOnlineMode()) {
-                String offlinePlayerString = "OfflinePlayer:" + headValue;
-                headValue = UUID.nameUUIDFromBytes(offlinePlayerString.getBytes(StandardCharsets.UTF_8)).toString();
-            }
-            return XSkull.createItem().profile(Profileable.of(UUID.fromString(headValue))).apply();
+    public ItemStack getHeadItemFromBase64(String headValue) {
+        return XSkull.createItem().profile(Profileable.of(ProfileInputType.BASE64, headValue)).apply();
+    }
+
+    public ItemStack getHeadItemFromPlayerName(String playerName) {
+        if (Bukkit.getPlayer(playerName) != null)
+            playerName = Bukkit.getPlayer(playerName).getUniqueId().toString();
+        else if (!Bukkit.getServer().getOnlineMode()) {
+            String offlinePlayerString = "OfflinePlayer:" + playerName;
+            playerName = UUID.nameUUIDFromBytes(offlinePlayerString.getBytes(StandardCharsets.UTF_8)).toString();
         }
+        return XSkull.createItem().profile(Profileable.of(UUID.fromString(playerName))).apply();
     }
 
     @Override

@@ -12,7 +12,6 @@ import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
@@ -74,11 +73,11 @@ public class TaiXiuTask implements Runnable {
             try {
                 time--;
 
-                if (getSession().getResult() != TaiXiuResult.NONE) {
+                if (getSession().getResult() != TaiXiuResult.NONE)
                     time = 0;
-                }
 
-                if (time == 0) {
+                if (time <= 0) {
+                    time = 0;
                     if ((getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) && getSession().getResult() == TaiXiuResult.NONE) {
                         MessageUtil.sendBoardCast(MessageFile.get().getString("session-result-not-enough-player").replace("%session%", String.valueOf(getSession().getSession())));
                     } else {
@@ -88,28 +87,26 @@ public class TaiXiuTask implements Runnable {
                         long newSession = DatabaseManager.getLastSession() + 1;
                         setSession(newSession);
 
-                        if (!BossBarManager.bossBarPlayers.isEmpty())
-                            for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
-                                BossBarManager.putValueBossBar(playerBossBar, time);
-
-                        SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
-
                         debug("SESSION SWAPPED", "Old session: " + oldSessionData.getSession() + " " +
                                 "| New session: " + newSession);
 
+                        SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
                         TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
 
-                        if (DatabaseManager.sessionEndingType == SessionEndingType.SAVE) {
+                        if (DatabaseManager.sessionEndingType == SessionEndingType.SAVE)
                             DatabaseManager.saveSessionData(oldSessionData.getSession());
-                        } else {
+                        else
                             DatabaseManager.unloadSessionData(oldSessionData.getSession());
-                        }
+
+                        if (!DatabaseManager.togglePlayers.isEmpty())
+                            for (String playerBossBar : DatabaseManager.togglePlayers)
+                                BossBarManager.putValueBossBar(Bukkit.getPlayer(playerBossBar), time);
                     }
                     TaiXiuManager.setTime(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
                 } else {
-                    if (!BossBarManager.bossBarPlayers.isEmpty())
-                        for (Player playerBossBar : BossBarManager.bossBarPlayers.keySet())
-                            BossBarManager.putValueBossBar(playerBossBar, time);
+                    if (!DatabaseManager.togglePlayers.isEmpty())
+                        for (String playerBossBar : DatabaseManager.togglePlayers)
+                            BossBarManager.putValueBossBar(Bukkit.getPlayer(playerBossBar), time);
                 }
             } catch (Exception e) {
                 cancel();
