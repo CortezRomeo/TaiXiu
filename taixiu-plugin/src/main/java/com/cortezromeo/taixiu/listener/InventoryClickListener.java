@@ -1,20 +1,17 @@
 package com.cortezromeo.taixiu.listener;
 
 import com.cortezromeo.taixiu.TaiXiu;
-import com.cortezromeo.taixiu.inventory.page.PagedPane;
+import com.cortezromeo.taixiu.inventory.TaiXiuInventoryBase;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
 
-/**
- * Listens for click events for the {@link PagedPane}
- */
-public class PaneListener implements Listener {
+public class InventoryClickListener implements Listener {
     private TaiXiu plugin;
 
-    public PaneListener(TaiXiu plugin) {
+    public InventoryClickListener(TaiXiu plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
@@ -23,8 +20,8 @@ public class PaneListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
 
-        if (holder instanceof PagedPane) {
-            ((PagedPane) holder).onClick(event);
+        if (holder instanceof TaiXiuInventoryBase) {
+            ((TaiXiuInventoryBase) holder).handleMenu(event);
         }
     }
 }

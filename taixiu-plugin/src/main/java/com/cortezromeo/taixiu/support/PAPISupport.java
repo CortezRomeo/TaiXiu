@@ -54,7 +54,7 @@ public class PAPISupport extends PlaceholderExpansion {
             if (session == null) {
                 return "";
             }
-            return MessageUtil.getFormatName(session.getResult());
+            return MessageUtil.getFormatResultName(session.getResult());
         }
 
         if (s.startsWith("taiplayers_phien_")) {

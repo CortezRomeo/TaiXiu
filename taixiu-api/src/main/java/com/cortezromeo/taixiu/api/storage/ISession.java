@@ -1,5 +1,6 @@
 package com.cortezromeo.taixiu.api.storage;
 
+import com.cortezromeo.taixiu.api.CurrencyTyppe;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 
 import java.util.HashMap;
@@ -41,4 +42,9 @@ public interface ISession {
     void setTaiPlayer(HashMap<String, Long> hashmap);
 
     void setXiuPlayer(HashMap<String, Long> hashmap);
+
+    CurrencyTyppe getCurrencyType();
+
+    void setCurrencyType(CurrencyTyppe currencyType);
+
 }

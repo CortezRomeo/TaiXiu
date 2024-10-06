@@ -2,7 +2,7 @@ package com.cortezromeo.taixiu.geyserform;
 
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.file.GeyserFormFile;
-import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
@@ -72,9 +72,9 @@ public class MenuGeyserForm {
                     if (clickedButtonID == 2) {
                         int configDisableTime = TaiXiu.plugin.getConfig().getInt("bet-settings.disable-while-remaining");
                         if (TaiXiuManager.getTaiXiuTask().getTime() <= configDisableTime) {
-                            sendMessage(player, MessageFile.get().getString("late-bet")
-                                    .replaceAll("%time%", String.valueOf(TaiXiuManager.getTime()))
-                                    .replaceAll("%configDisableTime%", String.valueOf(configDisableTime)));
+                            sendMessage(player, Messages.LATE_BET
+                                    .replace("%time%", String.valueOf(TaiXiuManager.getTime()))
+                                    .replace("%configDisableTime%", String.valueOf(configDisableTime)));
                             return;
                         }
                         fgPlayer.sendForm(BetGeyserForm.getForm(player));
@@ -84,10 +84,10 @@ public class MenuGeyserForm {
                         List<String> togglePlayers = DatabaseManager.togglePlayers;
                         if (togglePlayers.contains(player.getName())) {
                             togglePlayers.remove(player.getName());
-                            sendMessage(player, MessageFile.get().getString("toggle-off"));
+                            sendMessage(player, Messages.TOGGLE_OFF);
                         } else {
                             togglePlayers.add(player.getName());
-                            sendMessage(player, MessageFile.get().getString("toggle-on"));
+                            sendMessage(player, Messages.TOGGLE_ON);
                         }
                         BossBarManager.toggleBossBar(player);
 

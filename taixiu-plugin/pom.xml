@@ -6,7 +6,7 @@
     <parent>
         <artifactId>TaiXiu</artifactId>
         <groupId>com.cortezromeo.taixiu</groupId>
-        <version>2.2</version>
+        <version>2.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>taixiu-plugin</artifactId>
@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -40,7 +40,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -58,6 +58,14 @@
                                 <relocation>
                                     <pattern>io.github.bananapuncher714.nbteditor</pattern>
                                     <shadedPattern>com.cortezromeo.taixiu.lib.nbteditor</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.gson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.tchristofferson.configupdater</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.configupdater</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -99,6 +107,11 @@
             <id>Scarsz-Nexus</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
+        <!-- PlayerPoints -->
+        <repository>
+            <id>rosewood-repo</id>
+            <url>https://repo.rosewooddev.io/repository/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -135,6 +148,12 @@
             <groupId>com.discordsrv</groupId>
             <artifactId>discordsrv</artifactId>
             <version>1.28.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.black_ixx</groupId>
+            <artifactId>playerpoints</artifactId>
+            <version>3.2.7</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

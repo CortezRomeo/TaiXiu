@@ -43,6 +43,9 @@ database:
     # Lấy theo giây(s)
     time: 600
 
+# Ngôn ngữ nào từ folder languages sẽ được sử dụng để hiển thị thông báo
+locale: vi
+
 task:
   taiXiuTask:
     # Thời gian đếm ngược lấy kết quả của mỗi phiên
@@ -53,6 +56,21 @@ task:
 # Ví dụ: Bạn đặt '#,###' tại 'format-money', số tiền là 500000 -> Số tiền hiền thị: 500,000
 # Chi tiết tại: https://www.baeldung.com/java-decimalformat
 format-money: '#,###'
+
+# Tiền tệ dùng để tính trong các phiên
+# Mỗi phiên có thể sẽ có một loại tiền tệ khác nhau
+# Bao gồm: VAULT, PLAYERPOINTS
+currency-settings:
+  # Mặc định khi mỗi phiên bắt đầu, sẽ sử dụng loại tiền tệ:
+  default: VAULT
+  # Mỗi loại tiền tệ sẽ được hiển thị như thế nào
+  display-settings:
+    VAULT:
+      name: '&6Tiền'
+      symbol: '&6$'
+    PLAYERPOINTS:
+      name: '&bXu'
+      symbol: '&b۞'
 
 # Tùy chỉnh về đặt cược
 bet-settings:
@@ -107,7 +125,7 @@ boss-bar:
   enabled: true
   type:
     playing:
-      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| &6$%totalBet% &2$%xiuBet% &4$%taiBet%'
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| %currencySymbol%%totalBet% %currencySymbol%&#1fc433%xiuBet% %currencySymbol%&#c42d1f%taiBet%'
       color:
         playing: YELLOW
         bet-disabling: BLUE
@@ -117,7 +135,7 @@ boss-bar:
     reloading:
       enabled: true
       time: 5
-      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fngười thắng &6$%money%'
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fngười thắng %currencySymbol%%money%'
       # Có thể để color là 'RESULT-COLOR' nếu muốn theo màu của tài hoặc xỉu
       color: RESULT-COLOR
       result-color-setting:

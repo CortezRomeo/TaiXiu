@@ -3,7 +3,7 @@ package com.cortezromeo.taixiu.geyserform;
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.file.GeyserFormFile;
-import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -45,23 +45,23 @@ public class InfoGeyserForm {
         StringBuilder xiuPlayers = new StringBuilder();
         if (!session.getXiuPlayers().isEmpty()) {
             for (String player : session.getXiuPlayers().keySet()) {
-                xiuPlayers.append(xiuPlayersFormat.replaceAll("%player%", player).replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(player))));
+                xiuPlayers.append(xiuPlayersFormat.replace("%player%", player).replace("%money%", MessageUtil.getFormatMoneyDisplay(session.getXiuPlayers().get(player))));
             }
             content = content.replace("%xiuPlayers%", xiuPlayers);
         } else
-            content = content.replace("%xiuPlayers%", MessageFile.get().getString("none-name") + "\n");
+            content = content.replace("%xiuPlayers%", Messages.NONE_NAME + "\n");
 
         String taiPlayersFormat = geyserFormFile.getString("form.info.content.placeholders.taiPlayers");
         StringBuilder taiPlayers = new StringBuilder();
         if (!session.getTaiPlayers().isEmpty()) {
             for (String player : session.getTaiPlayers().keySet()) {
-                taiPlayers.append(taiPlayersFormat.replaceAll("%player%", player).replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(player))));
+                taiPlayers.append(taiPlayersFormat.replace("%player%", player).replace("%money%", MessageUtil.getFormatMoneyDisplay(session.getTaiPlayers().get(player))));
             }
             content = content.replace("%taiPlayers%", taiPlayers);
         } else
-            content = content.replace("%taiPlayers%", MessageFile.get().getString("none-name") + "\n");
+            content = content.replace("%taiPlayers%", Messages.NONE_NAME + "\n");
 
-        content = content.replace("%totalBet%", MessageUtil.formatMoney(TaiXiuManager.getTotalBet(session)));
+        content = content.replace("%totalBet%", MessageUtil.getFormatMoneyDisplay(TaiXiuManager.getTotalBet(session)));
         return content;
     }
 

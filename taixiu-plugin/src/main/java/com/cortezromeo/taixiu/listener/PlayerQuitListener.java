@@ -8,10 +8,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class QuitListener implements Listener {
+public class PlayerQuitListener implements Listener {
     private TaiXiu plugin;
 
-    public QuitListener(TaiXiu plugin) {
+    public PlayerQuitListener(TaiXiu plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }

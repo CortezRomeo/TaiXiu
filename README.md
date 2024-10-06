@@ -2,23 +2,23 @@
 
 Starting March 8th, 2024, TaiXiu by Thuong Nguyen (Cortez Romeo) transitions to an open-source model under the GNU GPL 3.0 license. If you're a developer, I kindly request that you contribute via pull requests rather than creating numerous forks. Let's ensure updates are accessible to all!
 
-# Description
+## Description
 Tai Xiu is a game in the form of betting. In the game, there are three 6-sided dice numbered from 1-6. The dealer (system) will take the sum of the 03 dice that appear to give a final number to the player.
 
 The player's task is to predict whether the number is Tai or Xiu. Xiu is the sum of 3 dice from 3-10, and Tai is 11-18. If the guess is correct, the player will win and receive money.
 
-# System requirements
+## System requirements
 This software runs on [Spigot](https://www.spigotmc.org/) and NMS.
 Spigot forks without compiled NMS code are not supported.
 Officially supported servers are [spigot](https://www.spigotmc.org/) and [paper](https://papermc.io/).
 It is required to use [**Java 11**](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html) or newer.
 
-# Plugin requirements
+## Plugin requirements
 - [Vault](https://www.spigotmc.org/resources/vault.34315/)
 - One economy plugin
 -- Economy plugins: [iConomy](http://dev.bukkit.org/server-mods/iconomy) 4,5,6, [BOSEconomy](http://dev.bukkit.org/server-mods/boseconomy) 6 & 7, EssentialsEcon, 3Co, [MultiCurrency](http://dev.bukkit.org/server-mods/multicurrency), [MineConomy](http://dev.bukkit.org/server-mods/mineconomy), [eWallet](http://dev.bukkit.org/server-mods/ewallet), [EconXP](http://dev.bukkit.org/server-mods/econxp/), [CurrencyCore](http://dev.bukkit.org/server-mods/currency/), [CraftConomy](http://dev.bukkit.org/server-mods/craftconomy/), AEco, [Gringotts](http://dev.bukkit.org/server-mods/gringotts/), [BetterEconomy](https://www.spigotmc.org/resources/bettereconomy.96690/)
 
-# Soft-depend plugins
+## Soft-depend plugins
 You might need these plugins to utilize my plugin resources totally.
 - [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
 	-   **%taixiu_phien%** - Get the current session number
@@ -36,25 +36,28 @@ You might need these plugins to utilize my plugin resources totally.
 - [DiscordSRV](https://www.spigotmc.org/resources/discordsrv.18494/)
 	- Do you want notifications whenever a session ended or when player betted? Since version 2.2, TaiXiu supports messages for server using DiscordSRV to send session's information.
 	- You can modify the messages through the json files in plugin's folder.
+- [PlayerPoints](https://www.spigotmc.org/resources/playerpoints.80745/)
+    - Since version 2.3, TaiXiu supports multiple currencies for each playing session. PlayerPointsn now can be used as a second currency for players to bet. 
 
-# Main features
+## Main features
 - Automatically updating files if there is a new update. 
 - Configable messages, gui, etc..
 - Supporting API.
 - Supporting GUI
 - Supporting Hex Color
 - Supporting BossBar
-- Supporting to delete old databases
+- Supporting Floodgate (GeyserMC)
+- Easily managing plugin database
 
-# Contact
+## Contact
 
 [![Discord Server](https://discord.com/api/guilds/1187827789664096267/widget.png?style=banner3)](https://discord.gg/XdJfN2X)
 
-
-# 3rd party libraries
+## 3rd party libraries
 - [JetBrains Java Annotations](https://mvnrepository.com/artifact/org.jetbrains/annotations)
 - [ConfigUpdater](https://github.com/tchristofferson/Config-Updater)
 - [XSeries](https://github.com/CryptoMorin/XSeries)
+- [GSon](https://github.com/google/gson)
 - [NBTEditor](https://github.com/BananaPuncher714/NBTEditor)
 
 # Special Thanks To

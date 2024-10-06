@@ -1,4 +1,4 @@
-package com.cortezromeo.taixiu.file;
+package com.cortezromeo.taixiu.file.inventory;
 
 import com.cortezromeo.taixiu.TaiXiu;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -7,14 +7,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public class MessageFile {
-
+public class TaiXiuInfoInventoryFile {
     private static File file;
-    private static FileConfiguration messageFile;
-    private static final String fileName = "message.yml";
+    private static FileConfiguration fileConfiguration;
 
     public static void setup() {
-        file = new File(TaiXiu.plugin.getDataFolder() + "/" + fileName);
+        file = new File(TaiXiu.plugin.getDataFolder() + "/inventories/sessioninfoinventory.yml");
 
         if (!file.exists()) {
             try {
@@ -23,17 +21,17 @@ public class MessageFile {
                 e.printStackTrace();
             }
         }
-        messageFile = YamlConfiguration.loadConfiguration(file);
+        fileConfiguration = YamlConfiguration.loadConfiguration(file);
     }
 
     public static FileConfiguration get() {
-        return messageFile;
+        return fileConfiguration;
     }
 
     public static void saveDefault() {
         try {
             if (!file.exists()) {
-                TaiXiu.plugin.saveResource(fileName, false);
+                TaiXiu.plugin.saveResource("sessioninfoinventory.yml", false);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +39,6 @@ public class MessageFile {
     }
 
     public static void reload() {
-        messageFile = YamlConfiguration.loadConfiguration(file);
+        fileConfiguration = YamlConfiguration.loadConfiguration(file);
     }
-
 }

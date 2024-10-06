@@ -2,9 +2,9 @@ package com.cortezromeo.taixiu.command;
 
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
-import com.cortezromeo.taixiu.file.MessageFile;
 import com.cortezromeo.taixiu.geyserform.MenuGeyserForm;
-import com.cortezromeo.taixiu.inventory.page.TaiXiuInfoPagedPane;
+import com.cortezromeo.taixiu.inventory.TaiXiuInfoInventory;
+import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
@@ -35,14 +35,12 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        FileConfiguration messageF = MessageFile.get();
-
         if (!(sender instanceof Player)) {
             sender.sendMessage("Console sử dụng lệnh /taixiuad");
             return false;
         } else {
-            if (!sender.hasPermission("taixiu.use") && !sender.hasPermission("taixiu.admin")) {
-                sendMessage((Player) sender, messageF.getString("no-permission"));
+            if (!sender.hasPermission("taixiu.use")) {
+                sendMessage((Player) sender, Messages.NO_PERMISSION);
                 return false;
             }
         }
@@ -53,30 +51,30 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
         if (args.length == 1) {
             switch (args[0]) {
                 case "luatchoi":
-                    for (String string : messageF.getStringList("luatchoi")) {
-
-                        string = string.replace("%minBet%", MessageUtil.formatMoney(cfg.getLong("bet-settings.min-bet")));
-                        string = string.replace("%maxBet%", MessageUtil.formatMoney(cfg.getLong("bet-settings.max-bet")));
-
+                    for (String string : Messages.COMMAND_LUATCHOI) {
+                        string = string.replace("%minBet%", MessageUtil.getFormatMoneyDisplay(cfg.getLong("bet-settings.min-bet")))
+                                .replace("%currencyName%", MessageUtil.getCurrencyName(TaiXiuManager.getSessionData().getCurrencyType()))
+                                .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(TaiXiuManager.getSessionData().getCurrencyType()))
+                                .replace("%maxBet%", MessageUtil.getFormatMoneyDisplay(cfg.getLong("bet-settings.max-bet")));
                         sendMessage(p, string);
                     }
                     return false;
                 case "thongtin":
-                    TaiXiuInfoPagedPane.openInventory(p, TaiXiuManager.getSessionData().getSession());
+                    new TaiXiuInfoInventory(p, TaiXiuManager.getSessionData()).open();
                     return false;
                 case "toggle":
                     List<String> togglePlayers = DatabaseManager.togglePlayers;
                     if (togglePlayers.contains(p.getName())) {
                         togglePlayers.remove(p.getName());
-                        sendMessage(p, messageF.getString("toggle-off"));
+                        sendMessage(p, Messages.TOGGLE_OFF);
                     } else {
                         togglePlayers.add(p.getName());
-                        sendMessage(p, messageF.getString("toggle-on"));
+                        sendMessage(p, Messages.TOGGLE_ON);
                     }
                     BossBarManager.toggleBossBar(p);
                     return false;
                 default:
-                    sendMessage(p, messageF.getString("wrong-argument"));
+                    sendMessage(p, Messages.WRONG_ARGUMENT);
                     return false;
             }
 
@@ -90,26 +88,26 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                     try {
                         session = Long.parseLong(args[1]);
                     } catch (Exception e) {
-                        sendMessage(p, messageF.getString("wrong-long-input"));
+                        sendMessage(p, Messages.WRONG_LONG_INPUT);
                         return false;
                     }
 
                     try {
                         if (DatabaseManager.checkExistsFileData(session)) {
                             DatabaseManager.loadSessionData(session);
-                            TaiXiuInfoPagedPane.openInventory(p, session);
+                            new TaiXiuInfoInventory(p, DatabaseManager.getSessionData(session)).open();
                         } else {
                             if (!DatabaseManager.taiXiuData.containsKey(session)) {
-                                sendMessage(p, messageF.getString("invalid-session").replace("%session%", String.valueOf(session)));
+                                sendMessage(p, Messages.INVALID_SESSION.replace("%session%", String.valueOf(session)));
                             }
                         }
                     } catch (Exception e) {
-                        MessageUtil.thowErrorMessage("<taixiucommand.java<case<thongtin>>>" + e);
+                        MessageUtil.throwErrorMessage("<taixiucommand.java<case<thongtin>>>" + e);
                     }
 
                     return false;
                 default:
-                    sendMessage(p, messageF.getString("wrong-argument"));
+                    sendMessage(p, Messages.WRONG_ARGUMENT);
                     return false;
             }
         }
@@ -127,30 +125,30 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                     else if (args[1].equals("2") || args[1].equalsIgnoreCase("tài") || args[1].equalsIgnoreCase("tai"))
                         result = TaiXiuResult.TAI;
                     else {
-                        sendMessage(p, messageF.getString("invalid-bet").replace("%bet%", args[1]));
+                        sendMessage(p, Messages.INVALID_BET.replace("%bet%", args[1]));
                         return false;
                     }
 
                     try {
                         money = Long.parseLong(args[2]);
                     } catch (Exception e) {
-                        sendMessage(p, messageF.getString("invalid-money"));
+                        sendMessage(p, Messages.INVALID_CURRENCY
+                                .replace("%currencyName%", MessageUtil.getCurrencyName(TaiXiuManager.getSessionData().getCurrencyType()))
+                                .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(TaiXiuManager.getSessionData().getCurrencyType())));
                         return false;
                     }
-
                     TaiXiuManager.playerBet(p, money, result);
-
                     return false;
                 default:
-                    sendMessage(p, messageF.getString("wrong-argument"));
+                    sendMessage(p, Messages.WRONG_ARGUMENT);
                     return false;
             }
         }
 
-        if (TaiXiu.floodgateSupport() && FloodgateApi.getInstance().isFloodgateId(p.getUniqueId())) {
+        if (TaiXiu.isFloodgateSupported() && FloodgateApi.getInstance().isFloodgateId(p.getUniqueId())) {
             MenuGeyserForm.openForm(p);
         } else {
-            for (String string : messageF.getStringList("command-taixiu")) {
+            for (String string : Messages.COMMAND_TAIXIU) {
                 string = string.replace("%version%", TaiXiu.plugin.getDescription().getVersion());
                 sendMessage(p, string);
             }

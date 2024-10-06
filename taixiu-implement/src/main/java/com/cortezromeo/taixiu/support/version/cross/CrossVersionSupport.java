@@ -68,13 +68,17 @@ public class CrossVersionSupport extends VersionSupport {
     }
 
     public ItemStack getHeadItemFromPlayerName(String playerName) {
-        if (Bukkit.getPlayer(playerName) != null)
-            playerName = Bukkit.getPlayer(playerName).getUniqueId().toString();
-        else if (!Bukkit.getServer().getOnlineMode()) {
-            String offlinePlayerString = "OfflinePlayer:" + playerName;
-            playerName = UUID.nameUUIDFromBytes(offlinePlayerString.getBytes(StandardCharsets.UTF_8)).toString();
-        }
-        return XSkull.createItem().profile(Profileable.of(UUID.fromString(playerName))).apply();
+        try {
+            if (Bukkit.getPlayer(playerName) != null)
+                playerName = Bukkit.getPlayer(playerName).getUniqueId().toString();
+            else if (!Bukkit.getServer().getOnlineMode()) {
+                String offlinePlayerString = "OfflinePlayer:" + playerName;
+                playerName = UUID.nameUUIDFromBytes(offlinePlayerString.getBytes(StandardCharsets.UTF_8)).toString();
+            }
+            if (playerName != null)
+                return XSkull.createItem().profile(Profileable.of(UUID.fromString(playerName))).apply();
+        } catch (Exception exception) {}
+        return new ItemStack(Material.BEDROCK);
     }
 
     @Override

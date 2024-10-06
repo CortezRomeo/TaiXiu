@@ -146,11 +146,11 @@ public class DiscordManager {
         String pattern = jsonObject.getJSONObject("placeholders").getString("date");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-        string = string.replaceAll("%playerName%", player.getName())
-                .replaceAll("%playerUUID%", player.getUniqueId().toString())
-                .replaceAll("%money%", MessageUtil.formatMoney(money))
-                .replaceAll("%bet%", resultFormatted)
-                .replaceAll("%date%", simpleDateFormat.format(new Date()));
+        string = string.replace("%playerName%", player.getName())
+                .replace("%playerUUID%", player.getUniqueId().toString())
+                .replace("%money%", MessageUtil.getFormatMoneyDisplay(money))
+                .replace("%bet%", resultFormatted)
+                .replace("%date%", simpleDateFormat.format(new Date()));
         return string;
     }
 
@@ -171,7 +171,7 @@ public class DiscordManager {
                 bestWinnersFormatted = invalid;
             else if (result == TaiXiuResult.SPECIAL) {
                 bestWinnersFormatted = jsonObject.getJSONObject("placeholders").getJSONObject("bestWinners").getString("valid-special");
-                bestWinnersFormatted = bestWinnersFormatted.replace("%allBet%", MessageUtil.formatMoney(TaiXiuManager.getTotalBet(session)));
+                bestWinnersFormatted = bestWinnersFormatted.replace("%allBet%", MessageUtil.getFormatMoneyDisplay(TaiXiuManager.getTotalBet(session)));
             } else {
                 Map<String, Long> bestWinners = result == TaiXiuResult.XIU ? session.getXiuPlayers() : session.getTaiPlayers();
                 if (bestWinners.isEmpty()) {
@@ -188,20 +188,21 @@ public class DiscordManager {
                     String bestWinnersName = String.join(delim, players);
 
                     bestWinnersFormatted = jsonObject.getJSONObject("placeholders").getJSONObject("bestWinners").getString("valid");
-                    bestWinnersFormatted = bestWinnersFormatted.replaceAll("%playerName%", bestWinnersName).replaceAll("%bet%", MessageUtil.formatMoney(bestWinnersBet * 2));
+                    bestWinnersFormatted = bestWinnersFormatted.replace("%playerName%", bestWinnersName)
+                            .replace("%bet%", MessageUtil.getFormatMoneyDisplay(bestWinnersBet * 2));
                 }
             }
         } catch (Exception e) {
-            MessageUtil.thowErrorMessage("<discordmanager.java<formatString>>" + e);
+            MessageUtil.throwErrorMessage("<discordmanager.java<formatString>>" + e);
         }
 
-        string = string.replaceAll("%session%", String.valueOf(session.getSession()))
-                .replaceAll("%dice1%", String.valueOf(session.getDice1()))
-                .replaceAll("%dice2%", String.valueOf(session.getDice2()))
-                .replaceAll("%dice3%", String.valueOf(session.getDice3()))
-                .replaceAll("%totalPoint%", String.valueOf(session.getDice1() + session.getDice2() + session.getDice3()))
-                .replaceAll("%result%", resultFormatted)
-                .replaceAll("%bestWinners%", bestWinnersFormatted);
+        string = string.replace("%session%", String.valueOf(session.getSession()))
+                .replace("%dice1%", String.valueOf(session.getDice1()))
+                .replace("%dice2%", String.valueOf(session.getDice2()))
+                .replace("%dice3%", String.valueOf(session.getDice3()))
+                .replace("%totalPoint%", String.valueOf(session.getDice1() + session.getDice2() + session.getDice3()))
+                .replace("%result%", resultFormatted)
+                .replace("%bestWinners%", bestWinnersFormatted);
         return string;
     }
 

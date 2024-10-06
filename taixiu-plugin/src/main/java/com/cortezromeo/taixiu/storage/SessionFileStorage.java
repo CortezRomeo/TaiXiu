@@ -1,6 +1,7 @@
 package com.cortezromeo.taixiu.storage;
 
 import com.cortezromeo.taixiu.TaiXiu;
+import com.cortezromeo.taixiu.api.CurrencyTyppe;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,10 +29,9 @@ public class SessionFileStorage implements SessionStorage  {
     public static SessionData fromFile(File file, long session) {
         final YamlConfiguration storage = YamlConfiguration.loadConfiguration(file);
 
-        HashMap<String, Long> hashmap = new HashMap<>();
-        HashMap<String, Long> hashmap2 = new HashMap<>();
-
-        SessionData data = new SessionData(session, 0, 0, 0, TaiXiuResult.NONE, hashmap, hashmap2);
+        HashMap<String, Long> taiPlayers = new HashMap<>();
+        HashMap<String, Long> xiuPlayers = new HashMap<>();
+        SessionData data = new SessionData(session, 0, 0, 0, TaiXiuResult.NONE, taiPlayers, xiuPlayers, CurrencyTyppe.valueOf(TaiXiu.plugin.getConfig().getString("currency-settings.default").toUpperCase()));
 
         if (!storage.contains("data"))
             return data;
@@ -40,6 +40,9 @@ public class SessionFileStorage implements SessionStorage  {
         data.setDice1(storage.getInt("data.dice1"));
         data.setDice2(storage.getInt("data.dice2"));
         data.setDice3(storage.getInt("data.dice3"));
+        if (storage.getString("data.currency") != null)
+            data.setCurrencyType(CurrencyTyppe.valueOf(storage.getString("data.currency").toUpperCase()));
+        data.setCurrencyType(CurrencyTyppe.VAULT);
         data.setResult(TaiXiuResult.valueOf(storage.getString("data.result")));
         if (storage.get("data.taiPlayers") != null)
             for (String player : storage.getConfigurationSection("data.taiPlayers").getKeys(false))
@@ -60,6 +63,9 @@ public class SessionFileStorage implements SessionStorage  {
         storage.set("data.dice2", data.getDice2());
         storage.set("data.dice3", data.getDice3());
         storage.set("data.result", data.getResult().toString());
+        if (data.getCurrencyType() == null)
+            data.setCurrencyType(CurrencyTyppe.VAULT);
+        storage.set("data.currency", data.getCurrencyType().toString());
         if (data.getTaiPlayers() != null) {
             List<String> listTaiPlayersKey = new ArrayList<String>(data.getTaiPlayers().keySet());
             for (String key : listTaiPlayersKey)

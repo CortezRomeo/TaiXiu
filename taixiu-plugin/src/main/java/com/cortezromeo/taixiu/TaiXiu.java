@@ -4,21 +4,24 @@ import com.cortezromeo.taixiu.api.server.VersionSupport;
 import com.cortezromeo.taixiu.command.TaiXiuAdminCommand;
 import com.cortezromeo.taixiu.command.TaiXiuCommand;
 import com.cortezromeo.taixiu.file.GeyserFormFile;
-import com.cortezromeo.taixiu.file.InventoryFile;
-import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.file.inventory.TaiXiuInfoInventoryFile;
 import com.cortezromeo.taixiu.geyserform.BetGeyserForm;
 import com.cortezromeo.taixiu.geyserform.InfoGeyserForm;
 import com.cortezromeo.taixiu.geyserform.MenuGeyserForm;
 import com.cortezromeo.taixiu.geyserform.RuleGeyserForm;
-import com.cortezromeo.taixiu.listener.JoinListener;
-import com.cortezromeo.taixiu.listener.PaneListener;
-import com.cortezromeo.taixiu.listener.QuitListener;
+import com.cortezromeo.taixiu.language.Messages;
+import com.cortezromeo.taixiu.language.Vietnamese;
+import com.cortezromeo.taixiu.listener.InventoryClickListener;
+import com.cortezromeo.taixiu.listener.PlayerJoinListener;
+import com.cortezromeo.taixiu.listener.PlayerQuitListener;
 import com.cortezromeo.taixiu.manager.*;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
 import com.cortezromeo.taixiu.support.PAPISupport;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
 import com.tchristofferson.configupdater.ConfigUpdater;
+import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -33,11 +36,11 @@ import static com.cortezromeo.taixiu.util.MessageUtil.log;
 public final class TaiXiu extends JavaPlugin {
 
     public static TaiXiu plugin;
-    private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     public static VersionSupport nms;
     private static boolean papiSupport = false;
     private static boolean floodgateSupport = false;
     private static DiscordManager discordManager;
+    private static PlayerPointsAPI playerPointsAPI;
 
     @Override
     public void onLoad() {
@@ -47,8 +50,8 @@ public final class TaiXiu extends JavaPlugin {
     @Override
     public void onEnable() {
         initFile();
+        initLanguages();
         setDebug(getConfig().getBoolean("debug"));
-
         initSupport();
         initDatabase();
         initCommand();
@@ -58,7 +61,7 @@ public final class TaiXiu extends JavaPlugin {
         AutoSaveManager.startAutoSave(getConfig().getInt("database.auto-save.time"));
         BossBarManager.setupValue();
 
-        if (floodgateSupport())
+        if (isFloodgateSupported())
             setupGeyserForm();
 
         log("&f--------------------------------");
@@ -70,7 +73,7 @@ public final class TaiXiu extends JavaPlugin {
         log("");
         log("&fVersion: &b" + getDescription().getVersion());
         log("&fAuthor: &bCortez_Romeo");
-        log("&eKhởi chạy plugin trên phiên bản: " + version);
+        log("&eKhởi chạy plugin trên phiên bản: " + Bukkit.getServer().getClass().getName().split("\\.")[3]);
         log("");
         log("&fSupport:");
         log((papiSupport ? "&2[YES] &aPlaceholderAPI" : "&4[NO] &cPlaceholderAPI"));
@@ -78,6 +81,7 @@ public final class TaiXiu extends JavaPlugin {
         if (!getConfig().getBoolean("floodgate-settings.enabled"))
             log("  &e&oquyền sử dụng Floodgate API đã bị tắt trong config.yml");
         log((discordManager != null ? "&2[YES] &aDiscordSRV" : "&4[NO] &cDiscordSRV"));
+        log((playerPointsAPI != null ? "&2[YES] &aPlayerPoints" : "&4[NO] &cPlayerPoints"));
         log("");
         log("&f--------------------------------");
 
@@ -95,6 +99,14 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     private void initFile() {
+        File inventoryFolder = new File(getDataFolder() + "/inventories");
+        if (!inventoryFolder.exists())
+            inventoryFolder.mkdirs();
+
+        File languageFolder = new File(getDataFolder() + "/languages");
+        if (!languageFolder.exists())
+            languageFolder.mkdirs();
+
         // config.yml
         saveDefaultConfig();
         File configFile = new File(getDataFolder(), "config.yml");
@@ -105,25 +117,17 @@ public final class TaiXiu extends JavaPlugin {
         }
         reloadConfig();
 
-        // message.yml
-        String messageFileName = getForCurrentVersion("message.yml", "messagev13.yml");
-        MessageFile.setup();
-        MessageFile.saveDefault();
-        File messageFile = new File(getDataFolder(), "message.yml");
+        // inventories/sessioninfoinventory.yml
+        String taiXiuInfoInventoryFileName = "sessioninfoinventory.yml";
+        TaiXiuInfoInventoryFile.setup();
+        TaiXiuInfoInventoryFile.saveDefault();
+        File taiXiuInfoInventoryFile = new File(getDataFolder() + "/inventories/sessioninfoinventory.yml");
         try {
-            ConfigUpdater.update(this, messageFileName, messageFile);
+            ConfigUpdater.update(this, taiXiuInfoInventoryFileName, taiXiuInfoInventoryFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        MessageFile.reload();
-
-        // inventory.yml
-        if (!new File(getDataFolder() + "/inventory.yml").exists()) {
-            InventoryFile.setup();
-            InventoryFile.setupLang();
-        } else
-            InventoryFile.fileExists();
-        InventoryFile.reload();
+        TaiXiuInfoInventoryFile.reload();
 
         // geyserform.yml
         if (!new File(getDataFolder() + "/geyserform.yml").exists()) {
@@ -142,6 +146,21 @@ public final class TaiXiu extends JavaPlugin {
         if (!playerBetJsonFile.exists()) saveResource(playerBetJsonFile.getName(), false);
     }
 
+    public void initLanguages() {
+        // messages_vi.yml
+        String vietnameseFileName = "messages_vi.yml";
+        Vietnamese.setup();
+        Vietnamese.saveDefault();
+        File vietnameseFile = new File(getDataFolder(), "/languages/messages_vi.yml");
+        try {
+            ConfigUpdater.update(this, vietnameseFileName, vietnameseFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Vietnamese.reload();
+        Messages.setupValue(getConfig().getString("locale"));
+    }
+
     private void initDatabase() {
         DatabaseManager.loadLoadingType();
         SessionDataStorage.init();
@@ -153,9 +172,9 @@ public final class TaiXiu extends JavaPlugin {
     }
 
     private void initListener() {
-        new PaneListener(this);
-        new JoinListener(this);
-        new QuitListener(this);
+        new InventoryClickListener(this);
+        new PlayerJoinListener(this);
+        new PlayerQuitListener(this);
     }
 
     private void initSupport() {
@@ -179,14 +198,20 @@ public final class TaiXiu extends JavaPlugin {
             floodgateSupport = true;
         }
 
+        // discordsrv
         if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null
                 && getConfig().getBoolean("discordsrv-settings.enabled")) {
             discordManager = new DiscordManager(this);
         }
+
+        // playerpoints
+        if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
+            playerPointsAPI = PlayerPoints.getInstance().getAPI();
+        }
     }
 
     public static void setupGeyserForm() {
-        if (floodgateSupport()) {
+        if (isFloodgateSupported()) {
             InfoGeyserForm.setupValue();
             MenuGeyserForm.setupValue();
             RuleGeyserForm.setupValue();
@@ -194,11 +219,11 @@ public final class TaiXiu extends JavaPlugin {
         }
     }
 
-    public static boolean PAPISupport() {
+    public static boolean isPapiSupported() {
         return papiSupport;
     }
 
-    public static boolean floodgateSupport() {
+    public static boolean isFloodgateSupported() {
         return floodgateSupport;
     }
 
@@ -206,20 +231,8 @@ public final class TaiXiu extends JavaPlugin {
         return discordManager;
     }
 
-    public static String getServerVersion() {
-        return version;
-    }
-
-    public static String getForCurrentVersion(String v12, String v13) {
-        switch (getServerVersion()) {
-            case "v1_9_R1":
-            case "v1_9_R2":
-            case "v1_10_R1":
-            case "v1_11_R1":
-            case "v1_12_R1":
-                return v12;
-        }
-        return v13;
+    public static PlayerPointsAPI getPlayerPointsAPI() {
+        return playerPointsAPI;
     }
 
     @Override

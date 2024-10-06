@@ -3,8 +3,9 @@ package com.cortezromeo.taixiu.geyserform;
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.file.GeyserFormFile;
-import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
+import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.CustomForm;
@@ -53,7 +54,9 @@ public class BetGeyserForm {
                     try {
                         money = Long.parseLong(customFormResponse.asInput(2));
                     } catch (Exception e) {
-                        sendMessage(player, MessageFile.get().getString("invalid-money"));
+                        sendMessage(player, Messages.INVALID_CURRENCY
+                                .replace("%currencyName%", MessageUtil.getCurrencyName(TaiXiuManager.getSessionData().getCurrencyType()))
+                                .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(TaiXiuManager.getSessionData().getCurrencyType())));
                         return;
                     }
 

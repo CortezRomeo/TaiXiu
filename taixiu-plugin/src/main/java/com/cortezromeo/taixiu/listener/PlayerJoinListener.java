@@ -9,10 +9,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class JoinListener implements Listener {
+public class PlayerJoinListener implements Listener {
     private TaiXiu plugin;
 
-    public JoinListener(TaiXiu plugin) {
+    public PlayerJoinListener(TaiXiu plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }

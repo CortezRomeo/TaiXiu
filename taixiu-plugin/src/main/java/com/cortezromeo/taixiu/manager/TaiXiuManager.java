@@ -1,12 +1,14 @@
 package com.cortezromeo.taixiu.manager;
 
 import com.cortezromeo.taixiu.TaiXiu;
+import com.cortezromeo.taixiu.api.CurrencyTyppe;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.TaiXiuState;
 import com.cortezromeo.taixiu.api.event.PlayerBetEvent;
 import com.cortezromeo.taixiu.api.event.SessionResultEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
-import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.enums.SoundType;
+import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
 import com.cortezromeo.taixiu.util.MessageUtil;
@@ -21,12 +23,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
-import static com.cortezromeo.taixiu.util.MessageUtil.sendBoardCast;
+import static com.cortezromeo.taixiu.util.MessageUtil.sendBroadCast;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendMessage;
-
-enum SoundType {
-    win, lose
-}
 
 public class TaiXiuManager {
 
@@ -57,6 +55,10 @@ public class TaiXiuManager {
         BossBarManager.timePerSession = time;
     }
 
+    public static void setCurrencyType(CurrencyTyppe currencyType) {
+        getTaiXiuTask().getSession().setCurrencyType(currencyType);
+    }
+
     public static ISession getSessionData() {
         return getTaiXiuTask().getSession();
     }
@@ -76,46 +78,66 @@ public class TaiXiuManager {
         String pName = player.getName();
         Economy econ = VaultSupport.econ;
         ISession data = getSessionData();
-        FileConfiguration messageF = MessageFile.get();
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
 
         if (getSessionData().getXiuPlayers().containsKey(pName) || data.getTaiPlayers().containsKey(pName)) {
-            sendMessage(player, messageF.getString("have-bet-before")
-                    .replace("%bet%", MessageUtil.getFormatName((data.getXiuPlayers().containsKey(pName)
+            sendMessage(player, Messages.ALREADY_BET
+                    .replace("%bet%", MessageUtil.getFormatResultName((data.getXiuPlayers().containsKey(pName)
                             ? TaiXiuResult.XIU
                             : TaiXiuResult.TAI)))
+                    .replace("%currencyName%", MessageUtil.getCurrencyName(data.getCurrencyType()))
+                    .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType()))
                     .replace("%money%", (data.getXiuPlayers().containsKey(pName)
-                            ? MessageUtil.formatMoney(data.getXiuPlayers().get(pName))
-                            : MessageUtil.formatMoney(data.getTaiPlayers().get(pName)))));
+                            ? MessageUtil.getFormatMoneyDisplay(data.getXiuPlayers().get(pName))
+                            : MessageUtil.getFormatMoneyDisplay(data.getTaiPlayers().get(pName)))));
             return;
         }
 
         int configDisableTime = cfg.getInt("bet-settings.disable-while-remaining");
         if (TaiXiuManager.getTime() <= configDisableTime) {
-            sendMessage(player, messageF.getString("late-bet")
-                    .replaceAll("%time%", String.valueOf(TaiXiuManager.getTime()))
-                    .replaceAll("%configDisableTime%", String.valueOf(configDisableTime)));
+            sendMessage(player, Messages.LATE_BET
+                    .replace("%time%", String.valueOf(TaiXiuManager.getTime()))
+                    .replace("%configDisableTime%", String.valueOf(configDisableTime)));
             return;
         }
 
-        if (econ.getBalance(player) < money) {
-            sendMessage(player, messageF.getString("not-enough-money"));
+        boolean notEnougCurrency = false;
+        if (data.getCurrencyType() == CurrencyTyppe.VAULT) {
+            if (econ.getBalance(player) < money)
+                notEnougCurrency = true;
+        } else if (data.getCurrencyType() == CurrencyTyppe.PLAYERPOINTS)
+            if (TaiXiu.getPlayerPointsAPI().look(player.getUniqueId()) < (int) money)
+                notEnougCurrency = true;
+
+        if (notEnougCurrency) {
+            sendMessage(player, Messages.NOT_ENOUGH_CURRENCY
+                    .replace("%currencyName%", MessageUtil.getCurrencyName(data.getCurrencyType()))
+                    .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType())));
             return;
         }
 
         long minBet = cfg.getLong("bet-settings.min-bet");
         if (money < minBet) {
-            sendMessage(player, messageF.getString("min-bet").replace("%minBet%", MessageUtil.formatMoney(minBet)));
+            sendMessage(player, Messages.MIN_BET
+                    .replace("%currencyName%", MessageUtil.getCurrencyName(data.getCurrencyType()))
+                    .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType()))
+                    .replace("%minBet%", MessageUtil.getFormatMoneyDisplay(minBet)));
             return;
         }
 
         long maxBet = cfg.getLong("bet-settings.max-bet");
         if (money > maxBet) {
-            sendMessage(player, messageF.getString("max-bet").replace("%maxBet%", MessageUtil.formatMoney(maxBet)));
+            sendMessage(player, Messages.MAX_BET
+                    .replace("%currencyName%", MessageUtil.getCurrencyName(data.getCurrencyType()))
+                    .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType()))
+                    .replace("%maxBet%", MessageUtil.getFormatMoneyDisplay(maxBet)));
             return;
         }
 
-        econ.withdrawPlayer(player, money);
+        if (data.getCurrencyType() == CurrencyTyppe.VAULT)
+            econ.withdrawPlayer(player, money);
+        else if (data.getCurrencyType() == CurrencyTyppe.PLAYERPOINTS)
+            TaiXiu.getPlayerPointsAPI().take(player.getUniqueId(), (int) money);
 
         if (result == TaiXiuResult.XIU)
             data.addXiuPlayer(pName, money);
@@ -123,22 +145,26 @@ public class TaiXiuManager {
         if (result == TaiXiuResult.TAI)
             data.addTaiPlayer(pName, money);
 
-        sendMessage(player, messageF.getString("player-bet")
-                .replace("%bet%", MessageUtil.getFormatName(result))
-                .replace("%money%", MessageUtil.formatMoney(money))
+        sendMessage(player, Messages.PLAYER_BET
+                .replace("%bet%", MessageUtil.getFormatResultName(result))
+                .replace("%money%", MessageUtil.getFormatMoneyDisplay(money))
                 .replace("%session%", String.valueOf(data.getSession()))
+                .replace("%currencyName%", MessageUtil.getCurrencyName(data.getCurrencyType()))
+                .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType()))
                 .replace("%time%", String.valueOf(TaiXiuManager.getTime())));
 
-        String messageBoardcastPlayerBet = messageF.getString("broadcast-player-bet")
-                .replace("%prefix%", messageF.getString("prefix"))
+        String messageBroadcastPlayerBet = Messages.BROADCAST_PLAYER_BET
+                .replace("%prefix%", Messages.PREFIX)
                 .replace("%player%", player.getName())
-                .replace("%bet%", MessageUtil.getFormatName(result))
-                .replace("%money%", MessageUtil.formatMoney(money));
+                .replace("%bet%", MessageUtil.getFormatResultName(result))
+                .replace("%currencyName%", MessageUtil.getCurrencyName(data.getCurrencyType()))
+                .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType()))
+                .replace("%money%", MessageUtil.getFormatMoneyDisplay(money));
 
-        if (!TaiXiu.PAPISupport())
-            Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageBoardcastPlayerBet));
+        if (!TaiXiu.isPapiSupported())
+            Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageBroadcastPlayerBet));
         else
-            Bukkit.broadcastMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(player, messageBoardcastPlayerBet)));
+            Bukkit.broadcastMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(player, messageBroadcastPlayerBet)));
 
         PlayerBetEvent event = new PlayerBetEvent(player, result, money);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -167,7 +193,6 @@ public class TaiXiuManager {
             return;
         }
 
-        Economy econ = VaultSupport.econ;
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
 
         if (dice1 == 0)
@@ -202,47 +227,51 @@ public class TaiXiuManager {
             session.setResult(TaiXiuResult.SPECIAL);
         }
 
-        FileConfiguration messageF = MessageFile.get();
-
         try {
-            for (String string : messageF.getStringList("session-result")) {
+            for (String string : Messages.SESSION_RESULT) {
                 string = string.replace("%session%", String.valueOf(session.getSession()));
                 string = string.replace("%dice1%", String.valueOf(session.getDice1()));
                 string = string.replace("%dice2%", String.valueOf(session.getDice2()));
                 string = string.replace("%dice3%", String.valueOf(session.getDice3()));
                 string = string.replace("%total%", String.valueOf(total));
-                string = string.replace("%result%", MessageUtil.getFormatName(session.getResult()));
+                string = string.replace("%result%", MessageUtil.getFormatResultName(session.getResult()));
                 string = string.replace("%bestWinners%", getBestWinner(session));
 
-                sendBoardCast(string);
+                sendBroadCast(string);
             }
 
             double tax = cfg.getDouble("bet-settings.tax") / 100;
 
             if (session.getResult() == TaiXiuResult.XIU && session.getXiuPlayers() != null) {
-                executeWinners(session.getXiuPlayers(), session.getResult(), tax);
+                executeWinners(session, session.getXiuPlayers(), session.getResult(), tax);
 
                 for (String taiPlayer : session.getTaiPlayers().keySet()) {
-                    String message = messageF.getString("session-player-lose")
-                            .replaceAll("%result%", MessageUtil.getFormatName(TaiXiuResult.TAI))
-                            .replaceAll("%money%", MessageUtil.formatMoney(session.getTaiPlayers().get(taiPlayer)));
+                    String message = Messages.SESSION_PLAYER_LOSE
+                            .replace("%result%", MessageUtil.getFormatResultName(TaiXiuResult.TAI))
+                            .replace("%currencyName%", MessageUtil.getCurrencyName(session.getCurrencyType()))
+                            .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType()))
+                            .replace("%money%", MessageUtil.getFormatMoneyDisplay(session.getTaiPlayers().get(taiPlayer)));
 
                     playSound(Bukkit.getPlayer(taiPlayer), SoundType.lose);
                     sendMessage(Bukkit.getPlayer(taiPlayer), message);
                 }
             } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
-                executeWinners(session.getTaiPlayers(), session.getResult(), tax);
+                executeWinners(session, session.getTaiPlayers(), session.getResult(), tax);
 
                 for (String xiuPlayer : session.getXiuPlayers().keySet()) {
-                    String message = messageF.getString("session-player-lose")
-                            .replaceAll("%result%", MessageUtil.getFormatName(TaiXiuResult.XIU))
-                            .replaceAll("%money%", MessageUtil.formatMoney(session.getXiuPlayers().get(xiuPlayer)));
+                    String message = Messages.SESSION_PLAYER_LOSE
+                            .replace("%result%", MessageUtil.getFormatResultName(TaiXiuResult.XIU))
+                            .replace("%currencyName%", MessageUtil.getCurrencyName(session.getCurrencyType()))
+                            .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType()))
+                            .replace("%money%", MessageUtil.getFormatMoneyDisplay(session.getXiuPlayers().get(xiuPlayer)));
 
                     playSound(Bukkit.getPlayer(xiuPlayer), SoundType.lose);
                     sendMessage(Bukkit.getPlayer(xiuPlayer), message);
                 }
             } else
-                sendBoardCast(messageF.getString("session-special-win"));
+                sendBroadCast(Messages.SESSION_SPECIAL_WIN
+                        .replace("%currencyName%", MessageUtil.getCurrencyName(session.getCurrencyType()))
+                        .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType())));
 
             SessionResultEvent event = new SessionResultEvent(session);
             TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
@@ -254,7 +283,7 @@ public class TaiXiuManager {
                     "| Result: " + session.getResult());
         } catch (Exception e) {
             resultSeason(session, dice1, dice2, dice3);
-            MessageUtil.thowErrorMessage("<taixiumanager.java<resultSeason>>" + e);
+            MessageUtil.throwErrorMessage("<taixiumanager.java<resultSeason>>" + e);
         }
 
         // discordSRV
@@ -267,27 +296,32 @@ public class TaiXiuManager {
         }
     }
 
-    private static void executeWinners(@NotNull HashMap<String, Long> players, TaiXiuResult result, double tax) {
-        FileConfiguration messageF = MessageFile.get();
+    private static void executeWinners(ISession sessionData, @NotNull HashMap<String, Long> players, TaiXiuResult result, double tax) {
         for (String player : players.keySet()) {
-
             long money = players.get(player) * 2;
             String message;
 
             if (tax > 0) {
                 money = players.get(player) + Math.round(players.get(player) - (players.get(player) * tax));
-                message = messageF.getString("session-player-win-with-tax")
-                        .replaceAll("%result%", MessageUtil.getFormatName(result))
-                        .replaceAll("%money%", MessageUtil.formatMoney(money))
-                        .replaceAll("%tax%", String.valueOf(tax * 100));
+                message = Messages.SESSION_PLAYER_WIN_WITH_TAX
+                        .replace("%result%", MessageUtil.getFormatResultName(result))
+                        .replace("%currencyName%", MessageUtil.getCurrencyName(sessionData.getCurrencyType()))
+                        .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(sessionData.getCurrencyType()))
+                        .replace("%money%", MessageUtil.getFormatMoneyDisplay(money))
+                        .replace("%tax%", String.valueOf(tax * 100));
             } else {
-                message = messageF.getString("session-player-win")
-                        .replaceAll("%result%", MessageUtil.getFormatName(result))
-                        .replaceAll("%money%", MessageUtil.formatMoney(money));
+                message = Messages.SESSION_PLAYER_WIN
+                        .replace("%result%", MessageUtil.getFormatResultName(result))
+                        .replace("%currencyName%", MessageUtil.getCurrencyName(sessionData.getCurrencyType()))
+                        .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(sessionData.getCurrencyType()))
+                        .replace("%money%", MessageUtil.getFormatMoneyDisplay(money));
             }
             playSound(Bukkit.getPlayer(player), SoundType.win);
             sendMessage(Bukkit.getPlayer(player), message);
-            VaultSupport.econ.depositPlayer(player, money);
+            if (sessionData.getCurrencyType() == CurrencyTyppe.VAULT)
+                VaultSupport.econ.depositPlayer(player, money);
+            else if (sessionData.getCurrencyType() == CurrencyTyppe.PLAYERPOINTS)
+                TaiXiu.getPlayerPointsAPI().give(Bukkit.getPlayer(player).getUniqueId(), (int) money);
         }
     }
 
@@ -315,7 +349,7 @@ public class TaiXiuManager {
     }
 
     public static String getXiuBetFormat(@NotNull ISession session) {
-        return MessageUtil.formatMoney(getXiuBet(session));
+        return MessageUtil.getFormatMoneyDisplay(getXiuBet(session));
     }
 
     public static Long getTaiBet(@NotNull ISession session) {
@@ -329,7 +363,7 @@ public class TaiXiuManager {
     }
 
     public static String getTaiBetFormat(@NotNull ISession session) {
-        return MessageUtil.formatMoney(getTaiBet(session));
+        return MessageUtil.getFormatMoneyDisplay(getTaiBet(session));
     }
 
     public static Long getTotalBet(@NotNull ISession session) {
@@ -337,22 +371,23 @@ public class TaiXiuManager {
     }
 
     public static String getBestWinner(@NotNull ISession session) {
-
         TaiXiuResult result = session.getResult();
-        FileConfiguration messageF = MessageFile.get();
 
         try {
             if (result == TaiXiuResult.NONE) {
-                return messageF.getString("bestWinners-format.invalid");
+                return Messages.RESULT_PLAYER_FORMAT_INVALID;
             }
 
             if (result == TaiXiuResult.SPECIAL) {
-                return messageF.getString("bestWinners-format.valid-special").replace("%allBet%", MessageUtil.formatMoney(getTotalBet(session)));
+                return Messages.RESULT_PLAYER_FORMAT_VALID_SPECIAL
+                        .replace("%currencyName%", MessageUtil.getCurrencyName(session.getCurrencyType()))
+                        .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType()))
+                        .replace("%allBet%", MessageUtil.getFormatMoneyDisplay(getTotalBet(session)));
             }
 
             Map<String, Long> bestWinners = result == TaiXiuResult.XIU ? session.getXiuPlayers() : session.getTaiPlayers();
             if (bestWinners.isEmpty())
-                return messageF.getString("bestWinners-format.invalid");
+                return Messages.RESULT_PLAYER_FORMAT_INVALID;
             Long bestWinnersBet = Collections.max(bestWinners.values());
 
             List<String> players = new ArrayList<>();
@@ -360,14 +395,16 @@ public class TaiXiuManager {
                 if (entry.getValue() >= bestWinnersBet)
                     players.add(entry.getKey());
 
-            String delim = messageF.getString("bestWinners-format.playerName-delim");
+            String delim = Messages.RESULT_PLAYER_FORMAT_PLAYER_DELIM;
             String bestWinnersName = String.join(delim, players);
 
-            return messageF.getString("bestWinners-format.valid")
+            return Messages.RESULT_PLAYER_FORMAT_VALID
                     .replace("%playerName%", bestWinnersName)
-                    .replace("%bet%", MessageUtil.formatMoney(bestWinnersBet * 2));
+                    .replace("%currencyName%", MessageUtil.getCurrencyName(session.getCurrencyType()))
+                    .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType()))
+                    .replace("%bet%", MessageUtil.getFormatMoneyDisplay(bestWinnersBet * 2));
         } catch (Exception e) {
-            return messageF.getString("bestWinners-format.invalid");
+            return Messages.RESULT_PLAYER_FORMAT_INVALID;
         }
     }
 

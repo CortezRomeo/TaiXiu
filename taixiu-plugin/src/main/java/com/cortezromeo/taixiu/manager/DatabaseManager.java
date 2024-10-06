@@ -2,9 +2,9 @@ package com.cortezromeo.taixiu.manager;
 
 import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.storage.ISession;
+import com.cortezromeo.taixiu.enums.PluginDisablingType;
+import com.cortezromeo.taixiu.enums.SessionEndingType;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
-import com.cortezromeo.taixiu.storage.loadingtype.PluginDisablingType;
-import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
 import com.cortezromeo.taixiu.util.FilenameUtil;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,7 +14,7 @@ import java.util.*;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 import static com.cortezromeo.taixiu.util.MessageUtil.log;
-import static com.cortezromeo.taixiu.util.MessageUtil.thowErrorMessage;
+import static com.cortezromeo.taixiu.util.MessageUtil.throwErrorMessage;
 
 public class DatabaseManager {
 
@@ -40,7 +40,7 @@ public class DatabaseManager {
                 lastSession = Collections.max(taiXiuData.keySet());
             }
         } catch (Exception e) {
-            MessageUtil.thowErrorMessage("<databasemanager.java<getLastSession>>" + e);
+            MessageUtil.throwErrorMessage("<databasemanager.java<getLastSession>>" + e);
             return getLastSessionFromFile();
         }
 
@@ -112,7 +112,7 @@ public class DatabaseManager {
             try {
                 return true;
             } catch (Exception e) {
-                thowErrorMessage("<databasemanager.java<checkExistsFileData>>" + e);
+                throwErrorMessage("<databasemanager.java<checkExistsFileData>>" + e);
                 return false;
             }
         }
@@ -120,12 +120,9 @@ public class DatabaseManager {
     }
 
     public static void loadLoadingType() {
-
         FileConfiguration config = TaiXiu.plugin.getConfig();
-
         sessionEndingType = SessionEndingType.valueOf(config.getString("database.while-ending-session.type").toUpperCase());
         pluginDisablingType = PluginDisablingType.valueOf(config.getString("database.while-disabling-plugin.type").toUpperCase());
-
     }
 
     public static void saveDatabase() {
@@ -165,7 +162,7 @@ public class DatabaseManager {
                     }
 
                     if (!sessionFile.delete())
-                        thowErrorMessage("KHÔNG THỂ XÓA FILE " + sessionFile.getName());
+                        throwErrorMessage("KHÔNG THỂ XÓA FILE " + sessionFile.getName());
                 }
             }
             log("&e[TAI XIU] Save thành công dữ liệu số " + DatabaseManager.getLastSession() + " và xóa " + totalFiles + " dữ liệu!");

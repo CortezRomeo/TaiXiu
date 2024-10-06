@@ -4,7 +4,7 @@ import com.cortezromeo.taixiu.TaiXiu;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.TaiXiuState;
 import com.cortezromeo.taixiu.api.storage.ISession;
-import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -88,7 +88,7 @@ public class BossBarManager {
         }
 
         if (DatabaseManager.togglePlayers.contains(p.getName())) {
-            BossBar taiXiuBossBar = Bukkit.createBossBar(TaiXiu.nms.addColor(MessageFile.get().getString("request-loading").replace("%prefix%", "")),
+            BossBar taiXiuBossBar = Bukkit.createBossBar(TaiXiu.nms.addColor(Messages.REQUEST_LOADING.replace("%prefix%", "")),
                     bbPlayingColorPausing,
                     bbPlayingStyle
             );
@@ -122,7 +122,9 @@ public class BossBarManager {
             if (reloadingBossBar) {
                 bossBarTitle = bbReloadingTitle;
                 bossBarTitle = bossBarTitle.replace("%session%", String.valueOf(bbReloadingSession.getSession()));
-                bossBarTitle = bossBarTitle.replace("%result%", MessageUtil.getFormatName(bbReloadingSession.getResult()));
+                bossBarTitle = bossBarTitle.replace("%result%", MessageUtil.getFormatResultName(bbReloadingSession.getResult()));
+                bossBarTitle = bossBarTitle.replace("%currencyName%", MessageUtil.getCurrencyName(bbReloadingSession.getCurrencyType()));
+                bossBarTitle = bossBarTitle.replace("%currencySymbol%", MessageUtil.getCurrencySymbol(bbReloadingSession.getCurrencyType()));
                 bossBarTitle = bossBarTitle.replace("%numberOfPlayers%", String.valueOf(
                         (bbReloadingSession.getResult() == TaiXiuResult.XIU ? bbReloadingSession.getXiuPlayers().size() : bbReloadingSession.getTaiPlayers().size())));
                 bossBarTitle = bossBarTitle.replace("%money%",
@@ -157,9 +159,11 @@ public class BossBarManager {
             } else {
                 bossBarTitle = bossBarTitle.replace("%session%", String.valueOf(currentBossBarSession.getSession()));
                 bossBarTitle = bossBarTitle.replace("%timeLeft%", String.valueOf(timeLeft));
-                bossBarTitle = bossBarTitle.replace("%totalBet%", MessageUtil.formatMoney(TaiXiuManager.getTotalBet(currentBossBarSession)));
-                bossBarTitle = bossBarTitle.replace("%xiuBet%", MessageUtil.formatMoney(TaiXiuManager.getXiuBet(currentBossBarSession)));
-                bossBarTitle = bossBarTitle.replace("%taiBet%", MessageUtil.formatMoney(TaiXiuManager.getTaiBet(currentBossBarSession)));
+                bossBarTitle = bossBarTitle.replace("%totalBet%", MessageUtil.getFormatMoneyDisplay(TaiXiuManager.getTotalBet(currentBossBarSession)));
+                bossBarTitle = bossBarTitle.replace("%currencyName%", MessageUtil.getCurrencyName(currentBossBarSession.getCurrencyType()));
+                bossBarTitle = bossBarTitle.replace("%currencySymbol%", MessageUtil.getCurrencySymbol(currentBossBarSession.getCurrencyType()));
+                bossBarTitle = bossBarTitle.replace("%xiuBet%", MessageUtil.getFormatMoneyDisplay(TaiXiuManager.getXiuBet(currentBossBarSession)));
+                bossBarTitle = bossBarTitle.replace("%taiBet%", MessageUtil.getFormatMoneyDisplay(TaiXiuManager.getTaiBet(currentBossBarSession)));
                 bossBar.setTitle(TaiXiu.nms.addColor(bossBarTitle));
 
                 bossBarPlayers.get(p).setStyle(bbPlayingStyle);

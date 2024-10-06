@@ -1,15 +1,16 @@
 package com.cortezromeo.taixiu.task;
 
 import com.cortezromeo.taixiu.TaiXiu;
+import com.cortezromeo.taixiu.api.CurrencyTyppe;
 import com.cortezromeo.taixiu.api.TaiXiuResult;
 import com.cortezromeo.taixiu.api.TaiXiuState;
 import com.cortezromeo.taixiu.api.event.SessionSwapEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
-import com.cortezromeo.taixiu.file.MessageFile;
+import com.cortezromeo.taixiu.enums.SessionEndingType;
+import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
-import com.cortezromeo.taixiu.storage.loadingtype.SessionEndingType;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -79,7 +80,7 @@ public class TaiXiuTask implements Runnable {
                 if (time <= 0) {
                     time = 0;
                     if ((getSession().getTaiPlayers().isEmpty() && getSession().getXiuPlayers().isEmpty()) && getSession().getResult() == TaiXiuResult.NONE) {
-                        MessageUtil.sendBoardCast(MessageFile.get().getString("session-result-not-enough-player").replace("%session%", String.valueOf(getSession().getSession())));
+                        MessageUtil.sendBroadCast(Messages.NOT_ENOUGH_PLAYER.replace("%session%", String.valueOf(getSession().getSession())));
                     } else {
                         TaiXiuManager.resultSeason(getSession(), 0, 0, 0);
 
@@ -103,6 +104,7 @@ public class TaiXiuTask implements Runnable {
                                 BossBarManager.putValueBossBar(Bukkit.getPlayer(playerBossBar), time);
                     }
                     TaiXiuManager.setTime(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
+                    TaiXiuManager.setCurrencyType(CurrencyTyppe.valueOf(TaiXiu.plugin.getConfig().getString("currency-settings.default").toUpperCase()));
                 } else {
                     if (!DatabaseManager.togglePlayers.isEmpty())
                         for (String playerBossBar : DatabaseManager.togglePlayers)
@@ -110,7 +112,7 @@ public class TaiXiuTask implements Runnable {
                 }
             } catch (Exception e) {
                 cancel();
-                MessageUtil.thowErrorMessage("<taixiutask.java<run>>" + e);
+                MessageUtil.throwErrorMessage("<taixiutask.java<run>>" + e);
                 setSession(DatabaseManager.getLastSession() + 1);
                 TaiXiuManager.startTask(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
             }
