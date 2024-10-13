@@ -6,7 +6,7 @@ import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.profiles.builder.XSkull;
 import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
 import com.cryptomorin.xseries.profiles.objects.Profileable;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -82,14 +82,17 @@ public class CrossVersionSupport extends VersionSupport {
     }
 
     @Override
-    public ItemStack addCustomData(ItemStack i, String data) {
-        return NBTEditor.set(i, data, NBT_KEY);
+    public ItemStack addCustomData(ItemStack itemStack, String data) {
+        NBTItem nbtItem = new NBTItem(itemStack);
+        nbtItem.setString(NBT_KEY + ".customdata", data);
+        return nbtItem.getItem();
     }
 
     @Override
-    public String getCustomData(ItemStack i) {
-        if (NBTEditor.contains(i, NBT_KEY)) {
-            return NBTEditor.getString(i, NBT_KEY);
+    public String getCustomData(ItemStack itemStack) {
+        NBTItem nbtItem = new NBTItem(itemStack);
+        if (nbtItem.getString(NBT_KEY + ".customdata") != null) {
+            return nbtItem.getString(NBT_KEY + ".customdata");
         }
         return "";
     }

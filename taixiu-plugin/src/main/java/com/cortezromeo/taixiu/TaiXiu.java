@@ -20,6 +20,7 @@ import com.cortezromeo.taixiu.support.PAPISupport;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
 import com.tchristofferson.configupdater.ConfigUpdater;
+import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
@@ -37,6 +38,7 @@ public final class TaiXiu extends JavaPlugin {
 
     public static TaiXiu plugin;
     public static VersionSupport nms;
+    public static Economy econ;
     private static boolean papiSupport = false;
     private static boolean floodgateSupport = false;
     private static DiscordManager discordManager;

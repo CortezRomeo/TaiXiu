@@ -76,7 +76,7 @@ public class TaiXiuManager {
 
     public static void playerBet(Player player, long money, TaiXiuResult result) {
         String pName = player.getName();
-        Economy econ = VaultSupport.econ;
+        Economy econ = VaultSupport.getEcon();
         ISession data = getSessionData();
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
 
@@ -319,7 +319,7 @@ public class TaiXiuManager {
             playSound(Bukkit.getPlayer(player), SoundType.win);
             sendMessage(Bukkit.getPlayer(player), message);
             if (sessionData.getCurrencyType() == CurrencyTyppe.VAULT)
-                VaultSupport.econ.depositPlayer(player, money);
+                VaultSupport.getEcon().depositPlayer(player, money);
             else if (sessionData.getCurrencyType() == CurrencyTyppe.PLAYERPOINTS)
                 TaiXiu.getPlayerPointsAPI().give(Bukkit.getPlayer(player).getUniqueId(), (int) money);
         }

@@ -12,7 +12,6 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class BossBarManager {
     }
 
     public static void toggleBossBar(Player p) {
-        if (!enable)
+        if (!enable || p == null)
             return;
 
         // reset bossBar
@@ -99,7 +98,10 @@ public class BossBarManager {
         }
     }
 
-    public static void putValueBossBar(@NotNull Player p, int timeLeft) {
+    public static void putValueBossBar(Player p, int timeLeft) {
+        if (p ==  null)
+            return;
+
         if (DatabaseManager.togglePlayers.contains(p.getName())) {
             if (!bossBarPlayers.containsKey(p))
                 toggleBossBar(p);

@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <artifactId>TaiXiu</artifactId>
         <groupId>com.cortezromeo.taixiu</groupId>
-        <version>2.3</version>
+        <version>2.4</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>taixiu-plugin</artifactId>
-    <version>${project.parent.version}</version>
+    <version>2.4</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -56,8 +56,8 @@
                                     <shadedPattern>com.cortezromeo.taixiu.lib.xseries</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>io.github.bananapuncher714.nbteditor</pattern>
-                                    <shadedPattern>com.cortezromeo.taixiu.lib.nbteditor</shadedPattern>
+                                    <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.nbtapi</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
@@ -81,39 +81,6 @@
         </resources>
     </build>
 
-    <repositories>
-        <!-- Spigot -->
-        <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <!-- Config Updater -->
-        <repository>
-            <id>maven-central</id>
-            <url>https://oss.sonatype.org/content/groups/public</url>
-        </repository>
-        <!-- PlaceholderAPI -->
-        <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
-        <!-- GeyserMC -->
-        <repository>
-            <id>opencollab-snapshot</id>
-            <url>https://repo.opencollab.dev/main/</url>
-        </repository>
-        <!-- DiscordSRV -->
-        <repository>
-            <id>Scarsz-Nexus</id>
-            <url>https://nexus.scarsz.me/content/groups/public/</url>
-        </repository>
-        <!-- PlayerPoints -->
-        <repository>
-            <id>rosewood-repo</id>
-            <url>https://repo.rosewooddev.io/repository/public/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -135,7 +102,7 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.1</version>
+            <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
