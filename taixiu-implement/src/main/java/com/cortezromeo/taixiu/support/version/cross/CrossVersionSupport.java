@@ -75,10 +75,11 @@ public class CrossVersionSupport extends VersionSupport {
                 String offlinePlayerString = "OfflinePlayer:" + playerName;
                 playerName = UUID.nameUUIDFromBytes(offlinePlayerString.getBytes(StandardCharsets.UTF_8)).toString();
             }
-            if (playerName != null)
-                return XSkull.createItem().profile(Profileable.of(UUID.fromString(playerName))).apply();
-        } catch (Exception exception) {}
-        return new ItemStack(Material.BEDROCK);
+            return XSkull.createItem().profile(Profileable.of(UUID.fromString(playerName))).apply();
+            // normally, if this account is not a part of microsoft account, it will occur error
+        } catch (Exception exception) {
+            return XMaterial.PLAYER_HEAD.parseItem();
+        }
     }
 
     @Override

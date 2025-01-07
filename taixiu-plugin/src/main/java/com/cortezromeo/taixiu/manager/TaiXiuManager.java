@@ -178,7 +178,7 @@ public class TaiXiuManager {
         // discordSRV
         if (TaiXiu.getDiscordManager() != null) {
             try {
-                TaiXiu.getDiscordManager().sendMessage(DiscordManager.getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", player, result, money));
+                TaiXiu.getDiscordManager().sendMessage(DiscordManager.getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }

@@ -12,6 +12,8 @@ import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.util.MessageUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -61,7 +63,16 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
                     Messages.setupValue(TaiXiu.plugin.getConfig().getString("locale"));
                     GeyserFormFile.reload();
                     DatabaseManager.loadLoadingType();
-                    BossBarManager.setupValue();
+                    if (!TaiXiu.plugin.getConfig().getBoolean("boss-bar.enabled")) {
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            if (BossBarManager.bossBarPlayers.containsKey(p)) {
+                                BossBar bossBar = BossBarManager.bossBarPlayers.get(p);
+                                if (bossBar != null)
+                                    bossBar.removeAll();
+                            }
+                        }
+                    } else
+                        BossBarManager.setupValue();
                     TaiXiuInfoInventoryFile.reload();
                     if (TaiXiu.isFloodgateSupported())
                         TaiXiu.setupGeyserForm();

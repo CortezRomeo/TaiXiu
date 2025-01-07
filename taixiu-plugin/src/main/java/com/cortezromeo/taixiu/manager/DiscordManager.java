@@ -35,7 +35,10 @@ public class DiscordManager {
             return;
         }
         TextChannel messageChannel = getGuild().getTextChannelById(channelID);
-        if (messageChannel == null) return;
+        if (messageChannel == null) {
+            MessageUtil.throwErrorMessage("[DiscordSRV] Không thể kết nối tới channel ID " + channelID + ", vui lòng kiểm tra lại!");
+            return;
+        }
         messageChannel.sendMessage(message).queue();
     }
 
@@ -44,7 +47,10 @@ public class DiscordManager {
             return;
         }
         TextChannel messageChannel = getGuild().getTextChannelById(channelID);
-        if (messageChannel == null) return;
+        if (messageChannel == null) {
+            MessageUtil.throwErrorMessage("[DiscordSRV] Không thể kết nối tới channel ID " + channelID + ", vui lòng kiểm tra lại!");
+            return;
+        }
         DiscordUtil.queueMessage(messageChannel, message);
     }
 
@@ -101,19 +107,22 @@ public class DiscordManager {
         return new MessageBuilder().setEmbeds(embedBuilder.build()).build();
     }
 
-    public static Message getPlayerBetMessageFromJSON(String jsonFile, Player player, TaiXiuResult taiXiuResult, long money) throws IOException {
+    public static Message getPlayerBetMessageFromJSON(String jsonFile, ISession session, Player player, TaiXiuResult taiXiuResult, long money) throws IOException {
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         JSONObject jsonObject = new JSONObject(jsonString);
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
+        if (jsonObject.has("title")) {
+            embedBuilder.setTitle(jsonObject.getString("title"));
+        }
         if (jsonObject.has("author")) {
             JSONObject object = jsonObject.getJSONObject("author");
-            String name = formatPlayerBet(object.getString("name"), jsonObject, player, taiXiuResult, money);
+            String name = formatPlayerBet(object.getString("name"), jsonObject, session, player, taiXiuResult, money);
             String icon_url = object.getString("icon_url");
             if (icon_url == null)
                 embedBuilder.setAuthor(name);
             else
-                embedBuilder.setAuthor(name, formatPlayerBet(icon_url, jsonObject, player, taiXiuResult, money), formatPlayerBet(icon_url, jsonObject, player, taiXiuResult, money));
+                embedBuilder.setAuthor(name, formatPlayerBet(icon_url, jsonObject, session, player, taiXiuResult, money), formatPlayerBet(icon_url, jsonObject, session, player, taiXiuResult, money));
         }
         if (jsonObject.has("color")) {
             JSONObject object = jsonObject.getJSONObject("color");
@@ -128,8 +137,8 @@ public class DiscordManager {
                 if (field.getString("fieldtype").equalsIgnoreCase("blank")) {
                     embedBuilder.addBlankField(false);
                 } else {
-                    String name = formatPlayerBet(field.getString("name"), jsonObject, player, taiXiuResult, money);
-                    String value = formatPlayerBet(field.getString("value"), jsonObject, player, taiXiuResult, money);
+                    String name = formatPlayerBet(field.getString("name"), jsonObject, session, player, taiXiuResult, money);
+                    String value = formatPlayerBet(field.getString("value"), jsonObject, session, player, taiXiuResult, money);
                     embedBuilder.addField(name, value, field.optBoolean("inline", false));
                 }
             }
@@ -137,7 +146,7 @@ public class DiscordManager {
         return new MessageBuilder().setEmbeds(embedBuilder.build()).build();
     }
 
-    private static String formatPlayerBet(String string, JSONObject jsonObject, Player player, TaiXiuResult taiXiuResult, long money) {
+    private static String formatPlayerBet(String string, JSONObject jsonObject, ISession session, Player player, TaiXiuResult taiXiuResult, long money) {
         String resultFormatted = "N/A";
         if (taiXiuResult == TaiXiuResult.TAI)
             resultFormatted = jsonObject.getJSONObject("placeholders").getString("tai");
@@ -148,6 +157,7 @@ public class DiscordManager {
 
         string = string.replace("%playerName%", player.getName())
                 .replace("%playerUUID%", player.getUniqueId().toString())
+                .replace("%currencyName%", TaiXiu.nms.stripColor(MessageUtil.getCurrencyName(session.getCurrencyType())))
                 .replace("%money%", MessageUtil.getFormatMoneyDisplay(money))
                 .replace("%bet%", resultFormatted)
                 .replace("%date%", simpleDateFormat.format(new Date()));
@@ -201,6 +211,7 @@ public class DiscordManager {
                 .replace("%dice2%", String.valueOf(session.getDice2()))
                 .replace("%dice3%", String.valueOf(session.getDice3()))
                 .replace("%totalPoint%", String.valueOf(session.getDice1() + session.getDice2() + session.getDice3()))
+                .replace("%currencyName%", TaiXiu.nms.stripColor(MessageUtil.getCurrencyName(session.getCurrencyType())))
                 .replace("%result%", resultFormatted)
                 .replace("%bestWinners%", bestWinnersFormatted);
         return string;

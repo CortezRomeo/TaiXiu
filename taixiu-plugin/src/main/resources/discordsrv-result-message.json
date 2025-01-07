@@ -54,6 +54,12 @@
         "value": "**%result%**",
         "inline": false
      },
+     {
+        "name": ":coin: Tiền tệ",
+        "fieldtype": "normal",
+        "value": "**%currencyName%**",
+        "inline": false
+     },
 	 {
         "name": ":chart_with_upwards_trend: Ăn nhiều nhất",
 		"fieldtype": "normal",
@@ -73,7 +79,7 @@
 		}
 	},
     "footer": {
-      "text": "minecraftvn.com",
+      "text": "minecraftvn.net",
       "icon_url": "https://static.wikia.nocookie.net/animatorvsanimation/images/5/52/MinecraftIcon.png"
     }
  }

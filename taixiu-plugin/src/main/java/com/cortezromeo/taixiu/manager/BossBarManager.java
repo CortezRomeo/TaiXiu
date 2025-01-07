@@ -19,7 +19,6 @@ import java.util.Map;
 public class BossBarManager {
 
     public static Map<Player, BossBar> bossBarPlayers = new HashMap<>();
-    private static boolean enable;
     private static ISession currentBossBarSession;
     public static boolean reloadingBossBar;
     private static boolean bbReloadingEnable;
@@ -40,7 +39,6 @@ public class BossBarManager {
     public static void setupValue() {
         FileConfiguration config = TaiXiu.plugin.getConfig();
 
-        enable = config.getBoolean("boss-bar.enabled");
         timePerSession = config.getInt("task.taiXiuTask.time-per-session");
         currentBossBarSession = TaiXiuManager.getTaiXiuTask().getSession();
 
@@ -77,14 +75,16 @@ public class BossBarManager {
     }
 
     public static void toggleBossBar(Player p) {
-        if (!enable || p == null)
+        if (p == null)
             return;
 
-        // reset bossBar
         if (bossBarPlayers.containsKey(p)) {
             bossBarPlayers.get(p).removeAll();
             bossBarPlayers.remove(p);
         }
+
+        if (!TaiXiu.plugin.getConfig().getBoolean("boss-bar.enabled"))
+            return;
 
         if (DatabaseManager.togglePlayers.contains(p.getName())) {
             BossBar taiXiuBossBar = Bukkit.createBossBar(TaiXiu.nms.addColor(Messages.REQUEST_LOADING.replace("%prefix%", "")),
@@ -99,8 +99,16 @@ public class BossBarManager {
     }
 
     public static void putValueBossBar(Player p, int timeLeft) {
-        if (p ==  null)
+        if (p == null)
             return;
+
+        if (!TaiXiu.plugin.getConfig().getBoolean("boss-bar.enabled")) {
+            if (bossBarPlayers.containsKey(p)) {
+                bossBarPlayers.get(p).removeAll();
+                bossBarPlayers.remove(p);
+            }
+            return;
+        }
 
         if (DatabaseManager.togglePlayers.contains(p.getName())) {
             if (!bossBarPlayers.containsKey(p))

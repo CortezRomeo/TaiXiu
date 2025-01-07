@@ -201,8 +201,7 @@ public final class TaiXiu extends JavaPlugin {
         }
 
         // discordsrv
-        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null
-                && getConfig().getBoolean("discordsrv-settings.enabled")) {
+        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null) {
             discordManager = new DiscordManager(this);
         }
 
@@ -253,9 +252,11 @@ public final class TaiXiu extends JavaPlugin {
         DatabaseManager.saveDatabase();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            BossBar bossBar = BossBarManager.bossBarPlayers.get(p);
-            if (bossBar != null)
-                bossBar.removeAll();
+            if (BossBarManager.bossBarPlayers.containsKey(p)) {
+                BossBar bossBar = BossBarManager.bossBarPlayers.get(p);
+                if (bossBar != null)
+                    bossBar.removeAll();
+            }
         }
     }
 }

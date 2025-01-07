@@ -1,13 +1,20 @@
 {
+    "title": "Đặt cược tài xỉu",
     "author": {
-      "name": "%playerName%",
-      "icon_url": "https://api.mineatar.io/face/%playerUUID%"
-    },
+        "name": "%playerName%",
+        "icon_url": "https://api.mineatar.io/face/%playerUUID%"
+      },
     "color": {
 		"tai": 16720384,
 		"xiu": 4390656
 	},
     "fields": [
+     {
+        "name": "",
+        "fieldtype": "blank",
+        "value": "",
+        "inline": false
+     },
      {
         "name": ":timer: Thời gian",
 		"fieldtype": "normal",
@@ -21,7 +28,13 @@
         "inline": false
      },
      {
-        "name": ":money_with_wings: Số tiền",
+        "name": ":coin: Tiền tệ",
+        "fieldtype": "normal",
+        "value": "**%currencyName%**",
+        "inline": false
+     },
+     {
+        "name": ":money_with_wings: Giá trị",
 		"fieldtype": "normal",
         "value": "**%money%**",
         "inline": false
