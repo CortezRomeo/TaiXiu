@@ -26,13 +26,13 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
     private List<String> betPlayers = new ArrayList<>();
     private HashMap<String, Long> xiuPlayers = new HashMap<>();
     private HashMap<String, Long> taiPlayers = new HashMap<>();
-    private ShortItemsType shortItemsType;
+    private SortItemsType sortItemsType;
     private ISession sessionData;
     private BukkitTask bukkitRunnable;
 
     public TaiXiuInfoInventory(Player owner, ISession sessionData) {
         super(owner);
-        shortItemsType = ShortItemsType.all;
+        sortItemsType = SortItemsType.all;
         this.sessionData = sessionData;
     }
 
@@ -104,17 +104,17 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
         }
         if (itemeCustomData.equals("closeItem"))
             getOwner().closeInventory();
-        if (itemeCustomData.equals("shortItemsItem")) {
-            if (shortItemsType == ShortItemsType.all)
-                shortItemsType = ShortItemsType.taiPlayers;
-            else if (shortItemsType == ShortItemsType.taiPlayers)
-                shortItemsType = ShortItemsType.xiuPlayers;
-            else if (shortItemsType == ShortItemsType.xiuPlayers)
-                shortItemsType = ShortItemsType.highestCurrency;
-            else if (shortItemsType == ShortItemsType.highestCurrency)
-                shortItemsType = ShortItemsType.lowestCurrency;
-            else if (shortItemsType == ShortItemsType.lowestCurrency)
-                shortItemsType = ShortItemsType.all;
+        if (itemeCustomData.equals("sortItemsItem")) {
+            if (sortItemsType == SortItemsType.all)
+                sortItemsType = SortItemsType.taiPlayers;
+            else if (sortItemsType == SortItemsType.taiPlayers)
+                sortItemsType = SortItemsType.xiuPlayers;
+            else if (sortItemsType == SortItemsType.xiuPlayers)
+                sortItemsType = SortItemsType.highestCurrency;
+            else if (sortItemsType == SortItemsType.highestCurrency)
+                sortItemsType = SortItemsType.lowestCurrency;
+            else if (sortItemsType == SortItemsType.lowestCurrency)
+                sortItemsType = SortItemsType.all;
             inventoryItems.clear();
             super.open();
         }
@@ -142,18 +142,18 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
 
             inventory.setItem(sessionInfoItemSlot, sessionInfoItem);
 
-            ItemStack shortItemsItem = TaiXiu.nms.addCustomData(ItemUtil.getItem(invFileConfig.getString("items.shortItems.type"),
-                    invFileConfig.getString("items.shortItems.value"),
-                    (short) invFileConfig.getInt("items.shortItems.data"),
-                    invFileConfig.getString("items.shortItems.name"),
-                    invFileConfig.getStringList("items.shortItems.lore." + shortItemsType.toString())), "shortItemsItem");
-            int shortItemsItemSlot = invFileConfig.getInt("items.shortItems.slot");
-            if (shortItemsItemSlot < 0)
-                shortItemsItemSlot = 0;
-            if (shortItemsItemSlot > 8)
-                shortItemsItemSlot = 8;
-            shortItemsItemSlot = 45 + shortItemsItemSlot;
-            inventory.setItem(shortItemsItemSlot, shortItemsItem);
+            ItemStack sortItemsItem = TaiXiu.nms.addCustomData(ItemUtil.getItem(invFileConfig.getString("items.sortItems.type"),
+                    invFileConfig.getString("items.sortItems.value"),
+                    (short) invFileConfig.getInt("items.sortItems.data"),
+                    invFileConfig.getString("items.sortItems.name"),
+                    invFileConfig.getStringList("items.sortItems.lore." + sortItemsType.toString())), "sortItemsItem");
+            int sortItemsItemSlot = invFileConfig.getInt("items.sortItems.slot");
+            if (sortItemsItemSlot < 0)
+                sortItemsItemSlot = 0;
+            if (sortItemsItemSlot > 8)
+                sortItemsItemSlot = 8;
+            sortItemsItemSlot = 45 + sortItemsItemSlot;
+            inventory.setItem(sortItemsItemSlot, sortItemsItem);
 
             this.betPlayers.clear();
             this.xiuPlayers.clear();
@@ -163,7 +163,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
             HashMap<String, Long> xiuPlayersFromSession = getSessionData().getXiuPlayers();
             if (!xiuPlayersFromSession.isEmpty()) {
                 for (String xiuPlayer : xiuPlayersFromSession.keySet()) {
-                    if (shortItemsType != ShortItemsType.taiPlayers) {
+                    if (sortItemsType != SortItemsType.taiPlayers) {
                         xiuPlayers.put(xiuPlayer, xiuPlayersFromSession.get(xiuPlayer));
                         betPlayers.add(xiuPlayer);
                     }
@@ -172,7 +172,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
             HashMap<String, Long> taiPlayersFromSession = getSessionData().getTaiPlayers();
             if (!taiPlayersFromSession.isEmpty()) {
                 for (String taiPlayer : taiPlayersFromSession.keySet()) {
-                    if (shortItemsType != ShortItemsType.xiuPlayers) {
+                    if (sortItemsType != SortItemsType.xiuPlayers) {
                         this.betPlayers.add(taiPlayer);
                         this.taiPlayers.put(taiPlayer, taiPlayersFromSession.get(taiPlayer));
                     }
@@ -180,7 +180,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
             }
 
             if (!betPlayers.isEmpty()) {
-                if (shortItemsType == ShortItemsType.lowestCurrency) {
+                if (sortItemsType == SortItemsType.lowestCurrency) {
                     betPlayers.clear();
                     HashMap<String, Long> allPlayers = new HashMap<>();
                     if (!xiuPlayers.isEmpty())
@@ -192,7 +192,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
                             .sorted(Map.Entry.comparingByValue())  // Sort by value
                             .forEach(entry -> betPlayers.add(entry.getKey()));
                 }
-                if (shortItemsType == ShortItemsType.highestCurrency) {
+                if (sortItemsType == SortItemsType.highestCurrency) {
                     betPlayers.clear();
                     HashMap<String, Long> allPlayers = new HashMap<>();
                     if (!xiuPlayers.isEmpty())
@@ -280,7 +280,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
         return modItem;
     }
 
-    public enum ShortItemsType {
+    public enum SortItemsType {
         all, taiPlayers, xiuPlayers, highestCurrency, lowestCurrency
     }
 

@@ -97,12 +97,11 @@ bet-settings:
 floodgate-settings:
   enabled: true
 
-# DiscordSRV API
 # Được dùng để hiển thị thông báo kết quả phiên cho kênh discord
 # Chỉnh sửa message tại các file json trong folder plugin
-discordsrv-settings:
-  enabled: true
-  channel-id: "1286680792462000301"
+# Xem cách lấy webhook tại https://youtu.be/G_fRHkHQUNU
+discord-webhook-settings:
+  webhookURL: ""
 
 # Thiết lập âm thanh
 # List sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html

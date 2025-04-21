@@ -14,8 +14,12 @@ import com.cortezromeo.taixiu.language.Vietnamese;
 import com.cortezromeo.taixiu.listener.InventoryClickListener;
 import com.cortezromeo.taixiu.listener.PlayerJoinListener;
 import com.cortezromeo.taixiu.listener.PlayerQuitListener;
-import com.cortezromeo.taixiu.manager.*;
+import com.cortezromeo.taixiu.manager.AutoSaveManager;
+import com.cortezromeo.taixiu.manager.BossBarManager;
+import com.cortezromeo.taixiu.manager.DatabaseManager;
+import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
+import com.cortezromeo.taixiu.support.DiscordSupport;
 import com.cortezromeo.taixiu.support.PAPISupport;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
@@ -41,7 +45,7 @@ public final class TaiXiu extends JavaPlugin {
     public static Economy econ;
     private static boolean papiSupport = false;
     private static boolean floodgateSupport = false;
-    private static DiscordManager discordManager;
+    private static DiscordSupport discordSupport;
     private static PlayerPointsAPI playerPointsAPI;
 
     @Override
@@ -82,7 +86,6 @@ public final class TaiXiu extends JavaPlugin {
         log((floodgateSupport ? "&2[YES] &aFloodgate API (Forms and Cumulus)" : "&4[NO] &cFloodgate API (Forms and Cumulus)"));
         if (!getConfig().getBoolean("floodgate-settings.enabled"))
             log("  &e&oquyền sử dụng Floodgate API đã bị tắt trong config.yml");
-        log((discordManager != null ? "&2[YES] &aDiscordSRV" : "&4[NO] &cDiscordSRV"));
         log((playerPointsAPI != null ? "&2[YES] &aPlayerPoints" : "&4[NO] &cPlayerPoints"));
         log("");
         log("&f--------------------------------");
@@ -200,10 +203,8 @@ public final class TaiXiu extends JavaPlugin {
             floodgateSupport = true;
         }
 
-        // discordsrv
-        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null) {
-            discordManager = new DiscordManager(this);
-        }
+        // discordWebhook
+        discordSupport = new DiscordSupport();
 
         // playerpoints
         if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
@@ -228,8 +229,8 @@ public final class TaiXiu extends JavaPlugin {
         return floodgateSupport;
     }
 
-    public static DiscordManager getDiscordManager() {
-        return discordManager;
+    public static DiscordSupport getDiscordSupport() {
+        return discordSupport;
     }
 
     public static PlayerPointsAPI getPlayerPointsAPI() {

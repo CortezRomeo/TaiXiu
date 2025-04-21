@@ -9,6 +9,7 @@ import com.cortezromeo.taixiu.api.event.SessionResultEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.enums.SoundType;
 import com.cortezromeo.taixiu.language.Messages;
+import com.cortezromeo.taixiu.support.DiscordSupport;
 import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
 import com.cortezromeo.taixiu.util.MessageUtil;
@@ -175,10 +176,10 @@ public class TaiXiuManager {
                         "| Money: " + money + " " +
                         "| Session: " + data.getSession());
 
-        // discordSRV
-        if (TaiXiu.getDiscordManager() != null) {
+        // discord web hook
+        if (TaiXiu.getDiscordSupport() != null) {
             try {
-                TaiXiu.getDiscordManager().sendMessage(DiscordManager.getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
+                TaiXiu.getDiscordSupport().sendMessage(TaiXiu.getDiscordSupport().getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -286,10 +287,10 @@ public class TaiXiuManager {
             MessageUtil.throwErrorMessage("<taixiumanager.java<resultSeason>>" + e);
         }
 
-        // discordSRV
-        if (TaiXiu.getDiscordManager() != null) {
+        // discord web hook
+        if (TaiXiu.getDiscordSupport() != null) {
             try {
-                TaiXiu.getDiscordManager().sendMessage(DiscordManager.getResultMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-result-message.json", session));
+                TaiXiu.getDiscordSupport().sendMessage(TaiXiu.getDiscordSupport().getResultMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-result-message.json", session));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }

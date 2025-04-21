@@ -48,7 +48,7 @@ items:
     data: 0
     lore:
       - '&7Về trang %prevPage%'
-  shortItems:
+  sortItems:
     name: '&bSắp xếp'
     slot: 3
     type: material

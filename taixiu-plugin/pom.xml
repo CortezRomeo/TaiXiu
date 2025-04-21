@@ -7,10 +7,10 @@
     <parent>
         <artifactId>TaiXiu</artifactId>
         <groupId>com.cortezromeo.taixiu</groupId>
-        <version>2.5</version>
+        <version>2.6</version>
     </parent>
     <artifactId>taixiu-plugin</artifactId>
-    <version>2.5</version>
+    <version>2.6</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -33,7 +33,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
+                    <release>${java.version}</release>
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
@@ -66,6 +66,10 @@
                                 <relocation>
                                     <pattern>com.tchristofferson.configupdater</pattern>
                                     <shadedPattern>com.cortezromeo.taixiu.lib.configupdater</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.json</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -108,14 +112,14 @@
         <dependency>
             <groupId>org.geysermc.floodgate</groupId>
             <artifactId>api</artifactId>
-            <version>2.2.3-SNAPSHOT</version>
+            <version>2.2.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
-            <groupId>com.discordsrv</groupId>
-            <artifactId>discordsrv</artifactId>
-            <version>1.29.0</version>
-            <scope>provided</scope>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20250107</version>
         </dependency>
         <dependency>
             <groupId>org.black_ixx</groupId>
