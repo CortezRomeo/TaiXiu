@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -178,11 +179,13 @@ public class TaiXiuManager {
 
         // discord web hook
         if (TaiXiu.getDiscordSupport() != null) {
-            try {
-                TaiXiu.getDiscordSupport().sendMessage(TaiXiu.getDiscordSupport().getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(TaiXiu.plugin, () -> {
+                try {
+                    TaiXiu.getDiscordSupport().sendMessage(TaiXiu.getDiscordSupport().getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
