@@ -183,7 +183,7 @@ public class TaiXiuManager {
                 try {
                     TaiXiu.getDiscordSupport().sendMessage(TaiXiu.getDiscordSupport().getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             });
         }
