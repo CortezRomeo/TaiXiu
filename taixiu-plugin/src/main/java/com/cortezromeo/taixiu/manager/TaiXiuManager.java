@@ -23,6 +23,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
+
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendBroadCast;
 import static com.cortezromeo.taixiu.util.MessageUtil.sendMessage;
@@ -247,27 +250,36 @@ public class TaiXiuManager {
                 executeWinners(session, session.getXiuPlayers(), session.getResult(), tax);
 
                 for (String taiPlayer : session.getTaiPlayers().keySet()) {
+                    Player player = Bukkit.getPlayer(taiPlayer);
                     String message = Messages.SESSION_PLAYER_LOSE
                             .replace("%result%", MessageUtil.getFormatResultName(TaiXiuResult.TAI))
                             .replace("%currencyName%", MessageUtil.getCurrencyName(session.getCurrencyType()))
                             .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType()))
                             .replace("%money%", MessageUtil.getFormatMoneyDisplay(session.getTaiPlayers().get(taiPlayer)));
 
-                    playSound(Bukkit.getPlayer(taiPlayer), SoundType.lose);
-                    sendMessage(Bukkit.getPlayer(taiPlayer), message);
+                    player.getScheduler().execute(TaiXiu.plugin, () -> {
+                        // Interact safely here
+                        playSound(player, SoundType.lose);
+                        sendMessage(player, message);
+                    }, null, 0L);
+                    
                 }
             } else if (session.getResult() == TaiXiuResult.TAI && session.getTaiPlayers() != null) {
                 executeWinners(session, session.getTaiPlayers(), session.getResult(), tax);
 
                 for (String xiuPlayer : session.getXiuPlayers().keySet()) {
+                    Player player = Bukkit.getPlayer(xiuPlayer);
                     String message = Messages.SESSION_PLAYER_LOSE
                             .replace("%result%", MessageUtil.getFormatResultName(TaiXiuResult.XIU))
                             .replace("%currencyName%", MessageUtil.getCurrencyName(session.getCurrencyType()))
                             .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType()))
                             .replace("%money%", MessageUtil.getFormatMoneyDisplay(session.getXiuPlayers().get(xiuPlayer)));
-
-                    playSound(Bukkit.getPlayer(xiuPlayer), SoundType.lose);
-                    sendMessage(Bukkit.getPlayer(xiuPlayer), message);
+                    
+                    player.getScheduler().execute(TaiXiu.plugin, () -> {
+                        // Interact safely here
+                        playSound(player, SoundType.lose);
+                        sendMessage(player, message);
+                    }, null, 0L);
                 }
             } else
                 sendBroadCast(Messages.SESSION_SPECIAL_WIN

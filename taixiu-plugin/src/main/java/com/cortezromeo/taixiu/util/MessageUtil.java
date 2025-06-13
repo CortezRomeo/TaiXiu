@@ -10,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
+
 import java.text.DecimalFormat;
 
 public class MessageUtil {
@@ -48,8 +51,8 @@ public class MessageUtil {
         if (message.equals(""))
             return;
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            sendMessage(p, message);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.getScheduler().execute(TaiXiu.plugin, () -> sendMessage(player, message), null, 0L);
         }
     }
 

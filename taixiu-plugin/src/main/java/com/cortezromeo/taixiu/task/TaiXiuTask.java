@@ -14,6 +14,7 @@ import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.entity.Player;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 
@@ -99,23 +100,21 @@ public class TaiXiuTask implements Runnable {
                                 "| New session: " + newSession);
 
                         SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
-                        TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
+                        TaiXiu.plugin.getServer().getGlobalRegionScheduler().execute(TaiXiu.plugin, () -> {
+                            TaiXiu.plugin.getServer().getPluginManager().callEvent(new SessionSwapEvent(oldSessionData, getSession()));
+                        });
 
                         if (DatabaseManager.sessionEndingType == SessionEndingType.SAVE)
                             DatabaseManager.saveSessionData(oldSessionData.getSession());
                         else
                             DatabaseManager.unloadSessionData(oldSessionData.getSession());
 
-                        if (!DatabaseManager.togglePlayers.isEmpty())
-                            for (String playerBossBar : DatabaseManager.togglePlayers)
-                                BossBarManager.putValueBossBar(Bukkit.getPlayer(playerBossBar), time);
+                        updateBossBars(time);
                     }
                     TaiXiuManager.setTime(TaiXiu.plugin.getConfig().getInt("task.taiXiuTask.time-per-session"));
                     TaiXiuManager.setCurrencyType(CurrencyTyppe.valueOf(TaiXiu.plugin.getConfig().getString("currency-settings.default").toUpperCase()));
                 } else {
-                    if (!DatabaseManager.togglePlayers.isEmpty())
-                        for (String playerBossBar : DatabaseManager.togglePlayers)
-                            BossBarManager.putValueBossBar(Bukkit.getPlayer(playerBossBar), time);
+                    updateBossBars(time);
                 }
             } catch (Exception e) {
                 cancel();
@@ -129,4 +128,18 @@ public class TaiXiuTask implements Runnable {
     public void cancel() {
         task.cancel();
     }
+
+    private void updateBossBars(int time) {
+    if (!DatabaseManager.togglePlayers.isEmpty()) {
+        for (String name : DatabaseManager.togglePlayers) {
+            Player player = Bukkit.getPlayer(name);
+            if (player != null && player.isOnline()) {
+                player.getScheduler().execute(TaiXiu.plugin, () -> {
+                    BossBarManager.putValueBossBar(player, time);
+                }, null, 0L);
+            }
+        }
+    }
+}
+
 }
