@@ -8,21 +8,28 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.Set;
 
 import static com.cortezromeo.taixiu.util.MessageUtil.log;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 
 public class AutoSaveTask implements Runnable {
 
-    private BukkitTask task;
+    private ScheduledTask task;
 
     public AutoSaveTask(int time) {
-        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(TaiXiu.plugin, this, 20L * time, 20L * time);
+        this.task = TaiXiu.plugin.getServer().getGlobalRegionScheduler().runAtFixedRate(
+            TaiXiu.plugin,
+            t -> run(), // or just pass `this` if you're using lambda-style Runnable
+            20L * time,
+            20L * time
+        );
     }
 
-    public BukkitTask getBukkitTask() {
+    public ScheduledTask getBukkitTask() {
         return task;
     }
 
     public int getTaskID() {
-        return task.getTaskId();
+        return task != null ? task.hashCode() : -1;
     }
 
     @Override

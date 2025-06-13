@@ -14,17 +14,24 @@ import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 
 public class TaiXiuTask implements Runnable {
-    private BukkitTask task;
+    private ScheduledTask task;
     private int time;
     private TaiXiuState state;
     private ISession data;
 
     public TaiXiuTask(int time) {
-        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(TaiXiu.plugin, this, 0, 20L);
+        this.task = TaiXiu.plugin.getServer().getGlobalRegionScheduler().runAtFixedRate(
+            TaiXiu.plugin,
+            t -> run(),
+            1L,
+            20L
+        );
         data = DatabaseManager.getSessionData(DatabaseManager.getLastSessionFromFile());
         this.time = time;
         this.state = TaiXiuState.PLAYING;
@@ -32,12 +39,12 @@ public class TaiXiuTask implements Runnable {
         debug("TAIXIU TASK", "RUNNING TASK ID: " + getTaskID() + " | SESSION NUMBER: " + data.getSession());
     }
 
-    public BukkitTask getBukkitTask() {
+    public ScheduledTask getBukkitTask() {
         return task;
     }
 
     public int getTaskID() {
-        return task.getTaskId();
+        return task != null ? task.hashCode() : -1;
     }
 
     public int getTime() {

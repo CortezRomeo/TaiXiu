@@ -20,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
+
 public class TaiXiuInfoInventory extends PaginatedInventory {
 
     private List<ItemStack> inventoryItems = new ArrayList<>();
@@ -28,7 +31,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
     private HashMap<String, Long> taiPlayers = new HashMap<>();
     private SortItemsType sortItemsType;
     private ISession sessionData;
-    private BukkitTask bukkitRunnable;
+    private ScheduledTask bukkitRunnable;
 
     public TaiXiuInfoInventory(Player owner, ISession sessionData) {
         super(owner);
@@ -49,16 +52,21 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
             if (getSessionData().getResult() != TaiXiuResult.NONE)
                 return;
 
-            bukkitRunnable = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (getInventory().getViewers().isEmpty() || !getOwner().getOpenInventory().getTopInventory().equals(getInventory())) {
-                        cancel();
-                        return;
-                    }
-                    open();
+            bukkitRunnable = TaiXiu.nms.getPlugin().getServer().getGlobalRegionScheduler().runAtFixedRate(
+            TaiXiu.nms.getPlugin(),
+            task -> {
+                if (getInventory().getViewers().isEmpty() ||
+                    !getOwner().getOpenInventory().getTopInventory().equals(getInventory())) {
+                    task.cancel();
+                    bukkitRunnable = null;
+                    return;
                 }
-            }.runTaskTimerAsynchronously(TaiXiu.nms.getPlugin(), 20, 20);
+
+                open();
+            },
+            20L, // initial delay (in ticks)
+            20L  // period (in ticks)
+        );
         }
     }
 

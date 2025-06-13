@@ -21,6 +21,13 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <repositories>
+    <repository>
+        <id>aikar</id>
+        <url>https://repo.aikar.co/nexus/content/repositories/aikar/</url>
+    </repository>
+    </repositories>
+
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -86,6 +93,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>dev.folia</groupId>
+            <artifactId>folia-api</artifactId>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>

@@ -3,6 +3,7 @@ author: Cortez_Romeo
 version: '${project.version}'
 main: com.cortezromeo.taixiu.TaiXiu
 api-version: 1.13
+folia-supported: true
 softdepend:
   - PlaceholderAPI
   - PlayerPoints
