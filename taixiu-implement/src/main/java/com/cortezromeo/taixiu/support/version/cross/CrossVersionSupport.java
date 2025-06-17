@@ -6,7 +6,7 @@ import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.profiles.builder.XSkull;
 import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
 import com.cryptomorin.xseries.profiles.objects.Profileable;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -40,9 +40,9 @@ public class CrossVersionSupport extends VersionSupport {
                 })
                 .orElseGet(() -> {
                     getPlugin().getLogger().severe("----------------------------------------------------");
-                    getPlugin().getLogger().severe("MATERIAL " + material + " KHÔNG HỢP LỆ!");
-                    getPlugin().getLogger().severe("Có thể do bạn nhập sai hoặc Material đó không tồn tại ở phiên bản này");
-                    getPlugin().getLogger().severe(">> Link Materials <<");
+                    getPlugin().getLogger().severe("INVALID MATERIAL: " + material);
+                    getPlugin().getLogger().severe("The material name may be incorrect or not available in this server version.");
+                    getPlugin().getLogger().severe(">> Reference Material List <<");
                     getPlugin().getLogger().severe("https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html");
                     getPlugin().getLogger().severe("----------------------------------------------------");
                     return new ItemStack(Material.BEDROCK);
@@ -53,9 +53,9 @@ public class CrossVersionSupport extends VersionSupport {
     public Sound createSound(String soundName) {
         return XSound.matchXSound(soundName).map(XSound::parseSound).orElseGet(() -> {
             getPlugin().getLogger().severe("----------------------------------------------------");
-            getPlugin().getLogger().severe("SOUND NAME " + soundName + " KHÔNG HỢP LỆ!");
-            getPlugin().getLogger().severe("Có thể do bạn nhập sai hoặc Sound đó không tồn tại ở phiên bản này");
-            getPlugin().getLogger().severe(">> Link Sounds <<");
+            getPlugin().getLogger().severe("INVALID SOUND NAME: " + soundName);
+            getPlugin().getLogger().severe("The sound name may be incorrect or not supported in this server version.");
+            getPlugin().getLogger().severe(">> Reference Sound List <<");
             getPlugin().getLogger().severe("https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html");
             getPlugin().getLogger().severe("----------------------------------------------------");
             return XSound.BLOCK_AMETHYST_CLUSTER_BREAK.parseSound();
@@ -84,18 +84,28 @@ public class CrossVersionSupport extends VersionSupport {
 
     @Override
     public ItemStack addCustomData(ItemStack itemStack, String data) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-        nbtItem.setString(NBT_KEY + ".customdata", data);
-        return nbtItem.getItem();
+        if (itemStack == null)
+            return null;
+
+        if (itemStack.getType() == Material.AIR)
+            return null;
+
+        NBT.modify(itemStack, nbt -> {
+            nbt.setString(NBT_KEY + ".customdata", data);
+        });
+
+        return itemStack;
     }
 
     @Override
     public String getCustomData(ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-        if (nbtItem.getString(NBT_KEY + ".customdata") != null) {
-            return nbtItem.getString(NBT_KEY + ".customdata");
-        }
-        return "";
+        if (itemStack == null)
+            return null;
+
+        if (itemStack.getType() == Material.AIR)
+            return null;
+
+        return NBT.get(itemStack, nbt -> (String) (nbt.getString(NBT_KEY + ".customdata")));
     }
 
     @Override

@@ -16,34 +16,40 @@ import java.util.*;
 
 public class DiscordSupport {
 
-    public DiscordSupport() {}
+    String webHookURL;
+
+    public DiscordSupport(String webHookURL) {
+        this.webHookURL = webHookURL;
+    }
 
     public void sendMessage(String message) {
-        String webHookURL = TaiXiu.plugin.getConfig().getString("discord-webhook-settings.webhookURL");
         DiscordWebhook discordWebhook = new DiscordWebhook(webHookURL);
         if (webHookURL == null || webHookURL.equals(""))
             return;
 
-        discordWebhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription(message));
-        try {
-            discordWebhook.execute();
-        } catch (Exception exception) {
-            MessageUtil.throwErrorMessage("[Discord Web Hook] Gặp lỗi khi cố gắng kết nối tới web hook URL! (" + exception.getMessage() + ")");
-        }
+        TaiXiu.support.getFoliaLib().getScheduler().runAsync(task -> {
+            discordWebhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription(message));
+            try {
+                discordWebhook.execute();
+            } catch (Exception exception) {
+                MessageUtil.throwErrorMessage("[Discord Web Hook] Occur an error while trying to connect to discord web hook! (" + exception.getMessage() + ")");
+            }
+        });
     }
 
     public void sendMessage(DiscordWebhook.EmbedObject embedObject) {
-        String webHookURL = TaiXiu.plugin.getConfig().getString("discord-webhook-settings.webhookURL");
         DiscordWebhook discordWebhook = new DiscordWebhook(webHookURL);
         if (webHookURL == null || webHookURL.equals(""))
             return;
 
-        discordWebhook.addEmbed(embedObject);
-        try {
-            discordWebhook.execute();
-        } catch (Exception exception) {
-            MessageUtil.throwErrorMessage("[Discord Web Hook] Gặp lỗi khi cố gắng kết nối tới web hook URL! (" + exception.getMessage() + ")");
-        }
+        TaiXiu.support.getFoliaLib().getScheduler().runAsync(task -> {
+            discordWebhook.addEmbed(embedObject);
+            try {
+                discordWebhook.execute();
+            } catch (Exception exception) {
+                MessageUtil.throwErrorMessage("[Discord Web Hook] Occur an error while trying to connect to discord web hook! (" + exception.getMessage() + ")");
+            }
+        });
     }
 
     public DiscordWebhook.EmbedObject getResultMessageFromJSON(String jsonFile, ISession session) throws IOException {

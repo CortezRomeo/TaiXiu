@@ -74,8 +74,8 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
                     } else
                         BossBarManager.setupValue();
                     TaiXiuInfoInventoryFile.reload();
-                    if (TaiXiu.isFloodgateSupported())
-                        TaiXiu.setupGeyserForm();
+                    if (TaiXiu.support.isFloodgateSupported())
+                        TaiXiu.support.setupGeyserForm();
                     setDebug(TaiXiu.plugin.getConfig().getBoolean("debug"));
                     if (AutoSaveManager.getAutoSaveStatus() && !TaiXiu.plugin.getConfig().getBoolean("database.auto-save.enable")) {
                         AutoSaveManager.stopAutoSave();
@@ -116,8 +116,8 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
                     try {
                         CurrencyTyppe currencyTyppe = CurrencyTyppe.valueOf(args[1]);
                         if (currencyTyppe == CurrencyTyppe.PLAYERPOINTS)
-                            if (TaiXiu.getPlayerPointsAPI() == null) {
-                                sendMessage(sender, Messages.COMMAND_TAIXIUADMIN_UNSUPPORTED_CURRENCY.replace("%currency", currencyTyppe.toString()));
+                            if (TaiXiu.support.getPlayerPointsAPI() == null) {
+                                sendMessage(sender, Messages.COMMAND_TAIXIUADMIN_UNSUPPORTED_CURRENCY.replace("%currency%", currencyTyppe.toString()));
                                 return false;
                             }
                         TaiXiuManager.setCurrencyType(currencyTyppe);
@@ -142,7 +142,7 @@ public class TaiXiuAdminCommand implements CommandExecutor, TabExecutor {
             switch (args[0]) {
                 case "setresult":
                     if (TaiXiuManager.getSessionData().getResult() != TaiXiuResult.NONE) {
-                        sendMessage(sender, "%prefix%&eVui lòng đợi vài giây và xài lại lệnh này!");
+                        sendMessage(sender, "%prefix%&ePlease wait a few seconds before you can use this command again!");
                         return false;
                     }
                     try {

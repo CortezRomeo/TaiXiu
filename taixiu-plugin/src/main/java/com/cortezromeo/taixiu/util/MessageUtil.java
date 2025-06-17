@@ -68,7 +68,7 @@ public class MessageUtil {
 
         message = message.replace("%prefix%" , Messages.PREFIX);
 
-        if (!TaiXiu.isPapiSupported())
+        if (!TaiXiu.support.isPlaceholderAPISupported())
             player.sendMessage(TaiXiu.nms.addColor(message));
         else
             player.sendMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(player, message)));

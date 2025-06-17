@@ -12,19 +12,19 @@ import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.util.MessageUtil;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
 
 import static com.cortezromeo.taixiu.manager.DebugManager.debug;
 
 public class TaiXiuTask implements Runnable {
-    private BukkitTask task;
+    private WrappedTask task;
     private int time;
     private TaiXiuState state;
     private ISession data;
 
     public TaiXiuTask(int time) {
-        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(TaiXiu.plugin, this, 0, 20L);
+        this.task = TaiXiu.support.getFoliaLib().getScheduler().runTimerAsync(this, 0, 20L);
         data = DatabaseManager.getSessionData(DatabaseManager.getLastSessionFromFile());
         this.time = time;
         this.state = TaiXiuState.PLAYING;
@@ -32,12 +32,12 @@ public class TaiXiuTask implements Runnable {
         debug("TAIXIU TASK", "RUNNING TASK ID: " + getTaskID() + " | SESSION NUMBER: " + data.getSession());
     }
 
-    public BukkitTask getBukkitTask() {
+    public WrappedTask getWrappedTask() {
         return task;
     }
 
     public int getTaskID() {
-        return task.getTaskId();
+        return task.hashCode();
     }
 
     public int getTime() {
@@ -92,7 +92,7 @@ public class TaiXiuTask implements Runnable {
                                 "| New session: " + newSession);
 
                         SessionSwapEvent event = new SessionSwapEvent(oldSessionData, getSession());
-                        TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
+                        TaiXiu.support.getFoliaLib().getScheduler().runNextTick(task -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
 
                         if (DatabaseManager.sessionEndingType == SessionEndingType.SAVE)
                             DatabaseManager.saveSessionData(oldSessionData.getSession());

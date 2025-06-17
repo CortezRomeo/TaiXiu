@@ -8,7 +8,7 @@ import com.cortezromeo.taixiu.util.MessageUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
-public class PAPISupport extends PlaceholderExpansion {
+public class PlaceholderAPISupport extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
@@ -32,6 +32,10 @@ public class PAPISupport extends PlaceholderExpansion {
 
         if (s.equals("phien") || s.equals("currentsession"))
             return String.valueOf(TaiXiuManager.getSessionData().getSession());
+
+        if (s.equals("timeleft")) {
+            return String.valueOf(TaiXiuManager.getTimeLeft());
+        }
 
         if (s.startsWith("result_phien_")) {
             String sessionNumber = s.replace("result_phien_", "");

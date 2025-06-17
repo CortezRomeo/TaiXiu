@@ -2,12 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.cortezromeo.taixiu</groupId>
     <artifactId>TaiXiu</artifactId>
     <packaging>pom</packaging>
-    <version>2.6</version>
+    <version>2.7</version>
+
+    <name>TaiXiu</name>
+    <description>A gambling plugin</description>
 
     <modules>
         <module>taixiu-plugin</module>
@@ -33,13 +36,19 @@
         </repository>
         <!-- CodeMC -->
         <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <layout>default</layout>
         </repository>
         <!-- Spigot -->
         <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <!-- PaperMC -->
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <!-- Config Updater -->
         <repository>
@@ -62,6 +71,15 @@
             <url>https://repo.rosewooddev.io/repository/public/</url>
         </repository>
     </repositories>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <extensions>
@@ -105,15 +123,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>24.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
 </project>

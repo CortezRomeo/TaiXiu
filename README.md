@@ -1,11 +1,24 @@
-![logo](https://i.imgur.com/o9Mucfz.png)
+![logo](https://i.imgur.com/CawZvhH.png)
 
 Starting March 8th, 2024, TaiXiu by Thuong Nguyen (Cortez Romeo) transitions to an open-source model under the GNU GPL 3.0 license. If you're a developer, I kindly request that you contribute via pull requests rather than creating numerous forks. Let's ensure updates are accessible to all!
 
 ## Description
 Tai Xiu is a game in the form of betting. In the game, there are three 6-sided dice numbered from 1-6. The dealer (system) will take the sum of the 03 dice that appear to give a final number to the player.
 
-The player's task is to predict whether the number is Tai or Xiu. Xiu is the sum of 3 dice from 3-10, and Tai is 11-18. If the guess is correct, the player will win and receive money.
+The player's task is to predict whether the result is Tai or Xiu. Xiu is the sum of 3 dice from 3-10, and Tai is 11-18. If the guess is correct, the player will win and receive money.
+
+> [!WARNING]
+> Disclaimer: This is a gambling plugin and it will have features to help players bet and win money. Because of the gambling nature, I will not be responsible for gambling terms and regulations related to your use of this plugin.
+
+## Main features
+- Automatically updating files if there is a new update.
+- Configable messages, gui, etc..
+- Supporting API.
+- Supporting GUI
+- Supporting Hex Color
+- Supporting BossBar
+- Supporting Floodgate (GeyserMC)
+- Easily managing plugin database
 
 ## System requirements
 This software runs on [Spigot](https://www.spigotmc.org/) and NMS.
@@ -15,13 +28,17 @@ It is required to use [**Java 11**](https://www.oracle.com/java/technologies/jav
 
 ## Plugin requirements
 - [Vault](https://www.spigotmc.org/resources/vault.34315/)
+- [VaultUnlocked](https://www.spigotmc.org/resources/vaultunlocked.117277/) (For Folia)
 - One economy plugin
 -- Economy plugins: [iConomy](http://dev.bukkit.org/server-mods/iconomy) 4,5,6, [BOSEconomy](http://dev.bukkit.org/server-mods/boseconomy) 6 & 7, EssentialsEcon, 3Co, [MultiCurrency](http://dev.bukkit.org/server-mods/multicurrency), [MineConomy](http://dev.bukkit.org/server-mods/mineconomy), [eWallet](http://dev.bukkit.org/server-mods/ewallet), [EconXP](http://dev.bukkit.org/server-mods/econxp/), [CurrencyCore](http://dev.bukkit.org/server-mods/currency/), [CraftConomy](http://dev.bukkit.org/server-mods/craftconomy/), AEco, [Gringotts](http://dev.bukkit.org/server-mods/gringotts/), [BetterEconomy](https://www.spigotmc.org/resources/bettereconomy.96690/)
+> [!CAUTION]
+> If your server software is folia, using vault will cause error. I would recommend to use VaultUnlocked to replace Vault and use BetterEconomy to replace any economy plugin.
 
 ## Soft-depend plugins
 You might need these plugins to utilize my plugin resources totally.
 - [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
 	-   **%taixiu_phien%** - Get the current session number
+    -   **%taixiu_timeleft%** - Get current session  time left 
 	-   **%taixiu_result_phien_{session_number}%** - Get the result of the session {session_number}
 	-   **%taixiu_resultformat_phien_{session_number}%** - Get the format result of the session {session_number} (based on message.yml)
 	-   **%taixiu_taiplayers_phien_{session_number}%** - List the players who bet on Tai
@@ -39,18 +56,23 @@ You might need these plugins to utilize my plugin resources totally.
 - [PlayerPoints](https://www.spigotmc.org/resources/playerpoints.80745/)
     - Since version 2.3, TaiXiu supports multiple currencies for each playing session. PlayerPointsn now can be used as a second currency for players to bet. 
 
-## Main features
-- Automatically updating files if there is a new update. 
-- Configable messages, gui, etc..
-- Supporting API.
-- Supporting GUI
-- Supporting Hex Color
-- Supporting BossBar
-- Supporting Floodgate (GeyserMC)
-- Easily managing plugin database
+## Commands & subcommands & permissions
+- /taixiu `taixiu.use`
+  - The main command for the players to use.
+    - toggle
+    - luatchoi
+    - cuoc
+    - thongtin
+- /taixiuadmin `taixiu.admin`
+  - For the administrators to use to adjust stats or reload plugin.
+    - reload
+    - changestate
+    - settime
+    - setcurrency
+    - setresult
+- `taixiu.tax.bypass`: Bypass taxes.
 
 ## Contact
-
 [![Discord Server](https://discord.com/api/guilds/1187827789664096267/widget.png?style=banner3)](https://discord.gg/XdJfN2X)
 
 ## 3rd party libraries
@@ -59,6 +81,7 @@ You might need these plugins to utilize my plugin resources totally.
 - [XSeries](https://github.com/CryptoMorin/XSeries)
 - [GSon](https://github.com/google/gson)
 - [NBTEditor](https://github.com/BananaPuncher714/NBTEditor)
+- [FoliaLib](https://github.com/TechnicallyCoded/FoliaLib)
 
 # Special Thanks To
 [<img src="https://user-images.githubusercontent.com/21148213/121807008-8ffc6700-cc52-11eb-96a7-2f6f260f8fda.png" alt="" width="150">](https://www.jetbrains.com)

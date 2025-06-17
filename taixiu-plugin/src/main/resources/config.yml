@@ -5,106 +5,93 @@
 #       \ \_\  \ \_\ \_\  \ \_\      /\_\/\_\  \ \_\  \ \_____\
 #        \/_/   \/_/\/_/   \/_/      \/_/\/_/   \/_/   \/_____/
 #
-#
 #  Author: Cortez_Romeo
-#  Download plugin này miễn phí tại: https://minecraftvn.net
+#  Download this plugin for free at:
+#  https://minecraftvn.net
+#  https://www.spigotmc.org/
+#
+#  Discord: https://discord.gg/NWbTVddmBM
 
-# Dành cho việc fix lỗi
-# Đừng bật nếu bạn không cần đến
+# For debugging purposes
+# Do not enable unless necessary
 debug: false
 
 database:
   while-ending-session:
     # [TYPE: SAVE - SAVE_AND_UNLOAD]
-    # SAVE: Hệ thống sẽ lưu dữ liệu vào file .yml nhưng không unload data
-    # SAVE_AND_UNLOAD: Hệ thống sẽ lưu dữ liệu  vào file.yml và unload data (Tối ưu hóa dữ liệu)
-    # Lưu ý: Data bị unload có thể được load lại nếu có một cái gì đó tác động lên dữ liệu
-    #        Ví dụ: Player sử dụng lệnh "/taixiu thongtin <data bị unload>"
-    #               lúc này data sẽ được load lại
+    # SAVE: The system will save data to a .yml file but won't unload it from memory
+    # SAVE_AND_UNLOAD: The system saves data to a .yml file and unloads it from memory (optimizes performance)
+    # Note: Unloaded data can be loaded back if something accesses it
+    # Example: A player uses command "/taixiu thongtin <unloaded-data>", then the data will be reloaded
     #
-    # KHUYẾN KHÍCH XÀI SAVE_AND_UNLOAD
+    # RECOMMENDED: USE SAVE_AND_UNLOAD
     type: SAVE_AND_UNLOAD
-  # Tự động lưu dữ liệu các phiên
-  # Đề phòng trường hợp bị crash
   while-disabling-plugin:
     # [TYPE: SAVE_ALL - SAVE_LATEST - SAVE_LATEST_AND_DELETE_OLD_DATA]
-    # SAVE_ALL: Lưu tất cả dữ liệu của các phiên đang load vào file .yml, sẽ tốn khá nhiều thời gian
-    #           nếu dữ liệu quá nhiều (Tuy nhiên bạn có thể khắc phục điều này bằng cách chỉnh
-    #           while-ending-session thành SAVE_AND_UNLOAD)
-    # SAVE_LATEST: Lưu dữ liệu cuối cùng vào file .yml và không lưu các dữ liệu còn lại
-    # SAVE_LATEST_AND_DELETE_OLD_DATA: Xóa tất cả dữ liệu cũ (Phiên đã có kết quả) và giữ nguyên dữ liệu cuối cùng (Phiên chưa có kết quả)
+    # SAVE_ALL: Saves all session data currently in memory to .yml (can take long if data is large)
+    # SAVE_LATEST: Only saves the latest session to .yml, ignores the rest
+    # SAVE_LATEST_AND_DELETE_OLD_DATA: Deletes all old session data (completed sessions) and keeps only the unfinished one
     #
-    # ĐỂ TỐI ƯU TỐI ĐA DỮ LIỆU, BẠN CÓ THỂ XÀI SAVE_LATEST_AND_DELETE_OLD_DATA
-    # TUY NHIÊN BẠN CŨNG NÊN SỬ DỤNG SAVE_LATEST (Đọc ghi chú ở trên), DỮ LIỆU KHÔNG CẦN PHẢI TỐI ƯU QUÁ MỨC
+    # TO MAXIMIZE DATA OPTIMIZATION, USE SAVE_LATEST_AND_DELETE_OLD_DATA
+    # HOWEVER, IT'S ALSO RECOMMENDED TO USE SAVE_LATEST (see note above), YOU DON'T NEED TO OVER-OPTIMIZE DATA
     type: SAVE_LATEST
   auto-save:
     enabled: true
-    # Set càng ít thì dữ liệu càng dễ được bảo đảm nhưng có thể gây lag nếu dữ liệu quá nhiều
-    # Lấy theo giây(s)
+    # The lower the time, the more frequently data is saved (safer), but may cause lag if data is large
+    # Time in seconds
     time: 600
 
-# Ngôn ngữ nào từ folder languages sẽ được sử dụng để hiển thị thông báo
-locale: vi
+# Which language file in the languages folder to use for displaying messages
+# Available options:
+# en - English
+# vi - Vietnamese
+locale: en
 
 task:
   taiXiuTask:
-    # Thời gian đếm ngược lấy kết quả của mỗi phiên
-    # Lấy theo giây(s)
+    # Countdown time for each session result
+    # Time in seconds
     time-per-session: 125
 
-# Số tiền sẽ được hiển thị theo cách dễ nhìn hơn
-# Ví dụ: Bạn đặt '#,###' tại 'format-money', số tiền là 500000 -> Số tiền hiền thị: 500,000
-# Chi tiết tại: https://www.baeldung.com/java-decimalformat
+# Display money in readable format
+# Example: format '#,###', 500000 => displayed as: 500,000
+# More info: https://www.baeldung.com/java-decimalformat
 format-money: '#,###'
 
-# Tiền tệ dùng để tính trong các phiên
-# Mỗi phiên có thể sẽ có một loại tiền tệ khác nhau
-# Bao gồm: VAULT, PLAYERPOINTS
+# Currency type used per session
+# Each session can use a different type
+# Options: VAULT, PLAYERPOINTS
 currency-settings:
-  # Mặc định khi mỗi phiên bắt đầu, sẽ sử dụng loại tiền tệ:
   default: VAULT
-  # Mỗi loại tiền tệ sẽ được hiển thị như thế nào
   display-settings:
     VAULT:
-      name: '&6Tiền'
+      name: '&6Money'
       symbol: '&6$'
     PLAYERPOINTS:
-      name: '&bXu'
+      name: '&bPoints'
       symbol: '&b۞'
 
-# Tùy chỉnh về đặt cược
+# Settings related to betting
 bet-settings:
-  # Số tiền tối đa có thể cược
-  max-bet: 1000000
-  # Số tiền tối thiểu có thể cược
-  min-bet: 500
-  # Tính thêm thuế
-  # Cách tính thuế:
-  # 1. <thuế> = "bet-settings.tax" / 100
-  # 2. số tiền player nhận được = <tổng tiền cược trước đó> + (<tổng số tiền cược trước đó> * <thuế>)
-  # Để là 0 nếu muốn tắt tính thuế
-  tax: 0
-  # Đóng đặt cược khi thời gian bé hơn:
-  disable-while-remaining: 15
-  # Một số trường hợp cả 3 xúc xắc đều ra 1 nút hoặc 6 nút
-  # Khi đó sẽ rơi vào trường hợp tổng 3 nút là 3 hoặc 18
-  # Theo luật thì cái sẽ ăn hết, người đặt tài và xỉu đều thua
-  # Nếu bạn chỉnh thành 'true' cái này thì sẽ không còn rơi vào 2 trường hợp nên nữa
-  disable-special: false
+  max-bet: 1000000  # Maximum bet allowed
+  min-bet: 500      # Minimum bet allowed
+  tax: 0            # Additional tax; 0 = disabled
+  disable-while-remaining: 15  # Disable betting when time left is under this threshold
+  disable-special: false       # If true, disables special cases like sum = 3 or 18 (where both sides lose)
 
-# Geyser API/Floodgate API
-# Được dùng để hiển thị form cho người chơi PE/BE
+# Geyser API / Floodgate API
+# Used to show forms to Bedrock Edition players
 floodgate-settings:
   enabled: true
 
-# Được dùng để hiển thị thông báo kết quả phiên cho kênh discord
-# Chỉnh sửa message tại các file json trong folder plugin
-# Xem cách lấy webhook tại https://youtu.be/G_fRHkHQUNU
+# Used to broadcast session results to Discord via webhook
+# Edit the message content in JSON files in the plugin folder
+# How to get webhook: https://youtu.be/G_fRHkHQUNU
 discord-webhook-settings:
   webhookURL: ""
 
-# Thiết lập âm thanh
-# List sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+# Sound effects configuration
+# Sound list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 sound:
   win:
     enabled: true
@@ -117,37 +104,34 @@ sound:
     volume: 1
     pitch: 1
 
-# Thanh máu boss được dùng để hiển thị thông tin
-# List bar color: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
-# List bar style: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarStyle.html
+# Boss bar settings for displaying session info
+# Color list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
+# Style list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarStyle.html
 boss-bar:
   enabled: true
   type:
     playing:
-      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Giây &7| %currencySymbol%%totalBet% %currencySymbol%&#1fc433%xiuBet% %currencySymbol%&#c42d1f%taiBet%'
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| &f%timeLeft% Seconds &7| %currencySymbol%%totalBet% %currencySymbol%&#1fc433%xiuBet% %currencySymbol%&#c42d1f%taiBet%'
       color:
         playing: YELLOW
         bet-disabling: BLUE
         pausing: BLUE
       style: SOLID
-    # Hiển thị khi kết thúc phiên với kết quả phiên của cuối cùng
     reloading:
       enabled: true
       time: 5
-      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fngười thắng %currencySymbol%%money%'
-      # Có thể để color là 'RESULT-COLOR' nếu muốn theo màu của tài hoặc xỉu
+      title: '&#79fb13&lT&#93f222&là&#aeea30&li &#c8e13f&lX&#e3d94d&lỉ&#fdd05c&lu &b#%session% &7| %result% &e%numberOfPlayers% &fwinners %currencySymbol%%money%'
       color: RESULT-COLOR
       result-color-setting:
         xiu: GREEN
         tai: RED
       style: SOLID
 
-# Phần thông báo từ bossbar và message
+# Message and bossbar toggle settings
 toggle-settings:
-  # Tự động bật thông báo khi người chơi vào game
-  auto-toggle: true
+  auto-toggle: true  # Auto-enable notifications when player joins game
 
-# Dùng để lấy số người chơi trong máy chủ sử dụng plugin tài xỉu
-# Không tốn tài nguyên máy chủ, cảm ơn bản đã sử dụng plugin.
+# Used to track the number of players using the Tai Xiu plugin
+# Has no performance impact — thanks for using the plugin.
 bStats:
   enabled: true

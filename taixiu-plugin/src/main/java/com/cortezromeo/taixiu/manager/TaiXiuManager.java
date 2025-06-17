@@ -9,8 +9,6 @@ import com.cortezromeo.taixiu.api.event.SessionResultEvent;
 import com.cortezromeo.taixiu.api.storage.ISession;
 import com.cortezromeo.taixiu.enums.SoundType;
 import com.cortezromeo.taixiu.language.Messages;
-import com.cortezromeo.taixiu.support.DiscordSupport;
-import com.cortezromeo.taixiu.support.VaultSupport;
 import com.cortezromeo.taixiu.task.TaiXiuTask;
 import com.cortezromeo.taixiu.util.MessageUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -47,7 +45,7 @@ public class TaiXiuManager {
         getTaiXiuTask().setState(state);
     }
 
-    public static int getTime() {
+    public static int getTimeLeft() {
         return getTaiXiuTask().getTime();
     }
 
@@ -77,7 +75,7 @@ public class TaiXiuManager {
 
     public static void playerBet(Player player, long money, TaiXiuResult result) {
         String pName = player.getName();
-        Economy econ = VaultSupport.getEcon();
+        Economy econ = TaiXiu.support.getVault();
         ISession data = getSessionData();
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
 
@@ -95,9 +93,9 @@ public class TaiXiuManager {
         }
 
         int configDisableTime = cfg.getInt("bet-settings.disable-while-remaining");
-        if (TaiXiuManager.getTime() <= configDisableTime) {
+        if (TaiXiuManager.getTimeLeft() <= configDisableTime) {
             sendMessage(player, Messages.LATE_BET
-                    .replace("%time%", String.valueOf(TaiXiuManager.getTime()))
+                    .replace("%time%", String.valueOf(TaiXiuManager.getTimeLeft()))
                     .replace("%configDisableTime%", String.valueOf(configDisableTime)));
             return;
         }
@@ -107,7 +105,7 @@ public class TaiXiuManager {
             if (econ.getBalance(player) < money)
                 notEnougCurrency = true;
         } else if (data.getCurrencyType() == CurrencyTyppe.PLAYERPOINTS)
-            if (TaiXiu.getPlayerPointsAPI().look(player.getUniqueId()) < (int) money)
+            if (TaiXiu.support.getPlayerPointsAPI().look(player.getUniqueId()) < (int) money)
                 notEnougCurrency = true;
 
         if (notEnougCurrency) {
@@ -138,7 +136,7 @@ public class TaiXiuManager {
         if (data.getCurrencyType() == CurrencyTyppe.VAULT)
             econ.withdrawPlayer(player, money);
         else if (data.getCurrencyType() == CurrencyTyppe.PLAYERPOINTS)
-            TaiXiu.getPlayerPointsAPI().take(player.getUniqueId(), (int) money);
+            TaiXiu.support.getPlayerPointsAPI().take(player.getUniqueId(), (int) money);
 
         if (result == TaiXiuResult.XIU)
             data.addXiuPlayer(pName, money);
@@ -152,7 +150,7 @@ public class TaiXiuManager {
                 .replace("%session%", String.valueOf(data.getSession()))
                 .replace("%currencyName%", MessageUtil.getCurrencyName(data.getCurrencyType()))
                 .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType()))
-                .replace("%time%", String.valueOf(TaiXiuManager.getTime())));
+                .replace("%time%", String.valueOf(TaiXiuManager.getTimeLeft())));
 
         String messageBroadcastPlayerBet = Messages.BROADCAST_PLAYER_BET
                 .replace("%prefix%", Messages.PREFIX)
@@ -162,7 +160,7 @@ public class TaiXiuManager {
                 .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(data.getCurrencyType()))
                 .replace("%money%", MessageUtil.getFormatMoneyDisplay(money));
 
-        if (!TaiXiu.isPapiSupported())
+        if (!TaiXiu.support.isPlaceholderAPISupported())
             Bukkit.broadcastMessage(TaiXiu.nms.addColor(messageBroadcastPlayerBet));
         else
             Bukkit.broadcastMessage(TaiXiu.nms.addColor(PlaceholderAPI.setPlaceholders(player, messageBroadcastPlayerBet)));
@@ -177,9 +175,9 @@ public class TaiXiuManager {
                         "| Session: " + data.getSession());
 
         // discord web hook
-        if (TaiXiu.getDiscordSupport() != null) {
+        if (TaiXiu.support.getDiscordSupport() != null) {
             try {
-                TaiXiu.getDiscordSupport().sendMessage(TaiXiu.getDiscordSupport().getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
+                TaiXiu.support.getDiscordSupport().sendMessage(TaiXiu.support.getDiscordSupport().getPlayerBetMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-playerbet-message.json", data, player, result, money));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -190,7 +188,7 @@ public class TaiXiuManager {
         debug("RESULTING SESSION", "Session number " + session.getSession());
 
         if (session.getResult() != TaiXiuResult.NONE) {
-            debug("RESULTING SESSION [CANCELED]", "Session number " + session.getSession() + " không thể trao kết quả vì đã có kết quả");
+            debug("RESULTING SESSION [CANCELED]", "Session number " + session.getSession() + " cannot give a result because this session already has a result.");
             return;
         }
 
@@ -275,7 +273,7 @@ public class TaiXiuManager {
                         .replace("%currencySymbol%", MessageUtil.getCurrencySymbol(session.getCurrencyType())));
 
             SessionResultEvent event = new SessionResultEvent(session);
-            TaiXiu.plugin.getServer().getScheduler().runTask(TaiXiu.plugin, () -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
+            TaiXiu.support.getFoliaLib().getScheduler().runNextTick(task -> TaiXiu.plugin.getServer().getPluginManager().callEvent(event));
 
             debug("SESSION RESULTED", "Session: " + session.getSession() + " " +
                     "| Dice1: " + dice1 + " " +
@@ -288,9 +286,9 @@ public class TaiXiuManager {
         }
 
         // discord web hook
-        if (TaiXiu.getDiscordSupport() != null) {
+        if (TaiXiu.support.getDiscordSupport() != null) {
             try {
-                TaiXiu.getDiscordSupport().sendMessage(TaiXiu.getDiscordSupport().getResultMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-result-message.json", session));
+                TaiXiu.support.getDiscordSupport().sendMessage(TaiXiu.support.getDiscordSupport().getResultMessageFromJSON(TaiXiu.plugin.getDataFolder() + "/discordsrv-result-message.json", session));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -301,6 +299,11 @@ public class TaiXiuManager {
         for (String player : players.keySet()) {
             long money = players.get(player) * 2;
             String message;
+
+            Player bukkitPlayer = Bukkit.getPlayer(player);
+            if (bukkitPlayer != null)
+                if (bukkitPlayer.hasPermission("taixiu.tax.bypass"))
+                    tax = 0;
 
             if (tax > 0) {
                 money = players.get(player) + Math.round(players.get(player) - (players.get(player) * tax));
@@ -320,9 +323,9 @@ public class TaiXiuManager {
             playSound(Bukkit.getPlayer(player), SoundType.win);
             sendMessage(Bukkit.getPlayer(player), message);
             if (sessionData.getCurrencyType() == CurrencyTyppe.VAULT)
-                VaultSupport.getEcon().depositPlayer(player, money);
+                TaiXiu.support.getVault().depositPlayer(player, money);
             else if (sessionData.getCurrencyType() == CurrencyTyppe.PLAYERPOINTS)
-                TaiXiu.getPlayerPointsAPI().give(Bukkit.getPlayer(player).getUniqueId(), (int) money);
+                TaiXiu.support.getPlayerPointsAPI().give(Bukkit.getPlayer(player).getUniqueId(), (int) money);
         }
     }
 

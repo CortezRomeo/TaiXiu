@@ -1,0 +1,111 @@
+#
+#     ______   ______     __        __  __     __     __  __
+#    /\__  _\ /\  __ \   /\ \      /\_\_\_\   /\ \   /\ \/\ \
+#    \/_/\ \/ \ \  __ \  \ \ \     \/_/\_\/_  \ \ \  \ \ \_\ \
+#       \ \_\  \ \_\ \_\  \ \_\      /\_\/\_\  \ \_\  \ \_____\
+#        \/_/   \/_/\/_/   \/_/      \/_/\/_/   \/_/   \/_____/
+#
+#  Author: Cortez_Romeo
+#  Download this plugin for free at:
+#  https://minecraftvn.net
+#  https://www.spigotmc.org/
+#
+#  Discord: https://discord.gg/NWbTVddmBM
+#
+#  Note:
+#  * You can set it to '' to disable the message line
+#    for lists, just one line (- '') is enough
+#  * Hex color codes supported
+#  * If you want an empty line but still want a line break,
+#    use ' ' (space inside quotes)
+
+messages:
+  prefix: '&#03fca1[TAI XIU]&r '
+  xiu-name: '&#1fc433Low'
+  tai-name: '&#c42d1fHigh'
+  special-name: '&dSpecial'
+  none-name: '&7None'
+  no-permission: '%prefix%&cYou don’t have permission to use this command.'
+  request-loading: '%prefix%&ePlease wait...'
+  wrong-argument: '%prefix%&cInvalid command syntax.'
+  wrong-long-input: '%prefix%&cThe session number you entered is invalid.'
+  invalid-session: '%prefix%&cSession &b#%session%&c does not exist.'
+  toggle-on: '%prefix%&fAll notifications have been &2&lENABLED&f!'
+  toggle-off: '%prefix%&fAll notifications have been &4&lDISABLED&f!'
+  player-bet: '%prefix%&fYou placed a bet on &a%bet%&f with %currencyName%&r %currencySymbol%%money%&f. Session &b#%session%&f will conclude in &d%time% seconds&f.'
+  broadcast-player-bet: '%prefix%&b%player% &fplaced a bet on %bet%&r with %currencyName%&r %currencySymbol%%money%&f.'
+  invalid-bet: '%prefix%&e%bet%&c is invalid. You can only enter &exiu (or 1) &cor &etai (or 2)&c.'
+  min-bet: '%prefix%&cThe %currencyName%&c bet must be more than %currencySymbol%%minBet%&c!'
+  max-bet: '%prefix%&cThe %currencyName%&c bet must be less than %currencySymbol%%maxBet%&c!'
+  late-bet: '%prefix%&cOnly &d%time% seconds (less than %configDisableTime%)&c remaining. You can no longer place a bet!'
+  already-bet: '%prefix%&cYou’ve already placed a bet on %bet%&c with %currencyName%&c %currencySymbol%%money%&c.'
+  invalid-currency: '%prefix%&cThe %currencyName%&c amount is invalid, please re-enter.'
+  not-enough-currency: '%prefix%&cYou do not have enough %currencyName%&c!'
+  not-enough-player: '%prefix%&cSession &b#%session%&c will restart due to no bets placed!'
+  already-on-last-page: '%prefix%&cYou are already on the last page.'
+  session-result:
+    - '%prefix%&fSession &b#%session%&f dice rolls: &b%dice1% &7- &b%dice2% &7- &b%dice3%'
+    - '%prefix%&fTotal of 3 dice is &e%total%&f. Declared winner: %result%&f'
+    - '%prefix%&fTop winners: %bestWinners%'
+  result-player-format:
+    invalid: '&7No one'
+    valid: '&d%playerName%&r %currencySymbol%%bet%'
+    valid-special: '&dHouse wins %currencySymbol%%allBet%'
+    playerName-delim: '&e, &d'
+  session-special-win: '%prefix%&d&lHouse won, all bets on High or Low lost and receive no %currencyName%&d&l this session!'
+  session-player-win: '%prefix%&fYou bet on %result%&f and won %currencySymbol%%money%&f.'
+  session-player-win-with-tax: '%prefix%&fYou bet on %result%&f and won %currencySymbol%%money%&f. &c&l(TAX: %tax%%)'
+  session-player-lose: '%prefix%&fYou bet on %result%&f and lost %currencySymbol%%money%&f.'
+  command:
+    taixiu:
+      message:
+        - ' '
+        - '&#03fca1Tai Xiu'
+        - '&7Version %version%'
+        - ' '
+        - '&#03c6fc/taixiu toggle &7- &fToggle all notifications'
+        - '&#03c6fc/taixiu rule &7- &fView game rules'
+        - '&#03c6fc/taixiu bet &6<xiu(1)/tai(2)> <amount&6> &7- &fPlace a bet'
+        - '&#03c6fc/taixiu info &7- &fView current session info'
+        - '&#03c6fc/taixiu info &e(session number) &7- &fView info for specific session'
+        - ' '
+        - ' &6<>&7: Required &7| &e()&7: Optional'
+    luatchoi:
+      message:
+        - ' '
+        - '&#03fca1Tai Xiu - Rules'
+        - ' '
+        - '&fSum of 3 dice from &e4 - 10&f results in &#1fc433Low&f.'
+        - '&fSum of 3 dice from &e11 - 17&f results in &#c42d1fHigh&f.'
+        - '&fIf total is &e3&f or &e18&f, the house wins (both bets lose).'
+        - '&fMinimum %currencyName%&r bet: %currencySymbol%%minBet%&f.'
+        - '&fMaximum %currencyName%&r bet: %currencySymbol%%maxBet%&f.'
+        - '&fWin doubles the %currencyName%&f placed (1 to 1 payout).'
+        - '&aGood luck!'
+    taixiuadmin:
+      message:
+        - ' '
+        - '&#eb5834Tai Xiu - Admin commands'
+        - '&7Version %version%'
+        - ' '
+        - '&#eb8634/taixiuadmin reload &7- &fReload config, inventory, messages'
+        - '&#eb8634/taixiuadmin changestate &7- &fChange current session state'
+        - '&#eb8634/taixiuadmin setcurrency &7- &fChange currency for current session'
+        - '&#eb8634/taixiuadmin settime &6<seconds> &7- &fSet session duration'
+        - '&#eb8634/taixiuadmin setresult &6<dice1> <dice2> <dice3> &7- &fSet custom result for current session'
+        - ' '
+        - ' &6<>&7: Required &7| &e()&7: Optional'
+      prefix: '&#eb5834[Tai Xiu ADMIN]&r '
+      reload: '%prefix%&aReloaded Tai Xiu.'
+      changestate: '%prefix%&aChanged session state to: &e%state%&a.'
+      changestate-broadcast: '%prefix%&e%playerName% &fchanged session state to: &e%state%&f.'
+      settime: '%prefix%&aChanged session time to: &e%time% seconds&a.'
+      settime-broadcast: '%prefix%&e%playerName% &fset session time to &e%time% seconds&f.'
+      invalid-int-input: '%prefix%&cInvalid number&c. &e(1 -> 2,147,483,647)'
+      setresult: '%prefix%&aSet current session result to dice 1: &e%dice1%&a, dice 2: &e%dice2%&a, dice 3: &e%dice3%&a.'
+      setresult-broadcast: ''
+      invalid-dice-input: '%prefix%&cInvalid dice value&c. &e(0 -> 6)'
+      setcurrency: '%prefix%&aSet current session currency to &e%currency%&a. &7(%currencyName%&7)'
+      setcurrency-broadcast: '%prefix%&e%playerName%&f changed session currency to %currencyName%&f.'
+      invalid-currency-input: '%prefix%&cInvalid currency type (Currently only &eVAULT&c or &ePLAYERPOINTS&c are supported).'
+      unsupported-currency: '%prefix%&e%currency%&c is not supported by your server!'

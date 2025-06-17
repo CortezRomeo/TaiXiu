@@ -73,7 +73,7 @@ public class MenuGeyserForm {
                         int configDisableTime = TaiXiu.plugin.getConfig().getInt("bet-settings.disable-while-remaining");
                         if (TaiXiuManager.getTaiXiuTask().getTime() <= configDisableTime) {
                             sendMessage(player, Messages.LATE_BET
-                                    .replace("%time%", String.valueOf(TaiXiuManager.getTime()))
+                                    .replace("%time%", String.valueOf(TaiXiuManager.getTimeLeft()))
                                     .replace("%configDisableTime%", String.valueOf(configDisableTime)));
                             return;
                         }

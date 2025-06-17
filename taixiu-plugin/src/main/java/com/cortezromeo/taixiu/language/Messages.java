@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Messages {
 
+    public static String locale;
     public static String PREFIX;
     public static String XIU_NAME;
     public static String TAI_NAME;
@@ -63,15 +64,16 @@ public class Messages {
 
     public static void setupValue(String locale) {
         locale = locale.toLowerCase();
+        Messages.locale = locale;
         File messageFile = new File(TaiXiu.plugin.getDataFolder() + "/languages/messages_" + locale + ".yml");
         FileConfiguration fileConfiguration;
         if (!messageFile.exists()) {
-            fileConfiguration = Vietnamese.get();
+            fileConfiguration = English.get();
             MessageUtil.log("&c--------------------------------------");
-            MessageUtil.log("    &4LỖI");
-            MessageUtil.log("&eLocale &c&l" + locale + "&e không hợp lệ!");
-            MessageUtil.log("&eVui lòng kiểm tra config.yml.");
-            MessageUtil.log("&eHệ thống sẽ tự động sử dụng ngôn ngữ &b&lVietnamese&e.");
+            MessageUtil.log("    &4ERROR");
+            MessageUtil.log("&eLocale &c&l" + locale + "&e is invalid!");
+            MessageUtil.log("&ePlease check config.yml.");
+            MessageUtil.log("&eThe system will automatically use the &b&lEnglish&e language.");
             MessageUtil.log("&c--------------------------------------");
         } else {
             fileConfiguration = YamlConfiguration.loadConfiguration(messageFile);
@@ -96,7 +98,7 @@ public class Messages {
         MAX_BET = fileConfiguration.getString("messages.max-bet");
         LATE_BET = fileConfiguration.getString("messages.late-bet");
         ALREADY_BET = fileConfiguration.getString("messages.already-bet");
-        INVALID_CURRENCY = fileConfiguration.getString("messages.invalid-bet");
+        INVALID_CURRENCY = fileConfiguration.getString("messages.invalid-currency");
         NOT_ENOUGH_CURRENCY = fileConfiguration.getString("messages.not-enough-currency");
         NOT_ENOUGH_PLAYER = fileConfiguration.getString("messages.not-enough-player");
         SESSION_RESULT = fileConfiguration.getStringList("messages.session-result");

@@ -5,10 +5,7 @@ import com.cortezromeo.taixiu.command.TaiXiuAdminCommand;
 import com.cortezromeo.taixiu.command.TaiXiuCommand;
 import com.cortezromeo.taixiu.file.GeyserFormFile;
 import com.cortezromeo.taixiu.file.inventory.TaiXiuInfoInventoryFile;
-import com.cortezromeo.taixiu.geyserform.BetGeyserForm;
-import com.cortezromeo.taixiu.geyserform.InfoGeyserForm;
-import com.cortezromeo.taixiu.geyserform.MenuGeyserForm;
-import com.cortezromeo.taixiu.geyserform.RuleGeyserForm;
+import com.cortezromeo.taixiu.language.English;
 import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.language.Vietnamese;
 import com.cortezromeo.taixiu.listener.InventoryClickListener;
@@ -19,14 +16,9 @@ import com.cortezromeo.taixiu.manager.BossBarManager;
 import com.cortezromeo.taixiu.manager.DatabaseManager;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.storage.SessionDataStorage;
-import com.cortezromeo.taixiu.support.DiscordSupport;
-import com.cortezromeo.taixiu.support.PAPISupport;
-import com.cortezromeo.taixiu.support.VaultSupport;
+import com.cortezromeo.taixiu.support.Support;
 import com.cortezromeo.taixiu.support.version.cross.CrossVersionSupport;
 import com.tchristofferson.configupdater.ConfigUpdater;
-import net.milkbowl.vault.economy.Economy;
-import org.black_ixx.playerpoints.PlayerPoints;
-import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -42,11 +34,7 @@ public final class TaiXiu extends JavaPlugin {
 
     public static TaiXiu plugin;
     public static VersionSupport nms;
-    public static Economy econ;
-    private static boolean papiSupport = false;
-    private static boolean floodgateSupport = false;
-    private static DiscordSupport discordSupport;
-    private static PlayerPointsAPI playerPointsAPI;
+    public static Support support;
 
     @Override
     public void onLoad() {
@@ -55,10 +43,12 @@ public final class TaiXiu extends JavaPlugin {
     }
     @Override
     public void onEnable() {
+        support = new Support();
+        support.setupSupports();
+
         initFile();
         initLanguages();
         setDebug(getConfig().getBoolean("debug"));
-        initSupport();
         initDatabase();
         initCommand();
         initListener();
@@ -66,9 +56,6 @@ public final class TaiXiu extends JavaPlugin {
         TaiXiuManager.startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
         AutoSaveManager.startAutoSave(getConfig().getInt("database.auto-save.time"));
         BossBarManager.setupValue();
-
-        if (isFloodgateSupported())
-            setupGeyserForm();
 
         log("&f--------------------------------");
         log("&2  _____           _    __  __  _         ");
@@ -79,14 +66,17 @@ public final class TaiXiu extends JavaPlugin {
         log("");
         log("&fVersion: &b" + getDescription().getVersion());
         log("&fAuthor: &bCortez_Romeo");
-        log("&eKhởi chạy plugin trên phiên bản: " + Bukkit.getServer().getClass().getName().split("\\.")[3]);
+        log("&eRunning version: " + Bukkit.getServer().getClass().getName().split("\\.")[3]);
+        if (support.isFoliaLibSupported())
+            log("      &2&lFOLIA SUPPORTED");
         log("");
         log("&fSupport:");
-        log((papiSupport ? "&2[YES] &aPlaceholderAPI" : "&4[NO] &cPlaceholderAPI"));
-        log((floodgateSupport ? "&2[YES] &aFloodgate API (Forms and Cumulus)" : "&4[NO] &cFloodgate API (Forms and Cumulus)"));
+        log((support.isVaultSupported() ? "&2[SUPPORTED] &aVault" : "&4[UNSUPPORTED] &cVault"));
+        log((support.isPlaceholderAPISupported() ? "&2[SUPPORTED] &aPlaceholderAPI" : "&4[UNSUPPORTED] &cPlaceholderAPI"));
+        log((support.isFloodgateSupported() ? "&2[SUPPORTED] &aFloodgate API (Forms and Cumulus)" : "&4[UNSUPPORTED] &cFloodgate API (Forms and Cumulus)"));
         if (!getConfig().getBoolean("floodgate-settings.enabled"))
             log("  &e&oquyền sử dụng Floodgate API đã bị tắt trong config.yml");
-        log((playerPointsAPI != null ? "&2[YES] &aPlayerPoints" : "&4[NO] &cPlayerPoints"));
+        log((support.isPlayerPointsSupported() ? "&2[SUPPORTED] &aPlayerPoints" : "&4[UNSUPPORTED] &cPlayerPoints"));
         log("");
         log("&f--------------------------------");
 
@@ -99,8 +89,7 @@ public final class TaiXiu extends JavaPlugin {
             }
         }
 
-        if (Metrics.isEnabled())
-            new Metrics(this, 21630);
+        new Metrics(this, 21630);
     }
 
     private void initFile() {
@@ -163,6 +152,20 @@ public final class TaiXiu extends JavaPlugin {
             e.printStackTrace();
         }
         Vietnamese.reload();
+
+        // messages_en.yml
+        String englishFileName = "messages_en.yml";
+        English.setup();
+        English.saveDefault();
+        File englishFile = new File(getDataFolder(), "/languages/messages_en.yml");
+        try {
+            ConfigUpdater.update(this, englishFileName, englishFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        English.reload();
+
+        // load locale from config.yml
         Messages.setupValue(getConfig().getString("locale"));
     }
 
@@ -180,61 +183,6 @@ public final class TaiXiu extends JavaPlugin {
         new InventoryClickListener(this);
         new PlayerJoinListener(this);
         new PlayerQuitListener(this);
-    }
-
-    private void initSupport() {
-        // vault
-        if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
-            log("&cPlugin &bTài Xỉu &ccần thêm plugin &6Vault&c và plugin về &6Economy&c để hoạt động");
-            Bukkit.getPluginManager().disablePlugin(this);
-        } else {
-            VaultSupport.setup();
-        }
-
-        // papi
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PAPISupport().register();
-            papiSupport = true;
-        }
-
-        // floodgate
-        if (Bukkit.getPluginManager().getPlugin("floodgate") != null
-                && getConfig().getBoolean("floodgate-settings.enabled")) {
-            floodgateSupport = true;
-        }
-
-        // discordWebhook
-        discordSupport = new DiscordSupport();
-
-        // playerpoints
-        if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
-            playerPointsAPI = PlayerPoints.getInstance().getAPI();
-        }
-    }
-
-    public static void setupGeyserForm() {
-        if (isFloodgateSupported()) {
-            InfoGeyserForm.setupValue();
-            MenuGeyserForm.setupValue();
-            RuleGeyserForm.setupValue();
-            BetGeyserForm.setupValue();
-        }
-    }
-
-    public static boolean isPapiSupported() {
-        return papiSupport;
-    }
-
-    public static boolean isFloodgateSupported() {
-        return floodgateSupport;
-    }
-
-    public static DiscordSupport getDiscordSupport() {
-        return discordSupport;
-    }
-
-    public static PlayerPointsAPI getPlayerPointsAPI() {
-        return playerPointsAPI;
     }
 
     @Override

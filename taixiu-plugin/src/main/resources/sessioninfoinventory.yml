@@ -6,24 +6,28 @@
 #        \/_/   \/_/\/_/   \/_/      \/_/\/_/   \/_/   \/_____/
 #
 #  Author: Cortez_Romeo
-#  Download plugin này miễn phí tại: https://minecraftvn.net
+#  Download this plugin for free at:
+#  https://minecraftvn.net
+#  https://www.spigotmc.org/
 #
-#  Lưu ý:
-#  * Có hỗ trợ hex color
-#  * Có 3 type chính, đó là:
-#    + material: value chỉnh thành MATERIAL của block
-#      > Theo các phiên bản bé hơn 1.13, bạn có thể điền số trong phần 'value:' và 'data:' của item đó
-#          Ví dụ: (value: 95 | data: 1) [https://minecraft-ids.grahamedgecombe.com/]
-#      > Theo các phiên bản lớn hơn 1.12.2, bạn có thể điền thẳng tên item đó (Phần 'data:' sẽ không còn cần thiết)
-#          Ví dụ: (value: BOOK) [https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html]
-#    + playerhead: dành cho item "bet-player:" để hiện thị đầu người hơi
-#    + customhead: Đọc phần ở dưới
-#      + Cách sử dụng custom-head:
-#          Bước 1: Truy cập vào một custom-head mà bạn cần ở web có link https://minecraft-heads.com/custom-heads/
-#          Bước 2: Kéo xuống dưới cùng bạn sẽ thấy có một mục là "Other", Copy phần "Value:" và
-#                  dán nó vào phần "value:" của item bạn cần
+#  Discord: https://discord.gg/NWbTVddmBM
+#
+#  Note:
+#  * Hex color supported
+#  * There are 3 main types:
+#    + material: value is set to the MATERIAL of the block
+#      > For versions before 1.13, you can use numeric IDs in 'value:' and 'data:'
+#          Example: (value: 95 | data: 1) [https://minecraft-ids.grahamedgecombe.com/]
+#      > For versions after 1.12.2, use the material name directly (no 'data:' needed)
+#          Example: (value: BOOK) [https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html]
+#    + playerhead: used for "bet-player:" item to display player head
+#    + customhead: See below
+#      + How to use custom-head:
+#          Step 1: Go to a desired custom-head at https://minecraft-heads.com/custom-heads/
+#          Step 2: Scroll to the bottom, under "Other", copy the "Value:"
+#                  Paste it into the "value:" field of your desired item
 
-title: '&0Thông tin phiên &b#%session%'
+title: '&0Session Information &b#%session%'
 items:
   border:
     type: material
@@ -33,23 +37,23 @@ items:
     lore:
       - ''
   nextPage:
-    name: '&aTrang sau'
+    name: '&aNext Page'
     slot: 8
     type: customhead
     value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY3MWM0YzA0MzM3YzM4YTVjN2YzMWE1Yzc1MWY5OTFlOTZjMDNkZjczMGNkYmVlOTkzMjA2NTVjMTlkIn19fQ==
     data: 0
     lore:
-      - '&7Sang trang %nextPage%'
+      - '&7Go to page %nextPage%'
   prevPage:
-    name: '&aTrang trước'
+    name: '&aPrevious Page'
     slot: 0
     type: customhead
     value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTM5NzExMjRiZTg5YWM3ZGM5YzkyOWZlOWI2ZWZhN2EwN2NlMzdjZTFkYTJkZjY5MWJmODY2MzQ2NzQ3N2M3In19fQ==
     data: 0
     lore:
-      - '&7Về trang %prevPage%'
+      - '&7Back to page %prevPage%'
   sortItems:
-    name: '&bSắp xếp'
+    name: '&bSort'
     slot: 3
     type: material
     value: OAK_SIGN
@@ -57,101 +61,101 @@ items:
     lore:
       all:
         - ''
-        - '&7Sắp xếp theo từng giá trị riêng biệt.'
+        - '&7Sort by specific values.'
         - ''
-        - '&b⇨ Tất cả'
-        - '&7Người đặt tài'
-        - '&7Người đặt xỉu'
-        - '&7Tổng tiền đặt cược từ lớn đến bé'
-        - '&7Tổng tiền đặt cược từ bé đến lớn'
+        - '&b⇨ All'
+        - '&7Tai Betters'
+        - '&7Xiu Betters'
+        - '&7Total bet descending'
+        - '&7Total bet ascending'
         - ''
-        - '&eNhấn vào đây để thay đổi'
+        - '&eClick to change'
       taiPlayers:
         - ''
-        - '&7Sắp xếp theo từng giá trị riêng biệt.'
+        - '&7Sort by specific values.'
         - ''
-        - '&7Tất cả'
-        - '&b⇨ Người đặt tài'
-        - '&7Người đặt xỉu'
-        - '&7Tổng tiền đặt cược từ lớn đến bé'
-        - '&7Tổng tiền đặt cược từ bé đến lớn'
+        - '&7All'
+        - '&b⇨ Tai Betters'
+        - '&7Xiu Betters'
+        - '&7Total bet descending'
+        - '&7Total bet ascending'
         - ''
-        - '&eNhấn vào đây để thay đổi'
+        - '&eClick to change'
       xiuPlayers:
         - ''
-        - '&7Sắp xếp theo từng giá trị riêng biệt.'
+        - '&7Sort by specific values.'
         - ''
-        - '&7Tất cả'
-        - '&7Người đặt tài'
-        - '&b⇨ Người đặt xỉu'
-        - '&7Tổng tiền đặt cược từ lớn đến bé'
-        - '&7Tổng tiền đặt cược từ bé đến lớn'
+        - '&7All'
+        - '&7Tai Betters'
+        - '&b⇨ Xiu Betters'
+        - '&7Total bet descending'
+        - '&7Total bet ascending'
         - ''
-        - '&eNhấn vào đây để thay đổi'
+        - '&eClick to change'
       highestCurrency:
         - ''
-        - '&7Sắp xếp theo từng giá trị riêng biệt.'
+        - '&7Sort by specific values.'
         - ''
-        - '&7Tất cả'
-        - '&7Người đặt tài'
-        - '&7Người đặt xỉu'
-        - '&b⇨ Tổng tiền đặt cược từ lớn đến bé'
-        - '&7Tổng tiền đặt cược từ bé đến lớn'
+        - '&7All'
+        - '&7Tai Betters'
+        - '&7Xiu Betters'
+        - '&b⇨ Total bet descending'
+        - '&7Total bet ascending'
         - ''
-        - '&eNhấn vào đây để thay đổi'
+        - '&eClick to change'
       lowestCurrency:
         - ''
-        - '&7Sắp xếp theo từng giá trị riêng biệt.'
+        - '&7Sort by specific values.'
         - ''
-        - '&7Tất cả'
-        - '&7Người đặt tài'
-        - '&7Người đặt xỉu'
-        - '&7Tổng tiền đặt cược từ lớn đến bé'
-        - '&b⇨ Tổng tiền đặt cược từ bé đến lớn'
+        - '&7All'
+        - '&7Tai Betters'
+        - '&7Xiu Betters'
+        - '&7Total bet descending'
+        - '&b⇨ Total bet ascending'
         - ''
-        - '&eNhấn vào đây để thay đổi'
+        - '&eClick to change'
   close:
-    name: '&cĐóng'
+    name: '&cClose'
     slot: 4
     type: customhead
     value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==
     data: 0
     lore:
-      - '&eNhấn vào đây để đóng'
+      - '&eClick here to close'
   sessionInfo:
-    name: '&eThông tin phiên'
+    name: '&eSession Information'
     slot: 5
     type: material
     value: BOOK
     data: 0
     lore:
       playing:
-        - '&fCó kết quả sau: &d%time% giây'
+        - '&fResult in: &d%time% seconds'
         - ''
-        - '&fPhiên số: &b%session%'
-        - '&fTiền tệ: %currencyName%'
-        - '&fSố người chọn &#1fc433Xỉu&f: &e%xiuPlayerNumber% &7(%currencySymbol%%xiuTotalBet%&7)'
-        - '&fSố người chọn &#c42d1fTài&f: &e%taiPlayerNumber% &7(%currencySymbol%%taiTotalBet%&7)'
-        - '&fTổng %currencyName%&f cược phiên này: %currencySymbol%%totalBet%'
+        - '&fSession Number: &b%session%'
+        - '&fCurrency: %currencyName%'
+        - '&fPlayers chose &#1fc433Xiu&f: &e%xiuPlayerNumber% &7(%currencySymbol%%xiuTotalBet%&7)'
+        - '&fPlayers chose &#c42d1fTai&f: &e%taiPlayerNumber% &7(%currencySymbol%%taiTotalBet%&7)'
+        - '&fTotal %currencyName%&f bet this session: %currencySymbol%%totalBet%'
       ending:
-        - '&bPhiên này đã có kết quả!'
+        - '&bThis session has ended!'
         - ''
-        - '&fPhiên số: &b%session%'
-        - '&fTiền tệ: %currencyName%'
-        - '&fSố người chọn &#1fc433Xỉu&f: &e%xiuPlayerNumber% &7(%currencySymbol%%xiuTotalBet%&7)'
-        - '&fSố người chọn &#c42d1fTài&f: &e%taiPlayerNumber% &7(%currencySymbol%%taiTotalBet%&7)'
-        - '&fTổng %currencyName%&f cược phiên này: %currencySymbol%%totalBet%'
-        - '&fĂn nhiều nhất: %bestWinners%'
+        - '&fSession Number: &b%session%'
+        - '&fCurrency: %currencyName%'
+        - '&fPlayers chose &#1fc433Xiu&f: &e%xiuPlayerNumber% &7(%currencySymbol%%xiuTotalBet%&7)'
+        - '&fPlayers chose &#c42d1fTai&f: &e%taiPlayerNumber% &7(%currencySymbol%%taiTotalBet%&7)'
+        - '&fTotal %currencyName%&f bet this session: %currencySymbol%%totalBet%'
+        - '&fTop winner: %bestWinners%'
         - ''
-        - '&fXúc xắc 1: &e%dice1%'
-        - '&fXúc xắc 2: &e%dice2%'
-        - '&fXúc xắc 3: &e%dice3%'
-        - '&fKết quả:&r %result%'
+        - '&fDice 1: &e%dice1%'
+        - '&fDice 2: &e%dice2%'
+        - '&fDice 3: &e%dice3%'
+        - '&fResult:&r %result%'
   betPlayer:
     name: '&e%playerName%'
     type: playerhead
     data: 0
     lore:
       - ''
-      - '&fCược vào: %bet%'
-      - '&fSố %currencyName%&f cược: %currencySymbol%%amountBet%'
+      - '&fBet on: %bet%'
+      - '&fBet amount: %currencySymbol%%amountBet%'

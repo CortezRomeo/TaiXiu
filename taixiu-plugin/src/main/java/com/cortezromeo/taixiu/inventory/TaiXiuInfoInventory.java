@@ -8,14 +8,12 @@ import com.cortezromeo.taixiu.language.Messages;
 import com.cortezromeo.taixiu.manager.TaiXiuManager;
 import com.cortezromeo.taixiu.util.ItemUtil;
 import com.cortezromeo.taixiu.util.MessageUtil;
-import org.bukkit.Bukkit;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -28,7 +26,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
     private HashMap<String, Long> taiPlayers = new HashMap<>();
     private SortItemsType sortItemsType;
     private ISession sessionData;
-    private BukkitTask bukkitRunnable;
+    private WrappedTask wrappedTask;
 
     public TaiXiuInfoInventory(Player owner, ISession sessionData) {
         super(owner);
@@ -45,20 +43,18 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
             getOwner().updateInventory();
         }
 
-        if (bukkitRunnable == null) {
+        if (wrappedTask == null) {
             if (getSessionData().getResult() != TaiXiuResult.NONE)
                 return;
 
-            bukkitRunnable = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (getInventory().getViewers().isEmpty() || !getOwner().getOpenInventory().getTopInventory().equals(getInventory())) {
-                        cancel();
-                        return;
-                    }
-                    open();
+            TaiXiu.support.getFoliaLib().getScheduler().runTimerAsync(task -> {
+                wrappedTask = task;
+                if (getInventory().getViewers().isEmpty() || !getOwner().getOpenInventory().getTopInventory().equals(getInventory())) {
+                    task.cancel();
+                    return;
                 }
-            }.runTaskTimerAsynchronously(TaiXiu.nms.getPlugin(), 20, 20);
+                open();
+            }, 20, 20);
         }
     }
 
@@ -122,7 +118,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
 
     @Override
     public void setMenuItems() {
-        Bukkit.getScheduler().runTaskAsynchronously(TaiXiu.plugin, () -> {
+        TaiXiu.support.getFoliaLib().getScheduler().runAsync(task -> {
             addPaginatedMenuItems();
             FileConfiguration invFileConfig = TaiXiuInfoInventoryFile.get();
 
@@ -261,7 +257,7 @@ public class TaiXiuInfoInventory extends PaginatedInventory {
         ItemMeta itemMeta = modItem.getItemMeta();
 
         List<String> itemLore = itemMeta.getLore();
-        itemLore.replaceAll(string -> TaiXiu.nms.addColor(string.replace("%time%", (sessionData.getResult() != TaiXiuResult.NONE ? "0" : String.valueOf(TaiXiuManager.getTime())))
+        itemLore.replaceAll(string -> TaiXiu.nms.addColor(string.replace("%time%", (sessionData.getResult() != TaiXiuResult.NONE ? "0" : String.valueOf(TaiXiuManager.getTimeLeft())))
                 .replace("%session%", String.valueOf(sessionData.getSession()))
                 .replace("%xiuPlayerNumber%", String.valueOf(sessionData.getXiuPlayers().size()))
                 .replace("%taiPlayerNumber%", String.valueOf(sessionData.getTaiPlayers().size()))

@@ -8,6 +8,7 @@ softdepend:
   - PlayerPoints
 depend:
   - Vault
+folia-supported: true
 commands:
   taixiu:
     description: TaiXiu member commands

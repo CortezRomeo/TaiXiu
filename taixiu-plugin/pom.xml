@@ -3,19 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <artifactId>TaiXiu</artifactId>
         <groupId>com.cortezromeo.taixiu</groupId>
-        <version>2.6</version>
+        <version>2.7</version>
     </parent>
+
     <artifactId>taixiu-plugin</artifactId>
-    <version>2.6</version>
 
     <pluginRepositories>
         <pluginRepository>
-            <!-- This is a temporary reference as the Maven Shade plugin
-                that supports Java 17 is not released yet -->
             <id>maven-snapshots</id>
             <url>https://repository.apache.org/content/repositories/snapshots/</url>
         </pluginRepository>
@@ -49,7 +46,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
+                            <minimizeJar>false</minimizeJar>
                             <relocations>
                                 <relocation>
                                     <pattern>com.cryptomorin.xseries</pattern>
@@ -71,6 +68,10 @@
                                     <pattern>org.json</pattern>
                                     <shadedPattern>com.cortezromeo.taixiu.lib.json</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.tcoded.folialib</pattern>
+                                    <shadedPattern>com.cortezromeo.taixiu.lib.folialib</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -87,20 +88,21 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.tchristofferson</groupId>
             <artifactId>ConfigUpdater</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>2.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7.1</version>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultUnlockedAPI</artifactId>
+            <version>2.11</version><!-- Validate this is the most recent version from the CI -->
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -131,6 +133,12 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.technicallycoded</groupId>
+            <artifactId>FoliaLib</artifactId>
+            <version>main-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.cortezromeo.taixiu</groupId>

@@ -36,7 +36,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Console sử dụng lệnh /taixiuad");
+            sender.sendMessage("Console uses /taixiuad");
             return false;
         } else {
             if (!sender.hasPermission("taixiu.use")) {
@@ -49,7 +49,9 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
         FileConfiguration cfg = TaiXiu.plugin.getConfig();
 
         if (args.length == 1) {
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
+                case "rules":
+                case "rule":
                 case "luatchoi":
                     for (String string : Messages.COMMAND_LUATCHOI) {
                         string = string.replace("%minBet%", MessageUtil.getFormatMoneyDisplay(cfg.getLong("bet-settings.min-bet")))
@@ -59,6 +61,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                         sendMessage(p, string);
                     }
                     return false;
+                case "info":
                 case "thongtin":
                     new TaiXiuInfoInventory(p, TaiXiuManager.getSessionData()).open();
                     return false;
@@ -77,11 +80,11 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                     sendMessage(p, Messages.WRONG_ARGUMENT);
                     return false;
             }
-
         }
 
         if (args.length == 2) {
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
+                case "info":
                 case "thongtin":
                     Long session;
 
@@ -113,9 +116,9 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
         }
 
         if (args.length == 3) {
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
+                case "bet":
                 case "cuoc":
-
                     long money;
                     TaiXiuResult result;
                     args[1] = String.valueOf(args[1]);
@@ -145,7 +148,7 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
             }
         }
 
-        if (TaiXiu.isFloodgateSupported() && FloodgateApi.getInstance().isFloodgateId(p.getUniqueId())) {
+        if (TaiXiu.support.isFloodgateSupported() && FloodgateApi.getInstance().isFloodgateId(p.getUniqueId())) {
             MenuGeyserForm.openForm(p);
         } else {
             for (String string : Messages.COMMAND_TAIXIU) {
@@ -162,13 +165,19 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
         List<String> commands = new ArrayList<>();
 
         if (args.length == 1) {
+            if (Messages.locale.equals("vi")) {
+                commands.add("luatchoi");
+                commands.add("cuoc");
+                commands.add("thongtin");
+            } else {
+                commands.add("bet");
+                commands.add("rules");
+                commands.add("info");
+            }
             commands.add("toggle");
-            commands.add("luatchoi");
-            commands.add("cuoc");
-            commands.add("thongtin");
             StringUtil.copyPartialMatches(args[0], commands, completions);
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("cuoc")) {
+            if (args[0].equalsIgnoreCase("cuoc") || args[0].equalsIgnoreCase("bet")) {
                 commands.add("xiu");
                 commands.add("tai");
             }

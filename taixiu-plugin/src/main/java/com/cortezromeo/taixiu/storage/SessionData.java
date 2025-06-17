@@ -28,7 +28,7 @@ public class SessionData implements ISession {
         this.xiuPlayers = xiuPlayers;
         if (currencyType != null)
             if (currencyType == CurrencyTyppe.PLAYERPOINTS) {
-                if (TaiXiu.getPlayerPointsAPI() == null)
+                if (TaiXiu.support.getPlayerPointsAPI() == null)
                     this.currencyType = CurrencyTyppe.VAULT;
             } else this.currencyType = currencyType;
         else
@@ -130,7 +130,7 @@ public class SessionData implements ISession {
         if (this.currencyType == null )
             return CurrencyTyppe.VAULT;
         if (this.currencyType == CurrencyTyppe.PLAYERPOINTS)
-            if (TaiXiu.getPlayerPointsAPI() == null)
+            if (TaiXiu.support.getPlayerPointsAPI() == null)
                 return CurrencyTyppe.VAULT;
         return this.currencyType;
     }
@@ -138,7 +138,7 @@ public class SessionData implements ISession {
     @Override
     public void setCurrencyType(CurrencyTyppe currencyType) {
         if (this.currencyType == CurrencyTyppe.PLAYERPOINTS)
-            if (TaiXiu.getPlayerPointsAPI() == null) {
+            if (TaiXiu.support.getPlayerPointsAPI() == null) {
                 this.currencyType = CurrencyTyppe.VAULT;
                 return;
             }
