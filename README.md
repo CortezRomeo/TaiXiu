@@ -71,6 +71,87 @@ You might need these plugins to utilize my plugin resources totally.
     - setresult
 - `taixiu.tax.bypass`: Bypass taxes.
 
+## Update history
+<details>
+<summary>2.6</summary>
+
+ 	- Fixed: Console spam caused by certain errors.
+	- Fixed: Menu errors on the latest server versions.
+	- Fixed: Server may crash or lag when using Discord webhooks.
+	- Fixed: Incorrect display of the "invalid-currency" message.
+	- Support Added: Folia support.
+	- Support Added: Compatibility with the latest server versions.
+	- Optimization: Refactored and optimized some parts of the code.
+	- Localization: Added English language support.
+	- Localization: Translated some parts of the interface to English.
+	- Feature Added: PlaceholderAPI %taixiu_timeleft% to get the remaining time of the current session.
+	- Permission Added: taixiu.tax.bypass to skip the tax.
+</details>
+<details>
+<summary>2.5</summary>
+	
+	- Supported 1.21.3
+	- Fixed Bossbar's still enabled even after turning off in config.yml
+	- Fixed spam console after turning off Bossbar
+	- Fixed player head in TaiXiu GUI turns into Bedrock (mostly happens because server-online is false)
+	- Added new placeholders for DiscordSRV
+</details>
+<details>
+<summary>2.4</summary>
+	
+	- Supported minecraft version 1.21.x
+	- Fixed spam console "<taixiutask.java>java.lang.NullPointerException: Cannot invoke "org.bukkit.entity.Player.getName()" because "p" is null"
+	- Optimized pom.xml
+</details>
+<details>
+<summary>2.3</summary>
+	
+	- Taixiu now supports PlayerPoints!
+	- New inventory, added "shortItem" to short specific values.
+	- Added /taixiuadmin setcurrency
+	- Optimized code.
+</details>
+<details>
+<summary>2.2</summary>
+	
+	- Fixed boss-bar does not work correctly.
+	- Fixed session sometime automatically reset when a player toggle notification.
+	- Fixed an error occurred when floodgate players use command "/taixiu"
+	- Optimized boss-bar
+	- Supported DiscordSRV! (100% Configable messages)
+</details>
+<details>
+<summary>2.1</summary>
+	
+	- Fixed BossSytle is not working as config
+</details>
+<details>
+<summary>2.0</summary>
+	
+	- Added GPL-3.0 license which should be added early
+	- Fixed misspelling
+	- Optimized code
+	- Fixed an error that makes console spam when opening a GUI if the server version is above 1.16.5
+ 	- Added sound when the player wins or loses betting
+	- Added a message when the player loses betting
+	- Updated BossBar
+	- Supported Floodgate Forms
+</details>
+<details>
+<summary>1.1.5</summary>
+	
+	- Fixed an error relating to FilenameUtil caused console to spam while loading plugin
+</details>
+<details>
+<summary>1.1.4</summary>
+	
+	- Fixed an error that causes money is not given for floodgate player
+	- Fixed an error while giving a result
+	- Recaculated how tax works
+	- Updated PlaceholderAPI
+	- Optimized code
+</details>
+
 ## Contact
 [![Discord Server](https://discord.com/api/guilds/1187827789664096267/widget.png?style=banner3)](https://discord.gg/XdJfN2X)
 
