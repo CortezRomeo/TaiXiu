@@ -73,7 +73,12 @@ You might need these plugins to utilize my plugin resources totally.
 
 ## Update history
 <details>
-<summary>2.6</summary>
+<summary>2.8</summary>
+
+ 	- Fixed: An error occurred when trying to setup files while starting the server.
+</details>
+<details>
+<summary>2.7</summary>
 
  	- Fixed: Console spam caused by certain errors.
 	- Fixed: Menu errors on the latest server versions.
@@ -86,6 +91,13 @@ You might need these plugins to utilize my plugin resources totally.
 	- Localization: Translated some parts of the interface to English.
 	- Feature Added: PlaceholderAPI %taixiu_timeleft% to get the remaining time of the current session.
 	- Permission Added: taixiu.tax.bypass to skip the tax.
+</details>
+<details>
+<summary>2.6</summary>
+
+ 	- Supported the newest version of minecraft server
+	- Fixed misspelling
+	- Removed supporting DiscordSRV and now support Discord Web Hook instead! (https://www.youtube.com/watch?v=G_fRHkHQUNU)
 </details>
 <details>
 <summary>2.5</summary>
