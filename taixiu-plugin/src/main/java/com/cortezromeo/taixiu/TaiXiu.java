@@ -43,15 +43,15 @@ public final class TaiXiu extends JavaPlugin {
     }
     @Override
     public void onEnable() {
-        support = new Support();
-        support.setupSupports();
-
         initFile();
         initLanguages();
         setDebug(getConfig().getBoolean("debug"));
         initDatabase();
         initCommand();
         initListener();
+
+        support = new Support();
+        support.setupSupports();
 
         TaiXiuManager.startTask(getConfig().getInt("task.taiXiuTask.time-per-session"));
         AutoSaveManager.startAutoSave(getConfig().getInt("database.auto-save.time"));
