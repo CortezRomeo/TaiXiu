@@ -65,7 +65,7 @@ messages:
         - ' '
         - '&#03c6fc/taixiu toggle &7- &fToggle all notifications'
         - '&#03c6fc/taixiu rule &7- &fView game rules'
-        - '&#03c6fc/taixiu bet &6<xiu(1)/tai(2)> <amount&6> &7- &fPlace a bet'
+        - '&#03c6fc/taixiu bet &6<low(1)/high(2)> <amount&6> &7- &fPlace a bet'
         - '&#03c6fc/taixiu info &7- &fView current session info'
         - '&#03c6fc/taixiu info &e(session number) &7- &fView info for specific session'
         - ' '

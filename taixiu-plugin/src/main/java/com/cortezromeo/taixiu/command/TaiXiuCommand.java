@@ -178,8 +178,13 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
             StringUtil.copyPartialMatches(args[0], commands, completions);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("cuoc") || args[0].equalsIgnoreCase("bet")) {
-                commands.add("xiu");
-                commands.add("tai");
+                if (Messages.locale.equals("vi")) {
+                    commands.add("xiu");
+                    commands.add("tai");
+                } else {
+                    commands.add("low");
+                    commands.add("high");
+                }
             }
             StringUtil.copyPartialMatches(args[1], commands, completions);
         }
