@@ -34,7 +34,7 @@ messages:
   toggle-off: '%prefix%&fAll notifications have been &4&lDISABLED&f!'
   player-bet: '%prefix%&fYou placed a bet on &a%bet%&f with %currencyName%&r %currencySymbol%%money%&f. Session &b#%session%&f will conclude in &d%time% seconds&f.'
   broadcast-player-bet: '%prefix%&b%player% &fplaced a bet on %bet%&r with %currencyName%&r %currencySymbol%%money%&f.'
-  invalid-bet: '%prefix%&e%bet%&c is invalid. You can only enter &exiu (or 1) &cor &etai (or 2)&c.'
+  invalid-bet: '%prefix%&e%bet%&c is invalid. You can only enter &elow (or 1) &cor &ehigh (or 2)&c.'
   min-bet: '%prefix%&cThe %currencyName%&c bet must be more than %currencySymbol%%minBet%&c!'
   max-bet: '%prefix%&cThe %currencyName%&c bet must be less than %currencySymbol%%maxBet%&c!'
   late-bet: '%prefix%&cOnly &d%time% seconds (less than %configDisableTime%)&c remaining. You can no longer place a bet!'

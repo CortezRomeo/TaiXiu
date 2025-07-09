@@ -123,9 +123,15 @@ public class TaiXiuCommand implements CommandExecutor, TabExecutor {
                     TaiXiuResult result;
                     args[1] = String.valueOf(args[1]);
 
-                    if (args[1].equals("1") || args[1].equalsIgnoreCase("xỉu") || args[1].equalsIgnoreCase("xiu"))
+                    if (args[1].equals("1") ||
+                            args[1].equalsIgnoreCase("xỉu") ||
+                            args[1].equalsIgnoreCase("xiu") ||
+                            args[1].equalsIgnoreCase("low"))
                         result = TaiXiuResult.XIU;
-                    else if (args[1].equals("2") || args[1].equalsIgnoreCase("tài") || args[1].equalsIgnoreCase("tai"))
+                    else if (args[1].equals("2") ||
+                            args[1].equalsIgnoreCase("tài") ||
+                            args[1].equalsIgnoreCase("tai") ||
+                            args[1].equalsIgnoreCase("high"))
                         result = TaiXiuResult.TAI;
                     else {
                         sendMessage(p, Messages.INVALID_BET.replace("%bet%", args[1]));
