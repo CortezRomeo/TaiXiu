@@ -1,48 +1,48 @@
 {
-    "title": "Đặt cược tài xỉu",
-    "author": {
-        "name": "%playerName%",
-        "icon_url": "https://api.mineatar.io/face/%playerUUID%"
-      },
-    "color": {
-		"tai": 16720384,
-		"xiu": 4390656
-	},
-    "fields": [
-     {
-        "name": "",
-        "fieldtype": "blank",
-        "value": "",
-        "inline": false
-     },
-     {
-        "name": ":timer: Thời gian",
-		"fieldtype": "normal",
-        "value": "**%date%**",
-        "inline": false
-     },
-     {
-        "name": ":pencil2: Cược vào",
-		"fieldtype": "normal",
-        "value": "**%bet%**",
-        "inline": false
-     },
-     {
-        "name": ":coin: Tiền tệ",
-        "fieldtype": "normal",
-        "value": "**%currencyName%**",
-        "inline": false
-     },
-     {
-        "name": ":money_with_wings: Giá trị",
-		"fieldtype": "normal",
-        "value": "**%money%**",
-        "inline": false
-     }
-    ],
-	"placeholders": {
-		"tai": "Tài",
-		"xiu": "Xỉu",
-		"date": "dd/MM/yyyy hh:mm:ss"
-	}
- }
+  "title": "Dice Bet Placement",
+  "author": {
+    "name": "%playerName%",
+    "icon_url": "https://api.mineatar.io/face/%playerUUID%"
+  },
+  "color": {
+    "tai": 16720384,
+    "xiu": 4390656
+  },
+  "fields": [
+    {
+      "name": "",
+      "fieldtype": "blank",
+      "value": "",
+      "inline": false
+    },
+    {
+      "name": ":timer: Time",
+      "fieldtype": "normal",
+      "value": "**%date%**",
+      "inline": false
+    },
+    {
+      "name": ":pencil2: Bet On",
+      "fieldtype": "normal",
+      "value": "**%bet%**",
+      "inline": false
+    },
+    {
+      "name": ":coin: Currency",
+      "fieldtype": "normal",
+      "value": "**%currencyName%**",
+      "inline": false
+    },
+    {
+      "name": ":money_with_wings: Amount",
+      "fieldtype": "normal",
+      "value": "**%money%**",
+      "inline": false
+    }
+  ],
+  "placeholders": {
+    "tai": "High",
+    "xiu": "Low",
+    "date": "dd/MM/yyyy hh:mm:ss"
+  }
+}
